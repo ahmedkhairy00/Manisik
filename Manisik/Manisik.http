@@ -1,0 +1,6 @@
+@Manisik_HostAddress = http://localhost:5076
+
+GET {{Manisik_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
