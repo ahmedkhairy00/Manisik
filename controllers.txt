@@ -1,0 +1,601 @@
+using Manisik.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+
+namespace Manisik.Controllers
+{
+    [Authorize(Roles = "Admin")]
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AdminController : ControllerBase
+    {
+        private readonly UserManager<Auth> _userManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
+
+        public AdminController(UserManager<Auth> userManager, RoleManager<IdentityRole<int>> roleManager)
+        {
+            _userManager = userManager;
+            _roleManager = roleManager;
+        }
+
+        [HttpPost("create-role")]
+        public async Task<IActionResult> CreateRole([FromBody] DTOs.RoleDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto?.Name))
+                return BadRequest(new { Message = "Role name is required." });
+
+            var exists = await _roleManager.RoleExistsAsync(dto.Name);
+            if (exists) return BadRequest(new { Message = "Role already exists." });
+
+            var res = await _roleManager.CreateAsync(new IdentityRole<int> { Name = dto.Name });
+            if (!res.Succeeded) return BadRequest(res.Errors);
+
+            return Ok(new { Message = "Role created successfully." });
+        }
+
+        [HttpPost("assign-role")]
+        public async Task<IActionResult> AssignRole([FromBody] DTOs.AssignRoleDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Role))
+                return BadRequest(new { Message = "Email and Role are required." });
+
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user == null) return NotFound(new { Message = "User not found." });
+
+            if (!await _roleManager.RoleExistsAsync(dto.Role)) return NotFound(new { Message = "Role not found." });
+
+            var res = await _userManager.AddToRoleAsync(user, dto.Role);
+            if (!res.Succeeded) return BadRequest(res.Errors);
+
+            return Ok(new { Message = "Role assigned successfully." });
+        }
+
+        [HttpPost("remove-role")]
+        public async Task<IActionResult> RemoveRole([FromBody] DTOs.AssignRoleDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Role))
+                return BadRequest(new { Message = "Email and Role are required." });
+
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user == null) return NotFound(new { Message = "User not found." });
+
+            var res = await _userManager.RemoveFromRoleAsync(user, dto.Role);
+            if (!res.Succeeded) return BadRequest(res.Errors);
+
+            return Ok(new { Message = "Role removed successfully." });
+        }
+
+        [HttpGet("roles")]
+        public IActionResult GetRoles()
+        {
+            var roles = _roleManager.Roles.Select(r => r.Name).ToList();
+            return Ok(new { Data = roles });
+        }
+    }
+}using Manisik.DTOs;
+using Manisik.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
+namespace Manisik.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
+    {
+        private readonly AuthService _authService;
+        private readonly JwtService _jwtService;
+
+        public AuthController(AuthService authService, JwtService jwtService)
+        {
+            _authService = authService;
+            _jwtService = jwtService;
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterDto dto)
+        {
+            var result = await _authService.RegisterAsync(dto.Email, dto.Password);
+            if (!result) return BadRequest("Failed to register user.");
+            return Ok("User registered successfully.");
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto dto)
+        {
+            var user = await _authService.LoginAsync(dto.Email, dto.Password);
+            if (user == null) return Unauthorized("Invalid credentials.");
+
+            var token = _jwtService.GenerateToken(user);
+            return Ok(new AuthResponseDto
+            {
+                Token = token,
+                Email = user.Email,
+               // Role = user.Role
+            });
+        }
+    }
+}
+using Manisik.DTOs;
+using Manisik.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Manisik.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class HotelController : ControllerBase
+    {
+        private readonly HotelService _hotelService;
+
+        public HotelController(HotelService hotelService)
+        {
+            _hotelService = hotelService;
+        }
+
+        // ✅ Get all hotels
+        [HttpGet("getall")]
+        public async Task<IActionResult> GetAll()
+        {
+            var hotels = await _hotelService.GetAllAsync();
+            return Ok(hotels);
+        }
+
+        // ✅ Get hotel by ID
+        [HttpGet("byid/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var hotel = await _hotelService.GetByIdAsync(id);
+            if (hotel == null)
+                return NotFound(new { message = "❌ Hotel not found" });
+
+            return Ok(hotel);
+        }
+
+        // ✅ Create new hotel
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromBody] HotelDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _hotelService.AddAsync(dto);
+            return Ok(new
+            {
+                message = "✅ Hotel has been added successfully",
+                data = result
+            });
+        }
+
+        // ✅ Update existing hotel
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] HotelDto dto)
+        {
+            var result = await _hotelService.UpdateAsync(id, dto);
+            if (result == null)
+                return NotFound(new { message = "❌ Hotel not found" });
+
+            return Ok(new
+            {
+                message = "✅ Hotel has been updated successfully",
+                data = result
+            });
+        }
+
+        // ✅ Delete hotel
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await _hotelService.DeleteAsync(id);
+            if (!success)
+                return NotFound(new { message = "❌ Hotel not found" });
+
+            return Ok(new { message = "✅ Hotel has been deleted successfully" });
+        }
+    }
+}
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Manisik.DTOs;
+using Manisik.Services.Payment;
+using Manisik.Interfaces;
+using Stripe;
+
+namespace Manisik.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PaymentsController : ControllerBase
+    {
+        private readonly StripePaymentService _stripe;
+        private readonly PayPalPaymentService _paypal;
+        private readonly IUmrahBookingRepository _bookingRepo;
+        private readonly IConfiguration _config;
+        private readonly ILogger<PaymentsController> _logger;
+
+        public PaymentsController(
+            StripePaymentService stripe,
+            PayPalPaymentService paypal,
+            IUmrahBookingRepository bookingRepo,
+            IConfiguration config,
+            ILogger<PaymentsController> logger)
+        {
+            _stripe = stripe;
+            _paypal = paypal;
+            _bookingRepo = bookingRepo;
+            _config = config;
+            _logger = logger;
+        }
+
+        // ✅ Create Stripe PaymentIntent
+        [HttpPost("stripe/create-intent")]
+        public async Task<IActionResult> CreateStripeIntent([FromBody] StripeCreateIntentDto dto)
+        {
+            if (dto.Amount <= 0)
+                return BadRequest(new { message = "❌ Amount must be greater than 0" });
+
+            var resp = await _stripe.CreatePaymentIntentAsync(dto);
+
+            return Ok(new
+            {
+                message = "✅ Stripe payment intent created successfully",
+                clientSecret = resp.ClientSecret,
+                amount = dto.Amount
+            });
+        }
+
+        // ✅ Stripe Webhook
+        [HttpPost("stripe/webhook")]
+        public async Task<IActionResult> StripeWebhook()
+        {
+            var json = await new StreamReader(Request.Body).ReadToEndAsync();
+            var sig = Request.Headers["Stripe-Signature"].FirstOrDefault();
+            try
+            {
+                var ev = _stripe.ConstructEvent(json, sig);
+                _logger.LogInformation("Stripe event received: {Type}", ev.Type);
+
+                if (ev.Type == "payment_intent.succeeded")
+                {
+                    var pi = ev.Data.Object as PaymentIntent;
+                    _logger.LogInformation("PaymentIntent succeeded: {Id}", pi?.Id);
+
+                    if (pi != null)
+                    {
+                        await _bookingRepo.TryMarkBookingPaidByProviderEventAsync("Stripe", pi.Id, ev.Id, null);
+                    }
+                }
+
+                return Ok(new { message = "✅ Stripe webhook received successfully" });
+            }
+            catch (StripeException ex)
+            {
+                _logger.LogError(ex, "Stripe webhook validation failed");
+                return BadRequest(new { message = "❌ Stripe webhook validation failed" });
+            }
+        }
+
+        // ✅ Create PayPal order
+        [HttpPost("paypal/create-order")]
+        public async Task<IActionResult> CreatePayPalOrder([FromBody] PayPalCreateOrderDto dto)
+        {
+            if (dto.Amount <= 0)
+                return BadRequest(new { message = "❌ Amount must be greater than 0" });
+
+            var resp = await _paypal.CreateOrderAsync(dto);
+            if (resp == null)
+                return BadRequest(new { message = "❌ Failed to create PayPal order" });
+
+            return Ok(new
+            {
+                message = "✅ PayPal order created successfully",
+                data = resp
+            });
+        }
+
+        // ✅ Capture PayPal order
+        [HttpPost("paypal/capture/{orderId}")]
+        public async Task<IActionResult> CapturePayPalOrder(string orderId)
+        {
+            var json = await _paypal.CaptureOrderAsync(orderId);
+            if (string.IsNullOrEmpty(json))
+            {
+                _logger.LogWarning("Failed to capture PayPal order {OrderId}", orderId);
+                return BadRequest(new { message = "❌ Failed to capture PayPal order" });
+            }
+
+            try
+            {
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+                var status = root.GetProperty("status").GetString();
+
+                string eventId = string.Empty;
+                if (root.TryGetProperty("purchase_units", out var pus) && pus.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var pu in pus.EnumerateArray())
+                    {
+                        if (pu.TryGetProperty("payments", out var payments) && payments.ValueKind == JsonValueKind.Object)
+                        {
+                            if (payments.TryGetProperty("captures", out var captures) && captures.ValueKind == JsonValueKind.Array)
+                            {
+                                var first = captures.EnumerateArray().FirstOrDefault();
+                                if (first.ValueKind == JsonValueKind.Object && first.TryGetProperty("id", out var cid))
+                                {
+                                    eventId = cid.GetString() ?? string.Empty;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                await _bookingRepo.TryMarkBookingPaidByProviderEventAsync("PayPal", orderId, eventId, DateTime.UtcNow);
+
+                return Ok(new
+                {
+                    message = "✅ PayPal payment captured successfully",
+                    status = status,
+                    orderId = orderId
+                });
+            }
+            catch (JsonException jex)
+            {
+                _logger.LogError(jex, "Failed to parse PayPal capture JSON for order {OrderId}", orderId);
+                return BadRequest(new { message = "❌ Error parsing PayPal response" });
+            }
+        }
+    }
+}
+using Manisik.DTOs;
+using Manisik.Models;
+using Manisik.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Manisik.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ReservationController : ControllerBase
+    {
+        private readonly IUmrahBookingRepository _bookingRepo;
+
+        public ReservationController(IUmrahBookingRepository bookingRepo)
+        {
+            _bookingRepo = bookingRepo;
+        }
+
+        // ✅ Reserve Hotel
+        [HttpPost("hotel")]
+        public async Task<IActionResult> ReserveHotel([FromBody] ReserveHotelDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new { message = "❌ Invalid reservation data" });
+
+            var booking = new UmrahBooking
+            {
+                TripType = dto.TripType,
+                FullName = dto.FullName,
+                NationalId = dto.NationalId,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                TravelMode = dto.TravelMode,
+                DepartureAirport = dto.DepartureAirport,
+                Airline = dto.Airline,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                DepartureDate = dto.DepartureDate,
+                ArrivalDate = dto.ArrivalDate,
+                TravelPrice = dto.TravelPrice,
+                AuthId = dto.AuthId
+            };
+
+            var created = await _bookingRepo.AddBookingAsync(booking);
+            if (created == null)
+                return BadRequest(new { message = "❌ Failed to create booking" });
+
+            var hotelBooking = await _bookingRepo.AddHotelToBookingAsync(
+                created.UmrahBookingId, dto.HotelId, dto.CheckIn, dto.CheckOut);
+
+            if (hotelBooking == null)
+                return BadRequest(new { message = "❌ Failed to add hotel to booking" });
+
+            return Ok(new
+            {
+                message = "✅ Hotel reservation created successfully",
+                bookingId = created.UmrahBookingId,
+                hotelBookingId = hotelBooking.UmrahBookingHotelId
+            });
+        }
+
+        // ✅ Reserve Transport
+        [HttpPost("transport")]
+        public async Task<IActionResult> ReserveTransport([FromBody] ReserveTransportDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new { message = "❌ Invalid reservation data" });
+
+            var booking = new UmrahBooking
+            {
+                TripType = dto.TripType,
+                FullName = dto.FullName,
+                NationalId = dto.NationalId,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                TravelMode = dto.TravelMode,
+                DepartureAirport = dto.DepartureAirport,
+                Airline = dto.Airline,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                DepartureDate = dto.DepartureDate,
+                ArrivalDate = dto.ArrivalDate,
+                TravelPrice = dto.TravelPrice,
+                AuthId = dto.AuthId,
+                TransportId = dto.TransportId
+            };
+
+            var created = await _bookingRepo.AddBookingAsync(booking);
+            if (created == null)
+                return BadRequest(new { message = "❌ Failed to create booking" });
+
+            return Ok(new
+            {
+                message = "✅ Transport reservation created successfully",
+                bookingId = created.UmrahBookingId
+            });
+        }
+    }
+}
+using Manisik.DTOs;
+using Manisik.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Manisik.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class TransportController : ControllerBase
+    {
+        private readonly TransportService _transportService;
+
+        public TransportController(TransportService transportService)
+        {
+            _transportService = transportService;
+        }
+
+        [HttpGet("getall")]
+        public async Task<IActionResult> GetAll()
+        {
+            var transports = await _transportService.GetAllAsync();
+            return Ok(transports);
+        }
+
+        [HttpGet("byid/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var transport = await _transportService.GetByIdAsync(id);
+            if (transport == null)
+                return NotFound(new { Message = "Transport not found." });
+
+            return Ok(transport);
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromBody] TransportDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _transportService.AddAsync(dto);
+            return Ok(new
+            {
+                Message = "Transport added successfully.",
+                Transport = result
+            });
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] TransportDto dto)
+        {
+            var result = await _transportService.UpdateAsync(id, dto);
+            if (result == null)
+                return NotFound(new { Message = "Transport not found." });
+
+            return Ok(new
+            {
+                Message = "Transport updated successfully.",
+                Transport = result
+            });
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await _transportService.DeleteAsync(id);
+            if (!success)
+                return NotFound(new { Message = "Transport not found." });
+
+            return Ok(new { Message = "Transport deleted successfully." });
+        }
+    }
+}
+using Manisik.DTOs;
+using Manisik.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Manisik.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UmrahBookingController : ControllerBase
+    {
+        private readonly UmrahBookingService _bookingService;
+
+        public UmrahBookingController(UmrahBookingService bookingService)
+        {
+            _bookingService = bookingService;
+        }
+
+        [HttpGet("getall")]
+        public async Task<IActionResult> GetAll()
+        {
+            var bookings = await _bookingService.GetAllAsync();
+            return Ok(bookings);
+        }
+
+        [HttpGet("byid/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var booking = await _bookingService.GetByIdAsync(id);
+            if (booking == null)
+                return NotFound(new { Message = "Booking not found." });
+
+            return Ok(booking);
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromBody] UmrahBookingDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _bookingService.AddAsync(dto);
+            return Ok(new
+            {
+                Message = "Booking created successfully.",
+                Booking = result
+            });
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UmrahBookingDto dto)
+        {
+            var result = await _bookingService.UpdateAsync(id, dto);
+            if (result == null)
+                return NotFound(new { Message = "Booking not found." });
+
+            return Ok(new
+            {
+                Message = "Booking updated successfully.",
+                Booking = result
+            });
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await _bookingService.DeleteAsync(id);
+            if (!success)
+                return NotFound(new { Message = "Booking not found." });
+
+            return Ok(new { Message = "Booking deleted successfully." });
+        }
+    }
+}

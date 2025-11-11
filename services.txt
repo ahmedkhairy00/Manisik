@@ -1,0 +1,507 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Manisik.DTOs;
+
+namespace Manisik.Services.Payment
+{
+    public class PayPalPaymentService
+    {
+        private readonly HttpClient _http;
+        private readonly string _clientId;
+        private readonly string _secret;
+        private readonly string _apiBase;
+        private readonly ILogger<PayPalPaymentService> _logger;
+
+        private string? _accessToken;
+        private DateTime _accessTokenExpiresAt = DateTime.MinValue;
+        private readonly SemaphoreSlim _tokenLock = new(1, 1);
+
+        public PayPalPaymentService(HttpClient http, IConfiguration config, ILogger<PayPalPaymentService> logger)
+        {
+            _http = http;
+            _logger = logger;
+
+            _clientId = config["PayPal:ClientId"] ?? throw new ArgumentNullException("PayPal:ClientId");
+            _secret = config["PayPal:Secret"] ?? throw new ArgumentNullException("PayPal:Secret");
+            var mode = (config["PayPal:Mode"] ?? "Sandbox").ToLowerInvariant();
+
+            _apiBase = mode == "live"
+                ? "https://api-m.paypal.com"
+                : "https://api-m.sandbox.paypal.com";
+
+            _logger.LogInformation("PayPalPaymentService initialized in {Mode} mode.", mode);
+        }
+
+        private async Task<string?> GetAccessTokenAsync()
+        {
+            if (!string.IsNullOrEmpty(_accessToken) && _accessTokenExpiresAt > DateTime.UtcNow.AddSeconds(30))
+                return _accessToken;
+
+            await _tokenLock.WaitAsync();
+            try
+            {
+                if (!string.IsNullOrEmpty(_accessToken) && _accessTokenExpiresAt > DateTime.UtcNow.AddSeconds(30))
+                    return _accessToken;
+
+                var url = $"{_apiBase}/v1/oauth2/token";
+                var req = new HttpRequestMessage(HttpMethod.Post, url)
+                {
+                    Content = new FormUrlEncodedContent(new Dictionary<string, string> { ["grant_type"] = "client_credentials" })
+                };
+
+                var basic = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_clientId}:{_secret}"));
+                req.Headers.Authorization = new AuthenticationHeaderValue("Basic", basic);
+
+                var resp = await _http.SendAsync(req);
+                var body = await resp.Content.ReadAsStringAsync();
+
+                if (!resp.IsSuccessStatusCode)
+                {
+                    _logger.LogError("Failed to obtain PayPal token. Status: {Status}. Body: {Body}", resp.StatusCode, body);
+                    return null;
+                }
+
+                using var doc = JsonDocument.Parse(body);
+                _accessToken = doc.RootElement.GetProperty("access_token").GetString();
+                var expiresIn = doc.RootElement.GetProperty("expires_in").GetInt32();
+                _accessTokenExpiresAt = DateTime.UtcNow.AddSeconds(expiresIn);
+
+                _logger.LogInformation("PayPal access token acquired, expires in {Seconds} seconds.", expiresIn);
+                return _accessToken;
+            }
+            finally
+            {
+                _tokenLock.Release();
+            }
+        }
+
+        public async Task<PayPalOrderResponseDto?> CreateOrderAsync(PayPalCreateOrderDto dto)
+        {
+            var token = await GetAccessTokenAsync();
+            if (string.IsNullOrEmpty(token)) return null;
+
+            var url = $"{_apiBase}/v2/checkout/orders";
+
+            var payload = new
+            {
+                intent = "CAPTURE",
+                purchase_units = new[]
+                {
+                    new { amount = new { currency_code = dto.Currency, value = dto.Amount.ToString("F2", CultureInfo.InvariantCulture) } }
+                },
+                application_context = new
+                {
+                    return_url = dto.ReturnUrl,
+                    cancel_url = dto.CancelUrl
+                }
+            };
+
+            var json = JsonSerializer.Serialize(payload);
+            var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _http.SendAsync(req);
+            var respBody = await resp.Content.ReadAsStringAsync();
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                _logger.LogError("PayPal CreateOrder failed. Status: {Status}. Body: {Body}", resp.StatusCode, respBody);
+                return null;
+            }
+
+            using var doc = JsonDocument.Parse(respBody);
+            var root = doc.RootElement;
+            var id = root.GetProperty("id").GetString() ?? string.Empty;
+            string approveLink = string.Empty;
+
+            if (root.TryGetProperty("links", out var links) && links.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var l in links.EnumerateArray())
+                {
+                    if (l.TryGetProperty("rel", out var rel) && rel.GetString() == "approve")
+                    {
+                        approveLink = l.GetProperty("href").GetString() ?? string.Empty;
+                        break;
+                    }
+                }
+            }
+
+            _logger.LogInformation("PayPal order created: {OrderId}", id);
+            return new PayPalOrderResponseDto { OrderId = id, ApproveLink = approveLink };
+        }
+
+        public async Task<string?> CaptureOrderAsync(string orderId)
+        {
+            var token = await GetAccessTokenAsync();
+            if (string.IsNullOrEmpty(token)) return null;
+
+            var url = $"{_apiBase}/v2/checkout/orders/{orderId}/capture";
+            var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent("{}", Encoding.UTF8, "application/json")
+            };
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _http.SendAsync(req);
+            var body = await resp.Content.ReadAsStringAsync();
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                _logger.LogError("PayPal CaptureOrder failed. Status: {Status}. Body: {Body}", resp.StatusCode, body);
+                return null;
+            }
+
+            _logger.LogInformation("PayPal order captured: {OrderId}", orderId);
+            return body;
+        }
+    }
+}
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Stripe;
+using Manisik.DTOs;
+
+namespace Manisik.Services.Payment
+{
+    public class StripePaymentService
+    {
+        private readonly string _secretKey;
+        private readonly string _webhookSecret;
+        private readonly ILogger<StripePaymentService> _logger;
+
+        public StripePaymentService(IConfiguration config, ILogger<StripePaymentService> logger)
+        {
+            _logger = logger;
+            _secretKey = config["Stripe:SecretKey"] ?? throw new ArgumentNullException("Stripe:SecretKey");
+            _webhookSecret = config["Stripe:WebhookSecret"] ?? throw new ArgumentNullException("Stripe:WebhookSecret");
+
+            StripeConfiguration.ApiKey = _secretKey;
+            _logger.LogInformation("StripePaymentService initialized.");
+        }
+
+        public async Task<StripeIntentResponseDto> CreatePaymentIntentAsync(StripeCreateIntentDto dto)
+        {
+            if (dto.Amount <= 0)
+                throw new ArgumentException("Amount must be greater than 0.");
+
+            var options = new PaymentIntentCreateOptions
+            {
+                Amount = (long)(dto.Amount * 100), // تحويل للعملة بالـcents
+                Currency = dto.Currency,
+                ReceiptEmail = dto.ReceiptEmail
+            };
+
+            try
+            {
+                var service = new PaymentIntentService();
+                var intent = await service.CreateAsync(options);
+
+                _logger.LogInformation("Stripe PaymentIntent created: {Id}", intent.Id);
+
+                return new StripeIntentResponseDto
+                {
+                    ClientSecret = intent.ClientSecret ?? string.Empty,
+                    PaymentIntentId = intent.Id
+                };
+            }
+            catch (StripeException ex)
+            {
+                _logger.LogError(ex, "Error creating Stripe PaymentIntent.");
+                throw;
+            }
+        }
+
+        public Stripe.Event ConstructEvent(string json, string sigHeader)
+        {
+            if (string.IsNullOrEmpty(sigHeader))
+                throw new ArgumentException("Stripe signature header is missing.");
+
+            try
+            {
+                return EventUtility.ConstructEvent(json, sigHeader, _webhookSecret);
+            }
+            catch (StripeException ex)
+            {
+                _logger.LogError(ex, "Failed to construct Stripe event.");
+                throw;
+            }
+        }
+    }
+}
+using Manisik.Interfaces;
+using Manisik.Models;
+using System.Threading.Tasks;
+
+namespace Manisik.Services
+{
+    public class AuthService
+    {
+        private readonly IAuthRepository _authRepository;
+
+        public AuthService(IAuthRepository authRepository)
+        {
+            _authRepository = authRepository;
+        }
+
+        public async Task<bool> RegisterAsync(string email, string password)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                throw new System.ArgumentException("Email cannot be empty.");
+            if (string.IsNullOrWhiteSpace(password))
+                throw new System.ArgumentException("Password cannot be empty.");
+
+            var existingUser = await _authRepository.GetByEmailAsync(email);
+            if (existingUser != null)
+                throw new System.InvalidOperationException("User already exists.");
+
+            var user = new Auth
+            {
+                UserName = email,
+                Email = email,
+                // Role = "User"
+            };
+
+            return await _authRepository.CreateUserAsync(user, password);
+        }
+
+        public async Task<Auth?> LoginAsync(string email, string password)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                return null;
+
+            var user = await _authRepository.GetByEmailAsync(email);
+            if (user == null) return null;
+
+            var valid = await _authRepository.CheckPasswordAsync(user, password);
+            return valid ? user : null;
+        }
+    }
+}
+using AutoMapper;
+using Manisik.DTOs;
+using Manisik.Interfaces;
+using Manisik.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Manisik.Services
+{
+    public class HotelService
+    {
+        private readonly IHotelRepository _hotelRepo;
+        private readonly IMapper _mapper;
+
+        public HotelService(IHotelRepository hotelRepo, IMapper mapper)
+        {
+            _hotelRepo = hotelRepo;
+            _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<HotelDto>> GetAllAsync()
+        {
+            var hotels = await _hotelRepo.GetAllHotelsAsync();
+            return _mapper.Map<IEnumerable<HotelDto>>(hotels);
+        }
+
+        public async Task<HotelDto?> GetByIdAsync(int id)
+        {
+            var hotel = await _hotelRepo.GetHotelByIdAsync(id);
+            return _mapper.Map<HotelDto?>(hotel);
+        }
+
+        public async Task<HotelDto> AddAsync(HotelDto dto)
+        {
+            var entity = _mapper.Map<Hotel>(dto);
+            var result = await _hotelRepo.AddHotelAsync(entity);
+            return _mapper.Map<HotelDto>(result);
+        }
+
+        public async Task<HotelDto?> UpdateAsync(int id, HotelDto dto)
+        {
+            var existing = await _hotelRepo.GetHotelByIdAsync(id);
+            if (existing == null) return null;
+
+            _mapper.Map(dto, existing);
+            var updated = await _hotelRepo.UpdateHotelAsync(existing);
+            return _mapper.Map<HotelDto>(updated);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            return await _hotelRepo.DeleteHotelAsync(id);
+        }
+    }
+}
+using Manisik.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+namespace Manisik.Services
+{
+    public class JwtService
+    {
+        private readonly string _secretKey;
+
+        public JwtService(string secretKey)
+        {
+            if (string.IsNullOrEmpty(secretKey))
+                throw new System.ArgumentNullException(nameof(secretKey));
+
+            _secretKey = secretKey;
+        }
+
+        public string GenerateToken(Auth user)
+        {
+            if (user == null)
+                throw new System.ArgumentNullException(nameof(user));
+
+            var key = Encoding.ASCII.GetBytes(_secretKey);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                // new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(12),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+    }
+}
+using AutoMapper;
+using Manisik.DTOs;
+using Manisik.Interfaces;
+using Manisik.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Manisik.Services
+{
+    public class TransportService
+    {
+        private readonly ITransportRepository _transportRepo;
+        private readonly IMapper _mapper;
+
+        public TransportService(ITransportRepository transportRepo, IMapper mapper)
+        {
+            _transportRepo = transportRepo;
+            _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<TransportDto>> GetAllAsync()
+        {
+            var transports = await _transportRepo.GetAllTransportsAsync();
+            return _mapper.Map<IEnumerable<TransportDto>>(transports);
+        }
+
+        public async Task<TransportDto?> GetByIdAsync(int id)
+        {
+            var transport = await _transportRepo.GetTransportByIdAsync(id);
+            return _mapper.Map<TransportDto?>(transport);
+        }
+
+        public async Task<TransportDto> AddAsync(TransportDto dto)
+        {
+            var entity = _mapper.Map<Transport>(dto);
+            var result = await _transportRepo.AddTransportAsync(entity);
+            return _mapper.Map<TransportDto>(result);
+        }
+
+        public async Task<TransportDto?> UpdateAsync(int id, TransportDto dto)
+        {
+            var existing = await _transportRepo.GetTransportByIdAsync(id);
+            if (existing == null) return null;
+
+            _mapper.Map(dto, existing);
+            var updated = await _transportRepo.UpdateTransportAsync(existing);
+            return _mapper.Map<TransportDto>(updated);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            return await _transportRepo.DeleteTransportAsync(id);
+        }
+    }
+}
+using AutoMapper;
+using Manisik.DTOs;
+using Manisik.Interfaces;
+using Manisik.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Manisik.Services
+{
+    public class UmrahBookingService
+    {
+        private readonly IUmrahBookingRepository _bookingRepo;
+        private readonly IMapper _mapper;
+
+        public UmrahBookingService(IUmrahBookingRepository bookingRepo, IMapper mapper)
+        {
+            _bookingRepo = bookingRepo;
+            _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<UmrahBookingDto>> GetAllAsync()
+        {
+            var bookings = await _bookingRepo.GetAllBookingsAsync();
+            return _mapper.Map<IEnumerable<UmrahBookingDto>>(bookings);
+        }
+
+        public async Task<UmrahBookingDto?> GetByIdAsync(int id)
+        {
+            var booking = await _bookingRepo.GetBookingByIdAsync(id);
+            return _mapper.Map<UmrahBookingDto?>(booking);
+        }
+
+        public async Task<UmrahBookingDto> AddAsync(UmrahBookingDto dto)
+        {
+            var entity = _mapper.Map<UmrahBooking>(dto);
+            var result = await _bookingRepo.AddBookingAsync(entity);
+            return _mapper.Map<UmrahBookingDto>(result);
+        }
+
+        public async Task<UmrahBookingDto?> UpdateAsync(int id, UmrahBookingDto dto)
+        {
+            var existing = await _bookingRepo.GetBookingByIdAsync(id);
+            if (existing == null) return null;
+
+            _mapper.Map(dto, existing);
+            var updated = await _bookingRepo.UpdateBookingAsync(existing);
+            return _mapper.Map<UmrahBookingDto>(updated);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            return await _bookingRepo.DeleteBookingAsync(id);
+        }
+    }
+}

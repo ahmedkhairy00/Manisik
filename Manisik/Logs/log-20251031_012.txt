@@ -1,0 +1,226 @@
+2025-10-31 00:46:55.972 +02:00 [INF] Executed DbCommand (36ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-10-31 00:46:56.114 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-31 00:46:56.155 +02:00 [INF] Executed DbCommand (34ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+SELECT @result
+2025-10-31 00:46:56.387 +02:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+2025-10-31 00:46:56.525 +02:00 [INF] Executed DbCommand (52ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-10-31 00:46:56.592 +02:00 [INF] Executed DbCommand (66ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-10-31 00:46:56.645 +02:00 [INF] Executed DbCommand (49ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-10-31 00:46:56.698 +02:00 [INF] Applying migration '20251030220614_create'.
+2025-10-31 00:46:57.068 +02:00 [INF] Executed DbCommand (293ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Auths] (
+    [AuthId] int NOT NULL IDENTITY,
+    [Username] nvarchar(100) NOT NULL,
+    [Email] nvarchar(max) NOT NULL,
+    [PasswordHash] nvarchar(255) NOT NULL,
+    [Role] nvarchar(50) NOT NULL,
+    CONSTRAINT [PK_Auths] PRIMARY KEY ([AuthId])
+);
+2025-10-31 00:46:57.233 +02:00 [INF] Executed DbCommand (165ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Hotels] (
+    [HotelId] int NOT NULL IDENTITY,
+    [Name] nvarchar(150) NOT NULL,
+    [DistanceFromHaram] float NOT NULL,
+    [PricePerNight] decimal(10,2) NOT NULL,
+    [City] nvarchar(100) NOT NULL,
+    CONSTRAINT [PK_Hotels] PRIMARY KEY ([HotelId])
+);
+2025-10-31 00:46:57.373 +02:00 [INF] Executed DbCommand (139ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Transports] (
+    [TransportId] int NOT NULL IDENTITY,
+    [VehicleType] nvarchar(100) NOT NULL,
+    [Price] decimal(10,2) NOT NULL,
+    [ProviderName] nvarchar(100) NOT NULL,
+    CONSTRAINT [PK_Transports] PRIMARY KEY ([TransportId])
+);
+2025-10-31 00:46:57.524 +02:00 [INF] Executed DbCommand (151ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [UmrahBookings] (
+    [UmrahBookingId] int NOT NULL IDENTITY,
+    [TripType] int NOT NULL,
+    [FullName] nvarchar(150) NOT NULL,
+    [NationalId] nvarchar(20) NOT NULL,
+    [Email] nvarchar(max) NOT NULL,
+    [Phone] nvarchar(20) NOT NULL,
+    [StartDate] datetime2 NOT NULL,
+    [EndDate] datetime2 NOT NULL,
+    [Mode] int NOT NULL,
+    [DepartureAirport] int NULL,
+    [Airline] int NULL,
+    [AirlineOrShipName] nvarchar(150) NULL,
+    [DepartureDate] datetime2 NOT NULL,
+    [ArrivalDate] datetime2 NOT NULL,
+    [TravelPrice] decimal(10,2) NOT NULL,
+    [AuthId] int NOT NULL,
+    [HotelId] int NULL,
+    [TransportId] int NULL,
+    CONSTRAINT [PK_UmrahBookings] PRIMARY KEY ([UmrahBookingId]),
+    CONSTRAINT [FK_UmrahBookings_Auths_AuthId] FOREIGN KEY ([AuthId]) REFERENCES [Auths] ([AuthId]) ON DELETE CASCADE,
+    CONSTRAINT [FK_UmrahBookings_Hotels_HotelId] FOREIGN KEY ([HotelId]) REFERENCES [Hotels] ([HotelId]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_UmrahBookings_Transports_TransportId] FOREIGN KEY ([TransportId]) REFERENCES [Transports] ([TransportId]) ON DELETE NO ACTION
+);
+2025-10-31 00:46:57.645 +02:00 [INF] Executed DbCommand (120ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_UmrahBookings_AuthId] ON [UmrahBookings] ([AuthId]);
+2025-10-31 00:46:57.678 +02:00 [INF] Executed DbCommand (32ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_UmrahBookings_HotelId] ON [UmrahBookings] ([HotelId]);
+2025-10-31 00:46:57.747 +02:00 [INF] Executed DbCommand (69ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_UmrahBookings_TransportId] ON [UmrahBookings] ([TransportId]);
+2025-10-31 00:46:57.767 +02:00 [INF] Executed DbCommand (19ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20251030220614_create', N'9.0.10');
+2025-10-31 00:46:57.768 +02:00 [INF] Applying migration '20251030224638_update'.
+2025-10-31 00:46:58.465 +02:00 [INF] Executed DbCommand (576ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+EXEC sp_rename N'[Auths].[Username]', N'UserName', 'COLUMN';
+2025-10-31 00:46:58.517 +02:00 [INF] Executed DbCommand (52ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+EXEC sp_rename N'[Auths].[AuthId]', N'Id', 'COLUMN';
+2025-10-31 00:46:58.625 +02:00 [INF] Executed DbCommand (108ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var sysname;
+SELECT @var = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[UmrahBookings]') AND [c].[name] = N'DepartureAirport');
+IF @var IS NOT NULL EXEC(N'ALTER TABLE [UmrahBookings] DROP CONSTRAINT [' + @var + '];');
+UPDATE [UmrahBookings] SET [DepartureAirport] = N'' WHERE [DepartureAirport] IS NULL;
+ALTER TABLE [UmrahBookings] ALTER COLUMN [DepartureAirport] nvarchar(150) NOT NULL;
+ALTER TABLE [UmrahBookings] ADD DEFAULT N'' FOR [DepartureAirport];
+2025-10-31 00:46:58.719 +02:00 [INF] Executed DbCommand (94ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var1 sysname;
+SELECT @var1 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[UmrahBookings]') AND [c].[name] = N'Airline');
+IF @var1 IS NOT NULL EXEC(N'ALTER TABLE [UmrahBookings] DROP CONSTRAINT [' + @var1 + '];');
+UPDATE [UmrahBookings] SET [Airline] = N'' WHERE [Airline] IS NULL;
+ALTER TABLE [UmrahBookings] ALTER COLUMN [Airline] nvarchar(150) NOT NULL;
+ALTER TABLE [UmrahBookings] ADD DEFAULT N'' FOR [Airline];
+2025-10-31 00:46:58.805 +02:00 [INF] Executed DbCommand (86ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var2 sysname;
+SELECT @var2 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'UserName');
+IF @var2 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var2 + '];');
+ALTER TABLE [Auths] ALTER COLUMN [UserName] nvarchar(256) NULL;
+2025-10-31 00:46:58.877 +02:00 [INF] Executed DbCommand (72ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var3 sysname;
+SELECT @var3 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'Email');
+IF @var3 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var3 + '];');
+ALTER TABLE [Auths] ALTER COLUMN [Email] nvarchar(256) NOT NULL;
+2025-10-31 00:46:59.043 +02:00 [INF] Executed DbCommand (166ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [AccessFailedCount] int NOT NULL DEFAULT 0;
+2025-10-31 00:46:59.046 +02:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [ConcurrencyStamp] nvarchar(max) NULL;
+2025-10-31 00:46:59.051 +02:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [EmailConfirmed] bit NOT NULL DEFAULT CAST(0 AS bit);
+2025-10-31 00:46:59.056 +02:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [LockoutEnabled] bit NOT NULL DEFAULT CAST(0 AS bit);
+2025-10-31 00:46:59.058 +02:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [LockoutEnd] datetimeoffset NULL;
+2025-10-31 00:46:59.060 +02:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [NormalizedEmail] nvarchar(256) NULL;
+2025-10-31 00:46:59.063 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [NormalizedUserName] nvarchar(256) NULL;
+2025-10-31 00:46:59.067 +02:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [PhoneNumber] nvarchar(max) NULL;
+2025-10-31 00:46:59.072 +02:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [PhoneNumberConfirmed] bit NOT NULL DEFAULT CAST(0 AS bit);
+2025-10-31 00:46:59.074 +02:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [SecurityStamp] nvarchar(max) NULL;
+2025-10-31 00:46:59.077 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE [Auths] ADD [TwoFactorEnabled] bit NOT NULL DEFAULT CAST(0 AS bit);
+2025-10-31 00:46:59.086 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [AspNetRoles] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(256) NULL,
+    [NormalizedName] nvarchar(256) NULL,
+    [ConcurrencyStamp] nvarchar(max) NULL,
+    CONSTRAINT [PK_AspNetRoles] PRIMARY KEY ([Id])
+);
+2025-10-31 00:46:59.090 +02:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [AspNetUserClaims] (
+    [Id] int NOT NULL IDENTITY,
+    [UserId] int NOT NULL,
+    [ClaimType] nvarchar(max) NULL,
+    [ClaimValue] nvarchar(max) NULL,
+    CONSTRAINT [PK_AspNetUserClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AspNetUserClaims_Auths_UserId] FOREIGN KEY ([UserId]) REFERENCES [Auths] ([Id]) ON DELETE CASCADE
+);
+2025-10-31 00:46:59.100 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [AspNetUserLogins] (
+    [LoginProvider] nvarchar(450) NOT NULL,
+    [ProviderKey] nvarchar(450) NOT NULL,
+    [ProviderDisplayName] nvarchar(max) NULL,
+    [UserId] int NOT NULL,
+    CONSTRAINT [PK_AspNetUserLogins] PRIMARY KEY ([LoginProvider], [ProviderKey]),
+    CONSTRAINT [FK_AspNetUserLogins_Auths_UserId] FOREIGN KEY ([UserId]) REFERENCES [Auths] ([Id]) ON DELETE CASCADE
+);
+2025-10-31 00:46:59.110 +02:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [AspNetUserTokens] (
+    [UserId] int NOT NULL,
+    [LoginProvider] nvarchar(450) NOT NULL,
+    [Name] nvarchar(450) NOT NULL,
+    [Value] nvarchar(max) NULL,
+    CONSTRAINT [PK_AspNetUserTokens] PRIMARY KEY ([UserId], [LoginProvider], [Name]),
+    CONSTRAINT [FK_AspNetUserTokens_Auths_UserId] FOREIGN KEY ([UserId]) REFERENCES [Auths] ([Id]) ON DELETE CASCADE
+);
+2025-10-31 00:46:59.121 +02:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [AspNetRoleClaims] (
+    [Id] int NOT NULL IDENTITY,
+    [RoleId] int NOT NULL,
+    [ClaimType] nvarchar(max) NULL,
+    [ClaimValue] nvarchar(max) NULL,
+    CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE
+);
+2025-10-31 00:46:59.153 +02:00 [INF] Executed DbCommand (32ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [AspNetUserRoles] (
+    [UserId] int NOT NULL,
+    [RoleId] int NOT NULL,
+    CONSTRAINT [PK_AspNetUserRoles] PRIMARY KEY ([UserId], [RoleId]),
+    CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_AspNetUserRoles_Auths_UserId] FOREIGN KEY ([UserId]) REFERENCES [Auths] ([Id]) ON DELETE CASCADE
+);
+2025-10-31 00:46:59.176 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [EmailIndex] ON [Auths] ([NormalizedEmail]);
+2025-10-31 00:46:59.229 +02:00 [INF] Executed DbCommand (53ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [UserNameIndex] ON [Auths] ([NormalizedUserName]) WHERE [NormalizedUserName] IS NOT NULL;
+2025-10-31 00:46:59.258 +02:00 [INF] Executed DbCommand (29ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_AspNetRoleClaims_RoleId] ON [AspNetRoleClaims] ([RoleId]);
+2025-10-31 00:46:59.276 +02:00 [INF] Executed DbCommand (17ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [RoleNameIndex] ON [AspNetRoles] ([NormalizedName]) WHERE [NormalizedName] IS NOT NULL;
+2025-10-31 00:46:59.291 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_AspNetUserClaims_UserId] ON [AspNetUserClaims] ([UserId]);
+2025-10-31 00:46:59.294 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_AspNetUserLogins_UserId] ON [AspNetUserLogins] ([UserId]);
+2025-10-31 00:46:59.297 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_AspNetUserRoles_RoleId] ON [AspNetUserRoles] ([RoleId]);
+2025-10-31 00:46:59.301 +02:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20251030224638_update', N'9.0.10');
+2025-10-31 00:46:59.308 +02:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+SELECT @result
+2025-10-31 01:18:31.908 +02:00 [INF] User profile is available. Using 'C:\Users\rahim\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-31 01:18:32.390 +02:00 [INF] Now listening on: http://localhost:5076
+2025-10-31 01:18:32.879 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-31 01:18:32.940 +02:00 [INF] Hosting environment: Development
+2025-10-31 01:18:32.947 +02:00 [INF] Content root path: F:\real projects\Manasik project\Manisik\Manisik

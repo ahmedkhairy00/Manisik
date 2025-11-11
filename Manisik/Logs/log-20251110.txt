@@ -1,0 +1,5 @@
+2025-11-10 19:53:21.823 +02:00 [INF] User profile is available. Using 'C:\Users\rahim\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-10 19:53:22.356 +02:00 [INF] Now listening on: http://localhost:5076
+2025-11-10 19:53:22.655 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-10 19:53:23.196 +02:00 [INF] Hosting environment: Development
+2025-11-10 19:53:23.539 +02:00 [INF] Content root path: F:\real projects\Manasik project\Manisik\Manisik

@@ -1,0 +1,191 @@
+2025-10-31 01:18:34.710 +02:00 [INF] Executed DbCommand (26ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-10-31 01:18:34.821 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-31 01:18:34.889 +02:00 [INF] Executed DbCommand (61ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+SELECT @result
+2025-10-31 01:18:35.201 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+2025-10-31 01:18:35.223 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-10-31 01:18:35.226 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-10-31 01:18:35.251 +02:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-10-31 01:18:35.273 +02:00 [INF] Reverting migration '20251030224638_update'.
+2025-10-31 01:18:36.082 +02:00 [INF] Executed DbCommand (674ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE [AspNetRoleClaims];
+2025-10-31 01:18:36.088 +02:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE [AspNetUserClaims];
+2025-10-31 01:18:36.098 +02:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE [AspNetUserLogins];
+2025-10-31 01:18:36.108 +02:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE [AspNetUserRoles];
+2025-10-31 01:18:36.115 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE [AspNetUserTokens];
+2025-10-31 01:18:36.129 +02:00 [INF] Executed DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE [AspNetRoles];
+2025-10-31 01:18:36.148 +02:00 [INF] Executed DbCommand (19ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP INDEX [EmailIndex] ON [Auths];
+2025-10-31 01:18:36.151 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP INDEX [UserNameIndex] ON [Auths];
+2025-10-31 01:18:36.302 +02:00 [INF] Executed DbCommand (151ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var sysname;
+SELECT @var = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'AccessFailedCount');
+IF @var IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var + '];');
+ALTER TABLE [Auths] DROP COLUMN [AccessFailedCount];
+2025-10-31 01:18:36.414 +02:00 [INF] Executed DbCommand (112ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var1 sysname;
+SELECT @var1 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'ConcurrencyStamp');
+IF @var1 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var1 + '];');
+ALTER TABLE [Auths] DROP COLUMN [ConcurrencyStamp];
+2025-10-31 01:18:36.528 +02:00 [INF] Executed DbCommand (113ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var2 sysname;
+SELECT @var2 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'EmailConfirmed');
+IF @var2 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var2 + '];');
+ALTER TABLE [Auths] DROP COLUMN [EmailConfirmed];
+2025-10-31 01:18:36.564 +02:00 [INF] Executed DbCommand (36ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var3 sysname;
+SELECT @var3 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'LockoutEnabled');
+IF @var3 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var3 + '];');
+ALTER TABLE [Auths] DROP COLUMN [LockoutEnabled];
+2025-10-31 01:18:36.755 +02:00 [INF] Executed DbCommand (190ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var4 sysname;
+SELECT @var4 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'LockoutEnd');
+IF @var4 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var4 + '];');
+ALTER TABLE [Auths] DROP COLUMN [LockoutEnd];
+2025-10-31 01:18:36.817 +02:00 [INF] Executed DbCommand (62ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var5 sysname;
+SELECT @var5 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'NormalizedEmail');
+IF @var5 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var5 + '];');
+ALTER TABLE [Auths] DROP COLUMN [NormalizedEmail];
+2025-10-31 01:18:37.000 +02:00 [INF] Executed DbCommand (183ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var6 sysname;
+SELECT @var6 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'NormalizedUserName');
+IF @var6 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var6 + '];');
+ALTER TABLE [Auths] DROP COLUMN [NormalizedUserName];
+2025-10-31 01:18:37.063 +02:00 [INF] Executed DbCommand (62ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var7 sysname;
+SELECT @var7 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'PhoneNumber');
+IF @var7 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var7 + '];');
+ALTER TABLE [Auths] DROP COLUMN [PhoneNumber];
+2025-10-31 01:18:37.118 +02:00 [INF] Executed DbCommand (55ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var8 sysname;
+SELECT @var8 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'PhoneNumberConfirmed');
+IF @var8 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var8 + '];');
+ALTER TABLE [Auths] DROP COLUMN [PhoneNumberConfirmed];
+2025-10-31 01:18:37.344 +02:00 [INF] Executed DbCommand (226ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var9 sysname;
+SELECT @var9 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'SecurityStamp');
+IF @var9 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var9 + '];');
+ALTER TABLE [Auths] DROP COLUMN [SecurityStamp];
+2025-10-31 01:18:37.513 +02:00 [INF] Executed DbCommand (169ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var10 sysname;
+SELECT @var10 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'TwoFactorEnabled');
+IF @var10 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var10 + '];');
+ALTER TABLE [Auths] DROP COLUMN [TwoFactorEnabled];
+2025-10-31 01:18:38.097 +02:00 [INF] Executed DbCommand (584ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+EXEC sp_rename N'[Auths].[UserName]', N'Username', 'COLUMN';
+2025-10-31 01:18:38.099 +02:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+EXEC sp_rename N'[Auths].[Id]', N'AuthId', 'COLUMN';
+2025-10-31 01:18:38.125 +02:00 [INF] Executed DbCommand (25ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var11 sysname;
+SELECT @var11 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[UmrahBookings]') AND [c].[name] = N'DepartureAirport');
+IF @var11 IS NOT NULL EXEC(N'ALTER TABLE [UmrahBookings] DROP CONSTRAINT [' + @var11 + '];');
+ALTER TABLE [UmrahBookings] ALTER COLUMN [DepartureAirport] int NULL;
+2025-10-31 01:18:38.150 +02:00 [INF] Executed DbCommand (25ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var12 sysname;
+SELECT @var12 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[UmrahBookings]') AND [c].[name] = N'Airline');
+IF @var12 IS NOT NULL EXEC(N'ALTER TABLE [UmrahBookings] DROP CONSTRAINT [' + @var12 + '];');
+ALTER TABLE [UmrahBookings] ALTER COLUMN [Airline] int NULL;
+2025-10-31 01:18:38.188 +02:00 [INF] Executed DbCommand (38ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var13 sysname;
+SELECT @var13 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'Username');
+IF @var13 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var13 + '];');
+UPDATE [Auths] SET [Username] = N'' WHERE [Username] IS NULL;
+ALTER TABLE [Auths] ALTER COLUMN [Username] nvarchar(100) NOT NULL;
+ALTER TABLE [Auths] ADD DEFAULT N'' FOR [Username];
+2025-10-31 01:18:38.224 +02:00 [INF] Executed DbCommand (35ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @var14 sysname;
+SELECT @var14 = [d].[name]
+FROM [sys].[default_constraints] [d]
+INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Auths]') AND [c].[name] = N'Email');
+IF @var14 IS NOT NULL EXEC(N'ALTER TABLE [Auths] DROP CONSTRAINT [' + @var14 + '];');
+ALTER TABLE [Auths] ALTER COLUMN [Email] nvarchar(max) NOT NULL;
+2025-10-31 01:18:38.228 +02:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM [__EFMigrationsHistory]
+WHERE [MigrationId] = N'20251030224638_update';
+2025-10-31 01:18:38.229 +02:00 [INF] Reverting migration '20251030220614_create'.
+2025-10-31 01:18:38.238 +02:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE [UmrahBookings];
+2025-10-31 01:18:38.242 +02:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE [Auths];
+2025-10-31 01:18:38.246 +02:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE [Hotels];
+2025-10-31 01:18:38.250 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE [Transports];
+2025-10-31 01:18:38.251 +02:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM [__EFMigrationsHistory]
+WHERE [MigrationId] = N'20251030220614_create';
+2025-10-31 01:18:38.257 +02:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+SELECT @result
+2025-10-31 01:18:54.625 +02:00 [INF] User profile is available. Using 'C:\Users\rahim\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-31 01:18:54.919 +02:00 [INF] Now listening on: http://localhost:5076
+2025-10-31 01:18:55.224 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-31 01:18:55.233 +02:00 [INF] Hosting environment: Development
+2025-10-31 01:18:55.235 +02:00 [INF] Content root path: F:\real projects\Manasik project\Manisik\Manisik

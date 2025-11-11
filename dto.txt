@@ -1,0 +1,299 @@
+namespace Manisik.DTOs
+{
+    public class RoleDto
+    {
+        public string Name { get; set; } = string.Empty;
+    }
+
+    public class AssignRoleDto
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+    }
+}
+using System.ComponentModel.DataAnnotations;
+
+namespace Manisik.DTOs
+{
+    // DTO لتسجيل مستخدم جديد
+    public class RegisterDto
+    {
+        [Required, EmailAddress]
+        public string Email { get; set; } = string.Empty;  // ايميل المستخدم
+
+        [Required, MinLength(6)]
+        public string Password { get; set; } = string.Empty;  // كلمة المرور
+    }
+
+    // DTO لتسجيل الدخول
+    public class LoginDto
+    {
+        [Required, EmailAddress]
+        public string Email { get; set; } = string.Empty;  // ايميل المستخدم
+
+        [Required]
+        public string Password { get; set; } = string.Empty;  // كلمة المرور
+    }
+
+    // DTO لإرجاع استجابة تسجيل الدخول / التسجيل الناجح
+    public class AuthResponseDto
+    {
+        public string Token { get; set; } = string.Empty;  // JWT Token
+
+        public string Email { get; set; } = string.Empty;  // ايميل المستخدم
+
+        public string Role { get; set; } = string.Empty;  // دور المستخدم (Admin / User)
+    }
+}
+using System.ComponentModel.DataAnnotations;
+
+namespace Manisik.DTOs
+{
+    public class HotelDto
+    {
+        [Required, StringLength(150)]
+        public string Name { get; set; } = string.Empty;   // اسم الفندق 
+
+        [Required]
+        public double DistanceFromHaram { get; set; }   // المسافه من الفندق للحرم 
+
+        [Required]
+        public decimal PricePerNight { get; set; }   // سعر الليلة الواحدة
+
+        [Required, StringLength(100)]
+        public string City { get; set; } = "Makkah";   // المدينة
+    }
+}
+using System;
+
+namespace Manisik.DTOs
+{
+    // Stripe
+    public class StripeCreateIntentDto
+    {
+        // amount in smallest currency unit (e.g. cents; for SAR use halala)
+        public long Amount { get; set; }
+        public string Currency { get; set; } = "SAR";
+        public string? ReceiptEmail { get; set; }
+    }
+
+    public class StripeIntentResponseDto
+    {
+        public string ClientSecret { get; set; } = string.Empty;
+        public string PaymentIntentId { get; set; } = string.Empty;
+    }
+
+    // PayPal
+    public class PayPalCreateOrderDto
+    {
+        public decimal Amount { get; set; }
+        public string Currency { get; set; } = "SAR";
+        public string ReturnUrl { get; set; } = string.Empty;
+        public string CancelUrl { get; set; } = string.Empty;
+    }
+
+    public class PayPalOrderResponseDto
+    {
+        public string OrderId { get; set; } = string.Empty;
+        public string ApproveLink { get; set; } = string.Empty;
+    }
+}
+using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace Manisik.DTOs
+{
+    public class ReserveHotelDto
+    {
+        // booking info
+        [Required]
+        public string TripType { get; set; } = string.Empty;
+        [Required]
+        public string FullName { get; set; } = string.Empty;
+        [Required]
+        public string NationalId { get; set; } = string.Empty;
+        [Required, EmailAddress]
+        public string Email { get; set; } = string.Empty;
+        [Required]
+        public string Phone { get; set; } = string.Empty;
+        [Required]
+        public string TravelMode { get; set; } = string.Empty;
+        [Required]
+        public string DepartureAirport { get; set; } = string.Empty;
+        [Required]
+        public string Airline { get; set; } = string.Empty;
+        [Required]
+        public DateTime StartDate { get; set; }
+        [Required]
+        public DateTime EndDate { get; set; }
+        [Required]
+        public DateTime DepartureDate { get; set; }
+        [Required]
+        public DateTime ArrivalDate { get; set; }
+        [Required]
+        public decimal TravelPrice { get; set; }
+        [Required]
+        public int AuthId { get; set; }
+
+        // hotel-specific
+        [Required]
+        public int HotelId { get; set; }
+        [Required]
+        public DateTime CheckIn { get; set; }
+        [Required]
+        public DateTime CheckOut { get; set; }
+    }
+
+    public class ReserveTransportDto
+    {
+        [Required]
+        public string TripType { get; set; } = string.Empty;
+        [Required]
+        public string FullName { get; set; } = string.Empty;
+        [Required]
+        public string NationalId { get; set; } = string.Empty;
+        [Required, EmailAddress]
+        public string Email { get; set; } = string.Empty;
+        [Required]
+        public string Phone { get; set; } = string.Empty;
+        [Required]
+        public string TravelMode { get; set; } = string.Empty;
+        [Required]
+        public string DepartureAirport { get; set; } = string.Empty;
+        [Required]
+        public string Airline { get; set; } = string.Empty;
+        [Required]
+        public DateTime StartDate { get; set; }
+        [Required]
+        public DateTime EndDate { get; set; }
+        [Required]
+        public DateTime DepartureDate { get; set; }
+        [Required]
+        public DateTime ArrivalDate { get; set; }
+        [Required]
+        public decimal TravelPrice { get; set; }
+        [Required]
+        public int AuthId { get; set; }
+
+        [Required]
+        public int TransportId { get; set; }
+    }
+}
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace Manisik.DTOs
+{
+    public class RoomDto
+    {
+        public int ID { get; set; }
+
+        [Required]
+        public string Type { get; set; } = string.Empty;
+
+        [Required]
+        public int Capacity { get; set; }
+
+        [Required]
+        public decimal PricePerNight { get; set; }
+
+        [Required]
+        public int HotelId { get; set; }
+
+        public bool IsAvailable { get; set; } = true;
+
+        public List<string> ImgsUrl { get; set; } = new List<string>();
+    }
+}
+using System.ComponentModel.DataAnnotations;
+
+namespace Manisik.DTOs
+{
+    public class TransportDto
+    {
+        [Required, StringLength(100)]
+        public string VehicleType { get; set; } = string.Empty;   // نوع المواصلات
+
+        [Required]
+        public decimal Price { get; set; }  // سعر المواصلات
+
+        [Required, StringLength(100)]
+        public string ProviderName { get; set; } = string.Empty;  // اسم الشركة
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace Manisik.DTOs
+{
+    public class UmrahBookingDto
+    {
+        [Required, StringLength(50)]
+        public string TripType { get; set; } = string.Empty;  // نوع الرحله
+
+        [Required, StringLength(150)]
+        public string FullName { get; set; } = string.Empty;   // اسم المستخدم
+
+        [Required, StringLength(20)]
+        public string NationalId { get; set; } = string.Empty; // الرقم القومي
+
+        [Required, EmailAddress]
+        public string Email { get; set; } = string.Empty;   // الايميل
+
+        [Required, StringLength(20)]
+        public string Phone { get; set; } = string.Empty;   // رقم الهاتف
+
+        [Required, StringLength(50)]
+        public string TravelMode { get; set; } = string.Empty;   // طريقة السفر
+
+        [Required, StringLength(150)]
+        public string DepartureAirport { get; set; } = string.Empty; // مطار المغادرة
+
+        [Required, StringLength(150)]
+        public string Airline { get; set; } = string.Empty;  // شركة الطيران
+
+        [StringLength(150)]
+        public string? ShipName { get; set; }  // اسم السفينة إذا كان السفر بالسفينة
+
+        [Required]
+        public DateTime StartDate { get; set; }    // تاريخ بدء السفر
+
+        [Required]
+        public DateTime EndDate { get; set; }  // تاريخ انتهاء السفر
+
+        [Required]
+        public DateTime DepartureDate { get; set; }  // تاريخ ووقت المغادرة
+
+        [Required]
+        public DateTime ArrivalDate { get; set; }   // تاريخ ووقت الوصول
+
+        [Required]
+        public decimal TravelPrice { get; set; }   // سعر الرحلة
+
+        [Required]
+        public int AuthId { get; set; }  // معرف المستخدم
+
+        public int? TransportId { get; set; }  // معرف وسيلة النقل (اختياري)
+
+        // قائمة الفنادق المرتبطة بالحجز
+        public ICollection<UmrahBookingHotelDto>? BookingHotels { get; set; }
+    }
+}
+using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace Manisik.DTOs
+{
+    public class UmrahBookingHotelDto
+    {
+        [Required]
+        public int HotelId { get; set; }  // معرف الفندق
+
+        [Required]
+        public DateTime CheckIn { get; set; }   // تاريخ الدخول
+
+        [Required]
+        public DateTime CheckOut { get; set; }  // تاريخ الخروج
+    }
+}

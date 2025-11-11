@@ -1,0 +1,352 @@
+using Manisik.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq;
+
+namespace Manasik.Infrastructure.Data
+{
+    /// <summary>
+    /// السياق الرئيسي لقاعدة بيانات تطبيق Manasik
+    /// يحتوي على الجداول الخاصة بـ (Auth, UmrahBooking, Hotel, Transport, UmrahBookingHotel)
+    /// </summary>
+    public class ApplicationDbContext : IdentityDbContext<Auth, IdentityRole<int>, int>
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        // 🧩 الجداول (Tables)
+        public DbSet<Auth> Auths { get; set; }
+        public DbSet<UmrahBooking> UmrahBookings { get; set; }
+        public DbSet<Hotel> Hotels { get; set; }
+        public DbSet<Transport> Transports { get; set; }
+        public DbSet<UmrahBookingHotel> UmrahBookingHotels { get; set; }
+
+        // Rooms table
+        public DbSet<Room> Rooms { get; set; }
+
+        // Payment events to ensure idempotency
+        public DbSet<PaymentEvent> PaymentEvents { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // ========================================
+            // العلاقة بين Auth ↔ UmrahBooking
+            // ========================================
+            modelBuilder.Entity<UmrahBooking>()
+                .HasOne(b => b.Auth)
+                .WithMany(a => a.UmrahBookings)
+                .HasForeignKey(b => b.AuthId)
+                .OnDelete(DeleteBehavior.Cascade);
+            // مستخدم واحد ممكن يعمل أكتر من حجز
+            // لو اتحدف المستخدم → تتحدف كل حجوزاته تلقائيًا
+
+            // ========================================
+            // العلاقة بين Transport ↔ UmrahBooking
+            // ========================================
+            modelBuilder.Entity<UmrahBooking>()
+                .HasOne(b => b.Transport)
+                .WithMany(t => t.Bookings)
+                .HasForeignKey(b => b.TransportId)
+                .OnDelete(DeleteBehavior.Restrict);
+            // وسيلة النقل ممكن تكون مرتبطة بأكتر من حجز
+            // لو اتحدفت وسيلة النقل → الحجوزات تظل موجودة
+
+            // ========================================
+            // العلاقة بين Hotel ↔ UmrahBookingHotel
+            // ========================================
+            modelBuilder.Entity<UmrahBookingHotel>()
+                .HasOne(ubh => ubh.Hotel)
+                .WithMany(h => h.Bookings)
+                .HasForeignKey(ubh => ubh.HotelId)
+                .OnDelete(DeleteBehavior.Restrict);
+            // كل BookingHotel مربوط بفندق
+            // الفندق ممكن يكون له أكتر من حجز
+            // لو اتحدف الفندق → الحجوزات مش هتمسح
+
+            // ========================================
+            // العلاقة بين UmrahBooking ↔ UmrahBookingHotel
+            // ========================================
+            modelBuilder.Entity<UmrahBookingHotel>()
+                .HasOne(ubh => ubh.UmrahBooking)
+                .WithMany(b => b.BookingHotels)
+                .HasForeignKey(ubh => ubh.UmrahBookingId)
+                .OnDelete(DeleteBehavior.Cascade);
+            // كل حجز ممكن يكون له أكتر من حجز فندقي (مكة + المدينة)
+            // لو اتحدف الحجز → تحذف كل BookingHotels المرتبطة بيه
+
+            // ========================================
+            // Relationship between Hotel and Room
+            // ========================================
+            modelBuilder.Entity<Room>()
+                .HasOne(r => r.Hotel)
+                .WithMany(h => h.Rooms)
+                .HasForeignKey(r => r.HotelId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ========================================
+            // ImgsUrl JSON conversion for Room with ValueComparer
+            // ========================================
+            var imgsComparer = new ValueComparer<List<string>>(
+                (c1, c2) => c1.SequenceEqual(c2),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v != null ? v.GetHashCode() : 0)),
+                c => c.ToList());
+
+            modelBuilder.Entity<Room>()
+                .Property(r => r.ImgsUrl)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+                    v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>())
+                .HasColumnType("nvarchar(max)")
+                .Metadata.SetValueComparer(imgsComparer);
+
+            // ========================================
+            // Price precision for Room
+            // ========================================
+            modelBuilder.Entity<Room>()
+                .Property(r => r.PricePerNight)
+                .HasColumnType("decimal(10,2)");
+
+            // ========================================
+            // PaymentEvent mapping
+            // ========================================
+            modelBuilder.Entity<PaymentEvent>().ToTable("PaymentEvents");
+
+            // ========================================
+            // تحديد أسماء الجداول
+            // ========================================
+            modelBuilder.Entity<Auth>().ToTable("Auths");
+            modelBuilder.Entity<Hotel>().Tousing Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Manisik.Models
+{
+    public class Auth : IdentityUser<int>
+    {
+        [Required, StringLength(150)]
+        public string FullName { get; set; } = string.Empty;  // الاسم الكامل للمستخدم
+
+        [NotMapped]
+        public string? DisplayRole { get; set; } = "User"; // دور المستخدم للعرض فقط (غير مخزن في قاعدة البيانات)
+
+        public ICollection<UmrahBooking>? UmrahBookings { get; set; }  // جميع الحجوزات المرتبطة بالمستخدم
+    }
+}
+Table("Hotels");
+            modelBuilder.Entity<Transport>().ToTable("Transports");
+            modelBuilder.Entity<UmrahBooking>().ToTable("UmrahBookings");
+            modelBuilder.Entity<UmrahBookingHotel>().ToTable("UmrahBookingHotels");
+            modelBuilder.Entity<Room>().ToTable("Rooms");
+        }
+    }
+}
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Manisik.Models
+{
+    public class Hotel
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int HotelId { get; set; }   // primary key
+
+        [Required, StringLength(150)]
+        public string Name { get; set; } = string.Empty;   // اسم الفندق
+
+        [Required]
+        public double DistanceFromHaram { get; set; }   // المسافة من الحرم
+
+        [Required, Column(TypeName = "decimal(10,2)")]
+        public decimal PricePerNight { get; set; }   // سعر الليلة
+
+        [Required, StringLength(100)]
+        public string City { get; set; } = "Makkah";   // المدينة
+
+        public ICollection<UmrahBookingHotel>? Bookings { get; set; } // جميع الحجوزات المرتبطة بالفندق
+
+        // Rooms in the hotel
+        public ICollection<Room>? Rooms { get; set; }
+    }
+}
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Manisik.Models
+{
+    public class PaymentEvent
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        [Required]
+        public string Provider { get; set; } = string.Empty; // "Stripe" or "PayPal"
+
+        [Required]
+        public string EventId { get; set; } = string.Empty; // webhook event id or capture id
+
+        public DateTime ProcessedAt { get; set; }
+
+        public int? BookingId { get; set; }
+    }
+}
+using System.ComponentModel.DataAnnotations;
+
+namespace Manisik.Models
+{
+    public class Room
+    {
+        [Key]
+        public int ID { get; set; }
+        [Required]
+        public string Type { get; set; } = string.Empty;
+        [Required]
+        public int Capacity { get; set; }
+        [Required]
+        public decimal PricePerNight { get; set; }
+        [Required]
+        public int HotelId { get; set; }
+        public Hotel? Hotel { get; set; }
+        public List<string> ImgsUrl { get; set; } = new List<string>();
+
+        // Availability flag (calculated/updated before response)
+        public bool IsAvailable { get; set; } = true;
+
+    }
+}
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Manisik.Models
+{
+    public class Transport
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int TransportId { get; set; }  // primary key
+
+        [Required, StringLength(100)]
+        public string VehicleType { get; set; } = string.Empty;   // نوع وسيلة النقل (طيارة/سفينة/باص)
+
+        [Required, Column(TypeName = "decimal(10,2)")]
+        public decimal Price { get; set; }  // سعر النقل
+
+        [Required, StringLength(100)]
+        public string ProviderName { get; set; } = string.Empty;  // اسم الشركة
+
+        public ICollection<UmrahBooking>? Bookings { get; set; } // جميع الحجوزات المرتبطة بهذه الوسيلة
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Manisik.Models
+{
+    public class UmrahBooking
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UmrahBookingId { get; set; }  // primary key
+
+        [Required, StringLength(50)]
+        public string TripType { get; set; } = string.Empty;  // نوع الرحلة (عمرة/حج)
+
+        [Required, StringLength(150)]
+        public string FullName { get; set; } = string.Empty;   // اسم المستخدم
+
+        [Required, StringLength(20)]
+        public string NationalId { get; set; } = string.Empty; // الرقم القومي
+
+        [Required, EmailAddress]
+        public string Email { get; set; } = string.Empty;   // البريد الإلكتروني
+
+        [Required, StringLength(20)]
+        public string Phone { get; set; } = string.Empty;   // رقم الهاتف
+
+        [Required, StringLength(50)]
+        public string TravelMode { get; set; } = string.Empty;   // وسيلة السفر
+
+        [Required, StringLength(150)]
+        public string DepartureAirport { get; set; } = string.Empty; // المطار المغادر منه
+
+        [Required, StringLength(150)]
+        public string Airline { get; set; } = string.Empty;  // شركة الطيران
+
+        [StringLength(150)]
+        public string? ShipName { get; set; }  // اسم السفينة إذا كانت الرحلة بحرية
+
+        [Required]
+        public DateTime StartDate { get; set; }    // بداية الرحلة
+
+        [Required]
+        public DateTime EndDate { get; set; }  // نهاية الرحلة
+
+        [Required]
+        public DateTime DepartureDate { get; set; }  // وقت المغادرة
+
+        [Required]
+        public DateTime ArrivalDate { get; set; }   // وقت الوصول
+
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal TravelPrice { get; set; }   // سعر الرحلة
+
+        // العلاقات
+        public int AuthId { get; set; }  // معرف المستخدم
+        [ForeignKey(nameof(AuthId))]
+        public Auth? Auth { get; set; }  // العلاقة مع جدول المستخدمين
+
+        public int? TransportId { get; set; }  // معرف وسيلة النقل
+        [ForeignKey(nameof(TransportId))]
+        public Transport? Transport { get; set; }  // العلاقة مع وسائل النقل
+
+        public ICollection<UmrahBookingHotel>? BookingHotels { get; set; } // الفنادق المرتبطة بالحجز
+
+        // Payment metadata
+        public string? PaymentProvider { get; set; } // e.g., "Stripe" or "PayPal"
+        public string? PaymentProviderId { get; set; } // PaymentIntentId or PayPal OrderId
+        public string? PaymentStatus { get; set; } // e.g., "succeeded", "COMPLETED"
+        public bool IsPaid { get; set; } = false;
+        public DateTime? PaymentCapturedAt { get; set; }
+    }
+}
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Manisik.Models
+{
+    public class UmrahBookingHotel
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UmrahBookingHotelId { get; set; }  // primary key
+
+        public int UmrahBookingId { get; set; }   // معرف الحجز
+        [ForeignKey(nameof(UmrahBookingId))]
+        public UmrahBooking? UmrahBooking { get; set; }  // العلاقة مع الحجز
+
+        public int HotelId { get; set; }  // معرف الفندق
+        [ForeignKey(nameof(HotelId))]
+        public Hotel? Hotel { get; set; }   // العلاقة مع الفندق
+
+        [Required]
+        public DateTime CheckIn { get; set; }   // تاريخ الدخول
+
+        [Required]
+        public DateTime CheckOut { get; set; }  // تاريخ الخروج
+    }
+}

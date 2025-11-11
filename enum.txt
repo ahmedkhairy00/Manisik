@@ -1,0 +1,40 @@
+namespace Manisik.Enums
+{
+    public enum AirlineCompany
+    {
+        Saudia,
+        EgyptAir,
+        Flynas,
+        Flyadeal,
+        AirCairo,
+        NileAir
+    }
+}
+namespace Manisik.Enums
+{
+    public enum DepartureAirport
+    {
+        CairoInternational,        // CAI
+        BorgElArabAlexandria,      // HBE
+        SharmElSheikhInternational,// SSH
+        HurghadaInternational,     // HRG
+        AssiutInternational,       // ATZ
+        SohagInternational         // HMB
+    }
+}
+namespace Manisik.Enums
+{
+    public enum TravelMode
+    {
+        Plane,
+        Ship
+    }
+}
+namespace Manisik.Enums
+{
+    public enum TripType
+    {
+        Umrah,
+        Hajj
+    }
+}

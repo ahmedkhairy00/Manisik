@@ -1,0 +1,397 @@
+using Manisik.Interfaces;
+using Manisik.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+
+namespace Manisik.Repositories
+{
+    public class AuthRepository : IAuthRepository
+    {
+        private readonly UserManager<Auth> _userManager;
+        private readonly SignInManager<Auth> _signInManager;
+
+        public AuthRepository(UserManager<Auth> userManager, SignInManager<Auth> signInManager)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
+
+        public async Task<Auth?> GetByEmailAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return null;
+
+            return await _userManager.FindByEmailAsync(email);
+        }
+
+        public async Task<bool> CreateUserAsync(Auth user, string password)
+        {
+            if (user == null)
+                throw new System.ArgumentNullException(nameof(user));
+            if (string.IsNullOrWhiteSpace(password))
+                throw new System.ArgumentException("Password cannot be empty.", nameof(password));
+
+            var result = await _userManager.CreateAsync(user, password);
+            return result.Succeeded;
+        }
+
+        public async Task<bool> CheckPasswordAsync(Auth user, string password)
+        {
+            if (user == null || string.IsNullOrWhiteSpace(password))
+                return false;
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+            return result.Succeeded;
+        }
+        public async Task<bool> UpdateUserAsync(Auth user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded;
+        }
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null) return false;
+
+            var result = await _userManager.DeleteAsync(user);
+            return result.Succeeded;
+        }
+
+    }
+}
+using Manasik.Infrastructure.Data;
+using Manisik.Interfaces;
+using Manisik.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Manisik.Repositories
+{
+    public class HotelRepository : IHotelRepository
+    {
+        private readonly ApplicationDbContext _context;
+
+        public HotelRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Hotel>> GetAllHotelsAsync()
+        {
+            return await _context.Hotels.ToListAsync();
+        }
+
+        public async Task<Hotel?> GetHotelByIdAsync(int id)
+        {
+            return await _context.Hotels.FindAsync(id);
+        }
+
+        public async Task<Hotel> AddHotelAsync(Hotel hotel)
+        {
+            _context.Hotels.Add(hotel);
+            await _context.SaveChangesAsync();
+            return hotel;
+        }
+
+        public async Task<Hotel?> UpdateHotelAsync(Hotel hotel)
+        {
+            var existing = await _context.Hotels.FindAsync(hotel.HotelId);
+            if (existing == null) return null;
+
+            _context.Entry(existing).CurrentValues.SetValues(hotel);
+            await _context.SaveChangesAsync();
+            return hotel;
+        }
+
+        public async Task<bool> DeleteHotelAsync(int id)
+        {
+            var hotel = await _context.Hotels.FindAsync(id);
+            if (hotel == null) return false;
+
+            _context.Hotels.Remove(hotel);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<IEnumerable<Hotel>> GetHotelsByCityAsync(string city)
+        {
+            if (string.IsNullOrWhiteSpace(city))
+                return new List<Hotel>();
+
+            return await _context.Hotels
+                .Where(h => h.City.ToLower() == city.ToLower())
+                .ToListAsync();
+        }
+    }
+}
+using Manasik.Infrastructure.Data;
+using Manisik.Interfaces;
+using Manisik.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Manisik.Repositories
+{
+    public class TransportRepository : ITransportRepository
+    {
+        private readonly ApplicationDbContext _context;
+
+        public TransportRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Transport>> GetAllTransportsAsync()
+        {
+            return await _context.Transports.ToListAsync();
+        }
+
+        public async Task<Transport?> GetTransportByIdAsync(int id)
+        {
+            return await _context.Transports.FindAsync(id);
+        }
+
+        public async Task<Transport> AddTransportAsync(Transport transport)
+        {
+            _context.Transports.Add(transport);
+            await _context.SaveChangesAsync();
+            return transport;
+        }
+
+        public async Task<Transport?> UpdateTransportAsync(Transport transport)
+        {
+            var existing = await _context.Transports.FindAsync(transport.TransportId);
+            if (existing == null) return null;
+
+            _context.Entry(existing).CurrentValues.SetValues(transport);
+            await _context.SaveChangesAsync();
+            return transport;
+        }
+
+        public async Task<bool> DeleteTransportAsync(int id)
+        {
+            var transport = await _context.Transports.FindAsync(id);
+            if (transport == null) return false;
+
+            _context.Transports.Remove(transport);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<IEnumerable<Transport>> GetTransportsByTypeAsync(string vehicleType)
+        {
+            if (string.IsNullOrWhiteSpace(vehicleType))
+                return new List<Transport>();
+
+            return await _context.Transports
+                .Where(t => t.VehicleType.ToLower() == vehicleType.ToLower())
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Transport>> GetTransportsByPriceAsync(decimal maxPrice)
+        {
+            return await _context.Transports
+                .Where(t => t.Price <= maxPrice)
+                .ToListAsync();
+        }
+
+    }
+}
+using Manasik.Infrastructure.Data;
+using Manisik.Interfaces;
+using Manisik.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Manisik.Repositories
+{
+    public class UmrahBookingRepository : IUmrahBookingRepository
+    {
+        private readonly ApplicationDbContext _context;
+
+        public UmrahBookingRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // ========================================
+        // إدارة الحجوزات الأساسية
+        // ========================================
+        public async Task<IEnumerable<UmrahBooking>> GetAllBookingsAsync()
+        {
+            return await _context.UmrahBookings
+                .Include(b => b.Auth)
+                .Include(b => b.Transport)
+                .Include(b => b.BookingHotels)
+                    .ThenInclude(bh => bh.Hotel)
+                .ToListAsync();
+        }
+
+        public async Task<UmrahBooking?> GetBookingByIdAsync(int id)
+        {
+            return await _context.UmrahBookings
+                .Include(b => b.Transport)
+                .Include(b => b.BookingHotels)
+                    .ThenInclude(bh => bh.Hotel)
+                .FirstOrDefaultAsync(b => b.UmrahBookingId == id);
+        }
+
+        public async Task<UmrahBooking> AddBookingAsync(UmrahBooking booking)
+        {
+            _context.UmrahBookings.Add(booking);
+            await _context.SaveChangesAsync();
+            return booking;
+        }
+
+        public async Task<UmrahBooking?> UpdateBookingAsync(UmrahBooking booking)
+        {
+            var existing = await _context.UmrahBookings
+                .Include(b => b.BookingHotels)
+                .FirstOrDefaultAsync(b => b.UmrahBookingId == booking.UmrahBookingId);
+
+            if (existing == null) return null;
+
+            _context.Entry(existing).CurrentValues.SetValues(booking);
+            await _context.SaveChangesAsync();
+            return booking;
+        }
+
+        public async Task<bool> DeleteBookingAsync(int id)
+        {
+            var booking = await _context.UmrahBookings
+                .Include(b => b.BookingHotels)
+                .FirstOrDefaultAsync(b => b.UmrahBookingId == id);
+
+            if (booking == null) return false;
+
+            _context.UmrahBookings.Remove(booking);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        // ========================================
+        // إدارة BookingHotels
+        // ========================================
+        public async Task<UmrahBookingHotel?> AddHotelToBookingAsync(int bookingId, int hotelId,
+                                                                    DateTime checkIn,
+                                                                    DateTime checkOut)
+        {
+            var booking = await _context.UmrahBookings
+                .Include(b => b.BookingHotels)
+                .FirstOrDefaultAsync(b => b.UmrahBookingId == bookingId);
+
+            if (booking == null) return null;
+
+            var hotelBooking = new UmrahBookingHotel
+            {
+                UmrahBookingId = bookingId,
+                HotelId = hotelId,
+                CheckIn = checkIn,
+                CheckOut = checkOut
+            };
+
+            _context.UmrahBookingHotels.Add(hotelBooking);
+            await _context.SaveChangesAsync();
+            return hotelBooking;
+        }
+
+        public async Task<UmrahBookingHotel?> UpdateHotelBookingAsync(int bookingHotelId,
+                                                                      DateTime newCheckIn,
+                                                                      DateTime newCheckOut)
+        {
+            var hotelBooking = await _context.UmrahBookingHotels.FindAsync(bookingHotelId);
+            if (hotelBooking == null) return null;
+
+            hotelBooking.CheckIn = newCheckIn;
+            hotelBooking.CheckOut = newCheckOut;
+
+            await _context.SaveChangesAsync();
+            return hotelBooking;
+        }
+
+        public async Task<bool> RemoveHotelFromBookingAsync(int bookingHotelId)
+        {
+            var hotelBooking = await _context.UmrahBookingHotels.FindAsync(bookingHotelId);
+            if (hotelBooking == null) return false;
+
+            _context.UmrahBookingHotels.Remove(hotelBooking);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        // ========================================
+        // فلترة الحجوزات
+        // ========================================
+        public async Task<IEnumerable<UmrahBooking>> GetBookingsByUserIdAsync(int userId)
+        {
+            return await _context.UmrahBookings
+                .Where(b => b.AuthId == userId)
+                .Include(b => b.BookingHotels)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<UmrahBooking>> GetBookingsByDateAsync(DateTime date)
+        {
+            return await _context.UmrahBookings
+                .Where(b => b.StartDate.Date <= date.Date && b.EndDate.Date >= date.Date)
+                .Include(b => b.BookingHotels)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<UmrahBooking>> GetBookingsByTripTypeAsync(string tripType)
+        {
+            return await _context.UmrahBookings
+                .Where(b => b.TripType.ToLower() == tripType.ToLower())
+                .Include(b => b.BookingHotels)
+                .ToListAsync();
+        }
+
+        // ========================================
+        // إدارة المدفوعات
+        // ========================================
+        public async Task<bool> TryMarkBookingPaidByProviderEventAsync(string provider, string providerPaymentId, string providerEventId, DateTime? capturedAt)
+        {
+            var booking = await _context.UmrahBookings
+                .FirstOrDefaultAsync(b => b.PaymentProvider == provider && b.PaymentProviderId == providerPaymentId);
+
+            if (booking == null)
+                return false;
+
+            booking.IsPaid = true;
+            booking.PaymentCapturedAt = capturedAt ?? DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> TryMarkBookingRefundedAsync(string provider, string providerPaymentId, DateTime? refundedAt)
+        {
+            var booking = await _context.UmrahBookings
+                .FirstOrDefaultAsync(b => b.PaymentProvider == provider && b.PaymentProviderId == providerPaymentId);
+
+            if (booking == null || !booking.IsPaid)
+                return false;
+
+            booking.IsPaid = false;
+            booking.PaymentCapturedAt = refundedAt ?? DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<UmrahBooking?> GetBookingByProviderPaymentIdAsync(string provider, string providerPaymentId)
+        {
+            return await _context.UmrahBookings
+                .FirstOrDefaultAsync(b => b.PaymentProvider == provider && b.PaymentProviderId == providerPaymentId);
+        }
+    }
+}

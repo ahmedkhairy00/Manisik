@@ -1,0 +1,15 @@
+2025-10-31 00:05:25.292 +02:00 [INF] User profile is available. Using 'C:\Users\rahim\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-31 00:05:25.864 +02:00 [INF] Now listening on: http://localhost:5076
+2025-10-31 00:05:26.516 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-31 00:05:26.652 +02:00 [INF] Hosting environment: Development
+2025-10-31 00:05:27.194 +02:00 [INF] Content root path: F:\real projects\Manasik project\Manisik\Manisik
+2025-10-31 00:06:06.159 +02:00 [INF] User profile is available. Using 'C:\Users\rahim\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-31 00:06:06.403 +02:00 [INF] Now listening on: http://localhost:5076
+2025-10-31 00:06:06.671 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-31 00:06:06.680 +02:00 [INF] Hosting environment: Development
+2025-10-31 00:06:06.682 +02:00 [INF] Content root path: F:\real projects\Manasik project\Manisik\Manisik
+2025-10-31 00:07:30.096 +02:00 [INF] User profile is available. Using 'C:\Users\rahim\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-31 00:07:30.317 +02:00 [INF] Now listening on: http://localhost:5076
+2025-10-31 00:07:30.641 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-31 00:07:30.649 +02:00 [INF] Hosting environment: Development
+2025-10-31 00:07:30.652 +02:00 [INF] Content root path: F:\real projects\Manasik project\Manisik\Manisik

@@ -1,0 +1,89 @@
+using Manisik.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Manisik.Interfaces
+{
+    // ==============================
+    // User / Authentication Repository
+    // ==============================
+    public interface IAuthRepository
+    {
+        Task<Auth?> GetByEmailAsync(string email);
+        Task<bool> CreateUserAsync(Auth user, string password);
+        Task<bool> CheckPasswordAsync(Auth user, string password);
+        Task<bool> UpdateUserAsync(Auth user); // تحديث بيانات المستخدم
+        Task<bool> DeleteUserAsync(int userId); // حذف المستخدم
+    }
+}
+using Manisik.Models;
+
+public interface IHotelRepository
+{
+    Task<IEnumerable<Hotel>> GetAllHotelsAsync();
+    Task<Hotel?> GetHotelByIdAsync(int id);
+    Task<IEnumerable<Hotel>> GetHotelsByCityAsync(string city); // فلترة حسب المدينة
+    Task<Hotel> AddHotelAsync(Hotel hotel);
+    Task<Hotel?> UpdateHotelAsync(Hotel hotel);
+    Task<bool> DeleteHotelAsync(int id);
+}
+using Manisik.Models;
+
+public interface ITransportRepository
+{
+    Task<IEnumerable<Transport>> GetAllTransportsAsync();
+    Task<Transport?> GetTransportByIdAsync(int id);
+    Task<IEnumerable<Transport>> GetTransportsByTypeAsync(string vehicleType); // فلترة حسب النوع
+    Task<IEnumerable<Transport>> GetTransportsByPriceAsync(decimal maxPrice); // فلترة حسب السعر
+    Task<Transport> AddTransportAsync(Transport transport);
+    Task<Transport?> UpdateTransportAsync(Transport transport);
+    Task<bool> DeleteTransportAsync(int id);
+}
+using Manisik.Models;
+using System;
+using System.Threading.Tasks;
+
+namespace Manisik.Interfaces
+{
+    public interface IUmrahBookingHotelRepository
+    {
+        Task<UmrahBookingHotel?> AddHotelToBookingAsync(int bookingId, int hotelId, DateTime checkIn, DateTime checkOut);
+        Task<UmrahBookingHotel?> UpdateHotelBookingAsync(int bookingHotelId, DateTime newCheckIn, DateTime newCheckOut);
+        Task<bool> RemoveHotelFromBookingAsync(int bookingHotelId);
+        Task<IEnumerable<UmrahBookingHotel>> GetHotelsByBookingIdAsync(int bookingId); // جلب جميع الفنادق لحجز معين
+    }
+}
+using Manisik.Models;
+
+public interface IUmrahBookingRepository
+{
+    Task<IEnumerable<UmrahBooking>> GetAllBookingsAsync();
+    Task<UmrahBooking?> GetBookingByIdAsync(int id);
+    Task<IEnumerable<UmrahBooking>> GetBookingsByUserIdAsync(int userId); // فلترة حسب المستخدم
+    Task<IEnumerable<UmrahBooking>> GetBookingsByDateAsync(DateTime date); // فلترة حسب التاريخ
+    Task<IEnumerable<UmrahBooking>> GetBookingsByTripTypeAsync(string tripType); // فلترة حسب نوع الرحلة
+    Task<UmrahBooking> AddBookingAsync(UmrahBooking booking);
+    Task<UmrahBooking?> UpdateBookingAsync(UmrahBooking booking);
+    Task<bool> DeleteBookingAsync(int id);
+
+    // Manage hotel bookings associated with an UmrahBooking
+    Task<UmrahBookingHotel?> AddHotelToBookingAsync(int bookingId, int hotelId, DateTime checkIn, DateTime checkOut);
+    Task<UmrahBookingHotel?> UpdateHotelBookingAsync(int bookingHotelId, DateTime newCheckIn, DateTime newCheckOut);
+    Task<bool> RemoveHotelFromBookingAsync(int bookingHotelId);
+
+    // Payment processing helpers
+    /// <summary>
+    /// Attempts to mark the booking as paid.
+    /// Ensures idempotency using providerEventId.
+    /// </summary>
+    Task<bool> TryMarkBookingPaidByProviderEventAsync(string provider, string providerPaymentId, string providerEventId, DateTime? capturedAt);
+
+    /// <summary>
+    /// Attempts to mark the booking as refunded.
+    /// </summary>
+    Task<bool> TryMarkBookingRefundedAsync(string provider, string providerPaymentId, DateTime? refundedAt);
+
+    // Find booking by provider and provider payment id
+    Task<UmrahBooking?> GetBookingByProviderPaymentIdAsync(string provider, string providerPaymentId);
+}

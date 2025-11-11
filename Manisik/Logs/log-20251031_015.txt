@@ -1,0 +1,18 @@
+2025-10-31 01:19:14.060 +02:00 [INF] Executed DbCommand (37ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-10-31 01:19:14.157 +02:00 [INF] Executed DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-10-31 01:19:14.177 +02:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-10-31 01:20:14.063 +02:00 [INF] User profile is available. Using 'C:\Users\rahim\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-31 01:20:14.276 +02:00 [INF] Now listening on: http://localhost:5076
+2025-10-31 01:20:14.554 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-31 01:20:14.584 +02:00 [INF] Hosting environment: Development
+2025-10-31 01:20:14.586 +02:00 [INF] Content root path: F:\real projects\Manasik project\Manisik\Manisik
+2025-10-31 01:20:30.373 +02:00 [INF] User profile is available. Using 'C:\Users\rahim\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-31 01:20:30.596 +02:00 [INF] Now listening on: http://localhost:5076
+2025-10-31 01:20:30.680 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-31 01:20:30.685 +02:00 [INF] Hosting environment: Development
+2025-10-31 01:20:30.686 +02:00 [INF] Content root path: F:\real projects\Manasik project\Manisik\Manisik

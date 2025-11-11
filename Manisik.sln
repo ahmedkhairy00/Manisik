@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisik", "Manisik\Manisik.csproj", "{B4944A3C-69EA-4AED-95EF-C21AF32EB891}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4944A3C-69EA-4AED-95EF-C21AF32EB891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4944A3C-69EA-4AED-95EF-C21AF32EB891}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4944A3C-69EA-4AED-95EF-C21AF32EB891}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4944A3C-69EA-4AED-95EF-C21AF32EB891}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8ED96400-7CED-4C43-B9BF-B5938F3864C8}
+	EndGlobalSection
+EndGlobal
