@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Manisik.DTOs;
-using Manisik.Interfaces;
 using Manisik.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Manisik.Services
 {
@@ -51,5 +49,63 @@ namespace Manisik.Services
         {
             return await _hotelRepo.DeleteHotelAsync(id);
         }
+
+        public async Task<IEnumerable<HotelDto>?> GetHotelsByCityAsync(string city)
+        {
+            var hotels = await _hotelRepo.GetHotelsByCityAsync(city);
+            if (hotels == null)
+                return null;
+            return hotels.Select(h => _mapper.Map<HotelDto>(h));
+        }
+        public async Task<IEnumerable<HotelDto>?> GetHotelsByPriceFilterAsync(bool ascending)
+        {
+            var hotels = await _hotelRepo.GetHotelsByPriceFilterAsync(ascending);
+            if (hotels == null)
+                return null;
+            return hotels.Select(h => _mapper.Map<HotelDto>(h));
+        }
+
+        public async Task<IEnumerable<HotelDto>?> GetHotelsByDistanceFilterAsync(bool ascending)
+        {
+            var hotels = await _hotelRepo.GetHotelsByDistanceFilterAsync(ascending);
+            if (hotels == null)
+                return null;
+            return hotels.Select(h => _mapper.Map<HotelDto>(h));
+        }
+
+        public async Task<IEnumerable<HotelDto>?> GetFilteredHotelsAsync(
+            string? city = null,
+            string? filter = null)
+        {
+            IQueryable<Hotel> query = _hotelRepo.GetAllHotelsQuerable();
+
+            if (!string.IsNullOrEmpty(city))
+            {
+                query = query.Where(h => h.City.ToLower() == city.ToLower());
+
+
+            }
+
+            // Apply sorting based on filter
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = filter.ToLower() switch
+                {
+                    "pricelowtohigh" => query.OrderBy(h => h.PricePerNight),
+                    "pricehightolow" => query.OrderByDescending(h => h.PricePerNight),
+                    "distance" => query.OrderBy(h => h.DistanceFromHaram),
+                    // "rating" => query.OrderByDescending(h => h.rating),
+                    _ => query
+                };
+            }
+
+            var hotels = await query.ToListAsync();
+
+            if (!hotels.Any())
+                return null;
+
+            return hotels.Select(h => _mapper.Map<HotelDto>(h));
+        }
+
     }
 }

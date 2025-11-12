@@ -1,6 +1,5 @@
 ﻿using Manisik.DTOs;
 using Manisik.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manisik.Controllers
@@ -16,11 +15,39 @@ namespace Manisik.Controllers
             _hotelService = hotelService;
         }
 
-        // ✅ Get all hotels
+
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
         {
             var hotels = await _hotelService.GetAllAsync();
+            return Ok(hotels);
+        }
+
+        [HttpGet("getallFiltered")]
+        public async Task<IActionResult> GetAllFiltered([FromQuery] string? city, [FromQuery] string? filter)
+        {
+            var hotels = await _hotelService.GetFilteredHotelsAsync(city, filter);
+
+            if (hotels == null)
+                return NotFound(new { message = "No hotels found" });
+
+            return Ok(hotels);
+        }
+
+
+        // ✅ Get all hotels with price filter
+        [HttpGet("getallWithPriceOrder")]
+        public async Task<IActionResult> GetAllWithPriceFilter(bool ascending)
+        {
+            var hotels = await _hotelService.GetHotelsByPriceFilterAsync(ascending);
+            return Ok(hotels);
+        }
+
+        // ✅ Get all hotels with price filter
+        [HttpGet("getallWithDistanceOrder")]
+        public async Task<IActionResult> GetAllWithDistanceFilter(bool ascending)
+        {
+            var hotels = await _hotelService.GetHotelsByDistanceFilterAsync(ascending);
             return Ok(hotels);
         }
 
@@ -33,6 +60,17 @@ namespace Manisik.Controllers
                 return NotFound(new { message = "❌ Hotel not found" });
 
             return Ok(hotel);
+        }
+
+        // ✅ Get hotel by City name
+        [HttpGet("byCity/{city:alpha}")]
+        public async Task<IActionResult> GetByCityName([FromRoute] string city)
+        {
+            var hotels = await _hotelService.GetHotelsByCityAsync(city);
+            if (hotels == null)
+                return NotFound(new { message = "❌ Hotel not found" });
+
+            return Ok(hotels);
         }
 
         // ✅ Create new hotel

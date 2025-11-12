@@ -146,6 +146,7 @@ namespace Manisik
             app.UseCors("AllowAll");
             app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseAuthentication();
             app.UseAuthorization();

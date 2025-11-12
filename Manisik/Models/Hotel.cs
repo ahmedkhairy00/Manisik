@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Manisik.Models
@@ -21,10 +20,15 @@ namespace Manisik.Models
 
         [Required, StringLength(100)]
         public string City { get; set; } = "Makkah";   // المدينة
+        public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
+        public int? Rate { get; set; }
+
 
         public ICollection<UmrahBookingHotel>? Bookings { get; set; } // جميع الحجوزات المرتبطة بالفندق
 
         // Rooms in the hotel
         public ICollection<Room>? Rooms { get; set; }
+
     }
 }
