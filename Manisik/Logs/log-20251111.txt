@@ -776,3 +776,14 @@ WHERE [HotelId] = @p0;
 2025-11-11 13:15:11.559 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44370/swagger/v1/swagger.json - null null
 2025-11-11 13:15:11.616 +02:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 48.1849 ms
 2025-11-11 13:15:11.619 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44370/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 60.8914ms
+2025-11-11 15:06:22.257 +02:00 [INF] User profile is available. Using 'C:\Users\rahim\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-11 15:06:22.753 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44370/_vs/browserLink - null null
+2025-11-11 15:06:22.753 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44370/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-11 15:06:22.876 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44370/_framework/aspnetcore-browser-refresh.js - 200 16499 application/javascript; charset=utf-8 125.3065ms
+2025-11-11 15:06:23.540 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-11 15:06:23.540 +02:00 [INF] Hosting environment: Development
+2025-11-11 15:06:23.540 +02:00 [INF] Content root path: F:\real projects\Manasik project\Manisik backend\Manisik
+2025-11-11 15:06:24.187 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44370/_vs/browserLink - 200 null text/javascript; charset=UTF-8 1437.0845ms
+2025-11-11 15:06:24.305 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44370/swagger/v1/swagger.json - null null
+2025-11-11 15:06:27.819 +02:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 3452.3000 ms
+2025-11-11 15:06:27.823 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44370/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 3517.9936ms
