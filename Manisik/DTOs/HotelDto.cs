@@ -15,5 +15,9 @@ namespace Manisik.DTOs
 
         [Required, StringLength(100)]
         public string City { get; set; } = "Makkah";   // المدينة
+        public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
+        public int? Rate { get; set; }
+
     }
 }

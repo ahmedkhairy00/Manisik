@@ -1,10 +1,6 @@
 ﻿using Manasik.Infrastructure.Data;
-using Manisik.Interfaces;
 using Manisik.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Manisik.Repositories
 {
@@ -62,6 +58,47 @@ namespace Manisik.Repositories
             return await _context.Hotels
                 .Where(h => h.City.ToLower() == city.ToLower())
                 .ToListAsync();
+        }
+        public async Task<IEnumerable<Hotel>> GetHotelsByPriceFilterAsync(bool ascending)
+        {
+            if (ascending == true)
+            {
+                return await _context.Hotels
+                .OrderBy(h => h.PricePerNight)
+                .ToListAsync();
+            }
+            else
+            {
+                return await _context.Hotels
+                .OrderByDescending(h => h.PricePerNight)
+                .ToListAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Hotel>> GetHotelsByRatingFilterAsync(bool ascending)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Hotel>> GetHotelsByDistanceFilterAsync(bool ascending)
+        {
+            if (ascending == true)
+            {
+                return await _context.Hotels
+                .OrderBy(h => h.DistanceFromHaram)
+                .ToListAsync();
+            }
+            else
+            {
+                return await _context.Hotels
+                .OrderByDescending(h => h.DistanceFromHaram)
+                .ToListAsync();
+            }
+        }
+
+        public IQueryable<Hotel> GetAllHotelsQuerable()
+        {
+            return _context.Hotels.AsQueryable();
         }
     }
 }
