@@ -6,9 +6,9 @@ namespace Manisik.Interfaces
 {
     public interface IUmrahBookingHotelRepository
     {
-        Task<UmrahBookingHotel?> AddHotelToBookingAsync(int bookingId, int hotelId, DateTime checkIn, DateTime checkOut);
-        Task<UmrahBookingHotel?> UpdateHotelBookingAsync(int bookingHotelId, DateTime newCheckIn, DateTime newCheckOut);
+        Task<BookingHotel?> AddHotelToBookingAsync(int bookingId, int hotelId, DateTime checkIn, DateTime checkOut);
+        Task<BookingHotel?> UpdateHotelBookingAsync(int bookingHotelId, DateTime newCheckIn, DateTime newCheckOut);
         Task<bool> RemoveHotelFromBookingAsync(int bookingHotelId);
-        Task<IEnumerable<UmrahBookingHotel>> GetHotelsByBookingIdAsync(int bookingId); // جلب جميع الفنادق لحجز معين
+        Task<IEnumerable<BookingHotel>> GetHotelsByBookingIdAsync(int bookingId); // جلب جميع الفنادق لحجز معين
     }
 }

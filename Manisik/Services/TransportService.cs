@@ -32,7 +32,7 @@ namespace Manisik.Services
 
         public async Task<TransportDto> AddAsync(TransportDto dto)
         {
-            var entity = _mapper.Map<Transport>(dto);
+            var entity = _mapper.Map<GlobalTransport>(dto);
             var result = await _transportRepo.AddTransportAsync(entity);
             return _mapper.Map<TransportDto>(result);
         }

@@ -1,4 +1,4 @@
-﻿using Manasik.Infrastructure.Data;
+﻿
 using Manisik.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,13 +64,13 @@ namespace Manisik.Repositories
             if (ascending == true)
             {
                 return await _context.Hotels
-                .OrderBy(h => h.PricePerNight)
+               // .OrderBy(h => h.PricePerNight)
                 .ToListAsync();
             }
             else
             {
                 return await _context.Hotels
-                .OrderByDescending(h => h.PricePerNight)
+                //.OrderByDescending(h => h.PricePerNight)
                 .ToListAsync();
             }
         }

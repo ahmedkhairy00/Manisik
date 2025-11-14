@@ -1,0 +1,5 @@
+2025-11-14 01:38:04.829 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44370/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-14 01:38:05.046 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44370/_framework/aspnetcore-browser-refresh.js - 200 16499 application/javascript; charset=utf-8 212.5055ms
+2025-11-14 01:38:05.161 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44370/swagger/v1/swagger.json - null null
+2025-11-14 01:38:05.457 +02:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 274.8585 ms
+2025-11-14 01:38:05.458 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44370/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 297.8558ms

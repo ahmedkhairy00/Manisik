@@ -2,11 +2,11 @@
 
 public interface ITransportRepository
 {
-    Task<IEnumerable<Transport>> GetAllTransportsAsync();
-    Task<Transport?> GetTransportByIdAsync(int id);
-    Task<IEnumerable<Transport>> GetTransportsByTypeAsync(string vehicleType); // فلترة حسب النوع
-    Task<IEnumerable<Transport>> GetTransportsByPriceAsync(decimal maxPrice); // فلترة حسب السعر
-    Task<Transport> AddTransportAsync(Transport transport);
-    Task<Transport?> UpdateTransportAsync(Transport transport);
+    Task<IEnumerable<GlobalTransport>> GetAllTransportsAsync();
+    Task<GlobalTransport?> GetTransportByIdAsync(int id);
+    Task<IEnumerable<GlobalTransport>> GetTransportsByTypeAsync(string vehicleType); // فلترة حسب النوع
+    Task<IEnumerable<GlobalTransport>> GetTransportsByPriceAsync(decimal maxPrice); // فلترة حسب السعر
+    Task<GlobalTransport> AddTransportAsync(GlobalTransport transport);
+    Task<GlobalTransport?> UpdateTransportAsync(GlobalTransport transport);
     Task<bool> DeleteTransportAsync(int id);
 }

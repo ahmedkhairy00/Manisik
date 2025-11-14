@@ -15,20 +15,23 @@ namespace Manisik.Models
         [Required]
         public double DistanceFromHaram { get; set; }   // المسافة من الحرم
 
-        [Required, Column(TypeName = "decimal(10,2)")]
-        public decimal PricePerNight { get; set; }   // سعر الليلة
+        [Required]
+        public bool? IsActive { get; set; }
 
         [Required, StringLength(100)]
         public string City { get; set; } = "Makkah";   // المدينة
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
         public int? Rate { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public string? CreatedByUserId { get; set; }
 
 
-        public ICollection<UmrahBookingHotel>? Bookings { get; set; } // جميع الحجوزات المرتبطة بالفندق
 
-        // Rooms in the hotel
-        public ICollection<Room>? Rooms { get; set; }
+        public ICollection<BookingHotel>? Bookings { get; set; } // جميع الحجوزات المرتبطة بالفندق
+
+       
+        public ICollection<HotelRoom>? Rooms { get; set; }   // Rooms in the hotel
 
     }
 }

@@ -2,18 +2,18 @@
 
 public interface IUmrahBookingRepository
 {
-    Task<IEnumerable<UmrahBooking>> GetAllBookingsAsync();
-    Task<UmrahBooking?> GetBookingByIdAsync(int id);
-    Task<IEnumerable<UmrahBooking>> GetBookingsByUserIdAsync(int userId); // فلترة حسب المستخدم
-    Task<IEnumerable<UmrahBooking>> GetBookingsByDateAsync(DateTime date); // فلترة حسب التاريخ
-    Task<IEnumerable<UmrahBooking>> GetBookingsByTripTypeAsync(string tripType); // فلترة حسب نوع الرحلة
-    Task<UmrahBooking> AddBookingAsync(UmrahBooking booking);
-    Task<UmrahBooking?> UpdateBookingAsync(UmrahBooking booking);
+    Task<IEnumerable<Booking>> GetAllBookingsAsync();
+    Task<Booking?> GetBookingByIdAsync(int id);
+    Task<IEnumerable<Booking>> GetBookingsByUserIdAsync(int userId); // فلترة حسب المستخدم
+    Task<IEnumerable<Booking>> GetBookingsByDateAsync(DateTime date); // فلترة حسب التاريخ
+    Task<IEnumerable<Booking>> GetBookingsByTripTypeAsync(string tripType); // فلترة حسب نوع الرحلة
+    Task<Booking> AddBookingAsync(Booking booking);
+    Task<Booking?> UpdateBookingAsync(Booking booking);
     Task<bool> DeleteBookingAsync(int id);
 
     // Manage hotel bookings associated with an UmrahBooking
-    Task<UmrahBookingHotel?> AddHotelToBookingAsync(int bookingId, int hotelId, DateTime checkIn, DateTime checkOut);
-    Task<UmrahBookingHotel?> UpdateHotelBookingAsync(int bookingHotelId, DateTime newCheckIn, DateTime newCheckOut);
+    Task<BookingHotel?> AddHotelToBookingAsync(int bookingId, int hotelId, DateTime checkIn, DateTime checkOut);
+    Task<BookingHotel?> UpdateHotelBookingAsync(int bookingHotelId, DateTime newCheckIn, DateTime newCheckOut);
     Task<bool> RemoveHotelFromBookingAsync(int bookingHotelId);
 
     // Payment processing helpers
@@ -29,5 +29,5 @@ public interface IUmrahBookingRepository
     Task<bool> TryMarkBookingRefundedAsync(string provider, string providerPaymentId, DateTime? refundedAt);
 
     // Find booking by provider and provider payment id
-    Task<UmrahBooking?> GetBookingByProviderPaymentIdAsync(string provider, string providerPaymentId);
+    Task<Booking?> GetBookingByProviderPaymentIdAsync(string provider, string providerPaymentId);
 }

@@ -23,7 +23,7 @@ namespace Manisik.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new { message = "❌ Invalid reservation data" });
 
-            var booking = new UmrahBooking
+            var booking = new Booking
             {
                 TripType = dto.TripType,
                 FullName = dto.FullName,
@@ -66,7 +66,7 @@ namespace Manisik.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new { message = "❌ Invalid reservation data" });
 
-            var booking = new UmrahBooking
+            var booking = new Booking
             {
                 TripType = dto.TripType,
                 FullName = dto.FullName,

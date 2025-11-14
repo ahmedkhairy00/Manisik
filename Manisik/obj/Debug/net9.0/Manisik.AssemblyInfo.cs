@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Manisik")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f555485b72ec7948f5999796c3824fad1e814fdb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+badecdf01ea53c81f4e7ce74bb59542e2ff27e60")]
 [assembly: System.Reflection.AssemblyProductAttribute("Manisik")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Manisik")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

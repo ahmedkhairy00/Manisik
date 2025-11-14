@@ -1,4 +1,4 @@
-﻿using Manasik.Infrastructure.Data; // ✅ مهم علشان كلاس Auth
+﻿// ✅ مهم علشان كلاس Auth
 using Manisik.Interfaces;
 using Manisik.Mapping;
 using Manisik.Models;

@@ -32,7 +32,7 @@ namespace Manisik.Services
 
         public async Task<UmrahBookingDto> AddAsync(UmrahBookingDto dto)
         {
-            var entity = _mapper.Map<UmrahBooking>(dto);
+            var entity = _mapper.Map<Booking>(dto);
             var result = await _bookingRepo.AddBookingAsync(entity);
             return _mapper.Map<UmrahBookingDto>(result);
         }

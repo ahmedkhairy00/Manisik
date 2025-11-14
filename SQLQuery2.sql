@@ -1,3 +1,19 @@
+DELETE FROM [dbo].[PaymentEvents];
+DELETE FROM [dbo].[Rooms];
+DELETE FROM [dbo].[UmrahBookingHotels];
+DELETE FROM [dbo].[UmrahBookings];
+DELETE FROM [dbo].[Transports];
+DELETE FROM [dbo].[Hotels];
+DELETE FROM [dbo].[Auths];
+
+DBCC CHECKIDENT ('Auths', RESEED, 0);
+DBCC CHECKIDENT ('Hotels', RESEED, 0);
+DBCC CHECKIDENT ('Transports', RESEED, 0);
+DBCC CHECKIDENT ('UmrahBookings', RESEED, 0);
+DBCC CHECKIDENT ('Rooms', RESEED, 0);
+DBCC CHECKIDENT ('PaymentEvents', RESEED, 0);
+DBCC CHECKIDENT ('UmrahBookingHotels', RESEED, 0);
+
 INSERT INTO [dbo].[Auths]
 (FullName, UserName, NormalizedUserName, Email, NormalizedEmail, EmailConfirmed, PasswordHash, SecurityStamp, ConcurrencyStamp, PhoneNumberConfirmed, TwoFactorEnabled, LockoutEnabled, AccessFailedCount)
 VALUES
@@ -10,14 +26,12 @@ VALUES
 
 INSERT INTO [dbo].[Hotels] (Name, DistanceFromHaram, PricePerNight, City, Description, ImageUrl, Rate)
 VALUES
-('Hilton Makkah', 200, 350.00, 'Makkah', 'A luxurious 5-star hotel with direct views of the Holy Haram, offering premium dining and comfort.', '/images/hilton-makkah.jpg', 5),
-('Anwar Al Madinah', 300, 280.00, 'Madinah', 'Elegant hotel near the Prophet’s Mosque with modern rooms and family-friendly amenities.', '/images/anwar-al-madinah.jpg', 4),
-('Swissotel Al Maqam', 250, 320.00, 'Makkah', 'Located in the Abraj Al Bait complex with direct access to Masjid Al Haram.', '/images/swissotel-al-maqam.jpg', 4),
-('Dar Al Iman Intercontinental', 400, 250.00, 'Madinah', 'A luxury hotel facing the Prophet’s Mosque, known for exceptional service and comfort.', '/images/dar-al-iman.jpeg', 3),
-('Conrad Makkah', 150, 400.00, 'Makkah', '5-star hotel offering luxury suites, direct Haram views, and world-class facilities.', '/images/conrad-makkah.jpg', 5),
-('Pullman Zamzam', 350, 270.00, 'Makkah', 'Modern rooms with Haram views, close to shopping and dining in the Abraj Al Bait towers.', '/images/pullman-zamzam.jpg', 4);
-
-
+('Hilton Makkah', 200, 350.00, 'Makkah', 'A luxurious 5-star hotel with direct views of the Holy Haram...', '/images/hilton-makkah.jpg', 5),
+('Anwar Al Madinah', 300, 280.00, 'Madinah', 'Elegant hotel near the Prophet’s Mosque...', '/images/anwar-al-madinah.jpg', 4),
+('Swissotel Al Maqam', 250, 320.00, 'Makkah', 'Located in the Abraj Al Bait complex...', '/images/swissotel-al-maqam.jpg', 4),
+('Dar Al Iman Intercontinental', 400, 250.00, 'Madinah', 'Luxury hotel facing the Prophet’s Mosque...', '/images/dar-al-iman.jpeg', 3),
+('Conrad Makkah', 150, 400.00, 'Makkah', '5-star hotel with luxury suites...', '/images/conrad-makkah.jpg', 5),
+('Pullman Zamzam', 350, 270.00, 'Makkah', 'Modern rooms with Haram views...', '/images/pullman-zamzam.jpg', 4);
 
 INSERT INTO [dbo].[Transports] (VehicleType, Price, ProviderName)
 VALUES
@@ -47,7 +61,6 @@ VALUES
 (5, 5, '2025-11-18', '2025-11-22'),
 (6, 6, '2025-11-22', '2025-11-27');
 
-
 INSERT INTO [dbo].[Rooms] (Type, Capacity, PricePerNight, HotelId, ImgsUrl, IsAvailable)
 VALUES
 ('Single', 1, 350.00, 1, 'room1.jpg', 1),
@@ -65,5 +78,3 @@ VALUES
 ('PayPal', 'evt_004', GETDATE(), 4),
 ('Stripe', 'evt_005', GETDATE(), 5),
 ('PayPal', 'evt_006', GETDATE(), 6);
-
-

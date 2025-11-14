@@ -21,7 +21,7 @@ namespace Manisik.Repositories
         // ========================================
         // إدارة الحجوزات الأساسية
         // ========================================
-        public async Task<IEnumerable<UmrahBooking>> GetAllBookingsAsync()
+        public async Task<IEnumerable<Booking>> GetAllBookingsAsync()
         {
             return await _context.UmrahBookings
                 .Include(b => b.Auth)
@@ -31,7 +31,7 @@ namespace Manisik.Repositories
                 .ToListAsync();
         }
 
-        public async Task<UmrahBooking?> GetBookingByIdAsync(int id)
+        public async Task<Booking?> GetBookingByIdAsync(int id)
         {
             return await _context.UmrahBookings
                 .Include(b => b.Transport)
@@ -40,14 +40,14 @@ namespace Manisik.Repositories
                 .FirstOrDefaultAsync(b => b.UmrahBookingId == id);
         }
 
-        public async Task<UmrahBooking> AddBookingAsync(UmrahBooking booking)
+        public async Task<Booking> AddBookingAsync(Booking booking)
         {
             _context.UmrahBookings.Add(booking);
             await _context.SaveChangesAsync();
             return booking;
         }
 
-        public async Task<UmrahBooking?> UpdateBookingAsync(UmrahBooking booking)
+        public async Task<Booking?> UpdateBookingAsync(Booking booking)
         {
             var existing = await _context.UmrahBookings
                 .Include(b => b.BookingHotels)
@@ -76,7 +76,7 @@ namespace Manisik.Repositories
         // ========================================
         // إدارة BookingHotels
         // ========================================
-        public async Task<UmrahBookingHotel?> AddHotelToBookingAsync(int bookingId, int hotelId,
+        public async Task<BookingHotel?> AddHotelToBookingAsync(int bookingId, int hotelId,
                                                                     DateTime checkIn,
                                                                     DateTime checkOut)
         {
@@ -86,7 +86,7 @@ namespace Manisik.Repositories
 
             if (booking == null) return null;
 
-            var hotelBooking = new UmrahBookingHotel
+            var hotelBooking = new BookingHotel
             {
                 UmrahBookingId = bookingId,
                 HotelId = hotelId,
@@ -99,7 +99,7 @@ namespace Manisik.Repositories
             return hotelBooking;
         }
 
-        public async Task<UmrahBookingHotel?> UpdateHotelBookingAsync(int bookingHotelId,
+        public async Task<BookingHotel?> UpdateHotelBookingAsync(int bookingHotelId,
                                                                       DateTime newCheckIn,
                                                                       DateTime newCheckOut)
         {
@@ -126,7 +126,7 @@ namespace Manisik.Repositories
         // ========================================
         // فلترة الحجوزات
         // ========================================
-        public async Task<IEnumerable<UmrahBooking>> GetBookingsByUserIdAsync(int userId)
+        public async Task<IEnumerable<Booking>> GetBookingsByUserIdAsync(int userId)
         {
             return await _context.UmrahBookings
                 .Where(b => b.AuthId == userId)
@@ -134,7 +134,7 @@ namespace Manisik.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<UmrahBooking>> GetBookingsByDateAsync(DateTime date)
+        public async Task<IEnumerable<Booking>> GetBookingsByDateAsync(DateTime date)
         {
             return await _context.UmrahBookings
                 .Where(b => b.StartDate.Date <= date.Date && b.EndDate.Date >= date.Date)
@@ -142,7 +142,7 @@ namespace Manisik.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<UmrahBooking>> GetBookingsByTripTypeAsync(string tripType)
+        public async Task<IEnumerable<Booking>> GetBookingsByTripTypeAsync(string tripType)
         {
             return await _context.UmrahBookings
                 .Where(b => b.TripType.ToLower() == tripType.ToLower())
@@ -183,7 +183,7 @@ namespace Manisik.Repositories
             return true;
         }
 
-        public async Task<UmrahBooking?> GetBookingByProviderPaymentIdAsync(string provider, string providerPaymentId)
+        public async Task<Booking?> GetBookingByProviderPaymentIdAsync(string provider, string providerPaymentId)
         {
             return await _context.UmrahBookings
                 .FirstOrDefaultAsync(b => b.PaymentProvider == provider && b.PaymentProviderId == providerPaymentId);

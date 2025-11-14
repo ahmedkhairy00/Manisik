@@ -19,18 +19,18 @@ namespace Manisik.Mapping
             CreateMap<Hotel, HotelDto>().ReverseMap();
 
             // map rooms
-            CreateMap<Room, RoomDto>().ReverseMap();
+            CreateMap<HotelRoom, RoomDto>().ReverseMap();
 
             // ================================
             // Transport ↔ TransportDto
             // ================================
-            CreateMap<Transport, TransportDto>().ReverseMap();
+            CreateMap<GlobalTransport, TransportDto>().ReverseMap();
 
             // ================================
             // UmrahBooking ↔ UmrahBookingDto
             // يشمل تحويل قائمة BookingHotels
             // ================================
-            CreateMap<UmrahBooking, UmrahBookingDto>()
+            CreateMap<Booking, UmrahBookingDto>()
                 .ForMember(dest => dest.BookingHotels,
                            opt => opt.MapFrom(src => src.BookingHotels))
                 .ReverseMap();
@@ -38,7 +38,7 @@ namespace Manisik.Mapping
             // ================================
             // UmrahBookingHotel ↔ UmrahBookingHotelDto
             // ================================
-            CreateMap<UmrahBookingHotel, UmrahBookingHotelDto>().ReverseMap();
+            CreateMap<BookingHotel, UmrahBookingHotelDto>().ReverseMap();
         }
     }
 }

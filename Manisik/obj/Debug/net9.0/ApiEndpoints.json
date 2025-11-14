@@ -91,6 +91,22 @@
   },
   {
     "ContainingType": "Manisik.Controllers.HotelController",
+    "Method": "GetByCityName",
+    "RelativePath": "api/Hotel/byCity/{city}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "city",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Manisik.Controllers.HotelController",
     "Method": "GetById",
     "RelativePath": "api/Hotel/byid/{id}",
     "HttpMethod": "GET",
@@ -145,6 +161,59 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Manisik.Controllers.HotelController",
+    "Method": "GetAllFiltered",
+    "RelativePath": "api/Hotel/getallFiltered",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "city",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "filter",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Manisik.Controllers.HotelController",
+    "Method": "GetAllWithDistanceFilter",
+    "RelativePath": "api/Hotel/getallWithDistanceOrder",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ascending",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Manisik.Controllers.HotelController",
+    "Method": "GetAllWithPriceFilter",
+    "RelativePath": "api/Hotel/getallWithPriceOrder",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ascending",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
