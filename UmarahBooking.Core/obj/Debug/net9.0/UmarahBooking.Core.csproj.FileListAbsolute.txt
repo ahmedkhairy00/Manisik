@@ -1,0 +1,24 @@
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\bin\Debug\net9.0\UmarahBooking.Core.deps.json
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\bin\Debug\net9.0\UmarahBooking.Core.dll
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\bin\Debug\net9.0\UmarahBooking.Core.pdb
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.csproj.AssemblyReference.cache
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.AssemblyInfoInputs.cache
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.AssemblyInfo.cs
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.csproj.CoreCompileInputs.cache
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.dll
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\refint\UmarahBooking.Core.dll
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.pdb
+C:\Users\ahmed\OneDrive\Desktop\ITI Graduation Project\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\ref\UmarahBooking.Core.dll
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\bin\Debug\net9.0\UmarahBooking.Core.deps.json
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\bin\Debug\net9.0\UmarahBooking.Core.dll
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\bin\Debug\net9.0\UmarahBooking.Core.pdb
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.csproj.AssemblyReference.cache
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.AssemblyInfoInputs.cache
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.AssemblyInfo.cs
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.csproj.CoreCompileInputs.cache
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.dll
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\refint\UmarahBooking.Core.dll
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.pdb
+C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Core\obj\Debug\net9.0\ref\UmarahBooking.Core.dll

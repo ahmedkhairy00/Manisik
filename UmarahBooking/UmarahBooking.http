@@ -1,0 +1,6 @@
+@UmarahBooking_HostAddress = http://localhost:5037
+
+GET {{UmarahBooking_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

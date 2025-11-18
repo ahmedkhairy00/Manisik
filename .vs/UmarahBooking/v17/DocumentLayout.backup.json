@@ -1,0 +1,207 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\triptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\triptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\roomtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\roomtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\paymentstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\paymentstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\paymentmethod.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\paymentmethod.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\internationaltransporttype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\internationaltransporttype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\internaltransporttype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\internaltransporttype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\hotelcity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\hotelcity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\gender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\gender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\departureairport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\departureairport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\bookingstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\bookingstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|c:\\users\\rahim\\desktop\\umarahbooking (1)\\umarahbooking\\umarahbooking.core\\enums\\arrivalairport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AD00746-546B-4608-89D9-50701BFA8F31}|UmarahBooking.Core\\UmarahBooking.Core.csproj|solutionrelative:umarahbooking.core\\enums\\arrivalairport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TripType.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\TripType.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\TripType.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\TripType.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\TripType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:14:08.092Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RoomType.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\RoomType.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\RoomType.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\RoomType.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\RoomType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:14:03.823Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PaymentStatus.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\PaymentStatus.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\PaymentStatus.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\PaymentStatus.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\PaymentStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:13:52.333Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "PaymentMethod.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\PaymentMethod.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\PaymentMethod.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\PaymentMethod.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\PaymentMethod.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:13:48.091Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "InternationalTransportType.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\InternationalTransportType.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\InternationalTransportType.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\InternationalTransportType.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\InternationalTransportType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:13:43.608Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "InternalTransportType.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\InternalTransportType.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\InternalTransportType.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\InternalTransportType.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\InternalTransportType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:13:38.997Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "HotelCity.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\HotelCity.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\HotelCity.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\HotelCity.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\HotelCity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:13:34.646Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Gender.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\Gender.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\Gender.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\Gender.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\Gender.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:13:30.332Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "DepartureAirport.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\DepartureAirport.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\DepartureAirport.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\DepartureAirport.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\DepartureAirport.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:13:26.053Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "BookingStatus.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\BookingStatus.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\BookingStatus.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\BookingStatus.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\BookingStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:13:20.976Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ArrivalAirport.cs",
+              "DocumentMoniker": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\ArrivalAirport.cs",
+              "RelativeDocumentMoniker": "UmarahBooking.Core\\Enums\\ArrivalAirport.cs",
+              "ToolTip": "C:\\Users\\rahim\\Desktop\\UmarahBooking (1)\\UmarahBooking\\UmarahBooking.Core\\Enums\\ArrivalAirport.cs",
+              "RelativeToolTip": "UmarahBooking.Core\\Enums\\ArrivalAirport.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T23:13:15.595Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
