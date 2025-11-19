@@ -32,3 +32,21 @@ C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Data\obj\De
 C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.pdb
 C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.genruntimeconfig.cache
 C:\Users\rahim\Desktop\UmarahBooking (1)\UmarahBooking\UmarahBooking.Data\obj\Debug\net9.0\ref\UmarahBooking.Data.dll
+D:\GitHub\Manisik\UmarahBooking.Data\bin\Debug\net9.0\UmarahBooking.Data.deps.json
+D:\GitHub\Manisik\UmarahBooking.Data\bin\Debug\net9.0\UmarahBooking.Data.runtimeconfig.json
+D:\GitHub\Manisik\UmarahBooking.Data\bin\Debug\net9.0\UmarahBooking.Data.dll
+D:\GitHub\Manisik\UmarahBooking.Data\bin\Debug\net9.0\UmarahBooking.Data.pdb
+D:\GitHub\Manisik\UmarahBooking.Data\bin\Debug\net9.0\UmarahBooking.Core.dll
+D:\GitHub\Manisik\UmarahBooking.Data\bin\Debug\net9.0\UmarahBooking.Core.pdb
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.csproj.AssemblyReference.cache
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.AssemblyInfoInputs.cache
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.AssemblyInfo.cs
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.csproj.CoreCompileInputs.cache
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.sourcelink.json
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBo.68D6C5B4.Up2Date
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.dll
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\refint\UmarahBooking.Data.dll
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.pdb
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.genruntimeconfig.cache
+D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\ref\UmarahBooking.Data.dll

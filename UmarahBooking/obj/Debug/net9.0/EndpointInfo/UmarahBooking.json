@@ -1141,6 +1141,58 @@
         }
       }
     },
+    "/api/ChatBotAi/chat": {
+      "post": {
+        "tags": [
+          "ChatBotAi"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ChatBotAi/clear": {
+      "post": {
+        "tags": [
+          "ChatBotAi"
+        ],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/GroundTransport/GetAllGroundTransports": {
       "get": {
         "tags": [
@@ -3494,6 +3546,20 @@
         "type": "integer",
         "format": "int32"
       },
+      "ChatRequest": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "DepartureAirport": {
         "enum": [
           0,
@@ -4634,6 +4700,9 @@
     },
     {
       "name": "Booking"
+    },
+    {
+      "name": "ChatBotAi"
     },
     {
       "name": "GroundTransport"

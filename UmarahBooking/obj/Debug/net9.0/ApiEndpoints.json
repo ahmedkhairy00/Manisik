@@ -658,6 +658,38 @@
     ]
   },
   {
+    "ContainingType": "UmarahBooking.Controllers.ChatBotAiController",
+    "Method": "Chat",
+    "RelativePath": "api/ChatBotAi/chat",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "UmarahBooking.Core.DTO.ChatRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "UmarahBooking.Controllers.ChatBotAiController",
+    "Method": "Clear",
+    "RelativePath": "api/ChatBotAi/clear",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "UmarahBooking.Controllers.GroundTransportController",
     "Method": "AdvancedSearch",
     "RelativePath": "api/GroundTransport/AdvancedSearch",

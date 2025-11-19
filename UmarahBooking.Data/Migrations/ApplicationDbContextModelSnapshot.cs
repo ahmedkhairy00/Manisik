@@ -21,39 +21,6 @@ namespace UmarahBooking.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Manisik.Models.AIConversation", b =>
-                {
-                    b.Property<int>("AIConversationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AIConversationId"));
-
-                    b.Property<string>("ConversationHistoryJson")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("LastMessageAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SessionId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AIConversationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AIConversations");
-                });
-
             modelBuilder.Entity("Manisik.Models.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
@@ -776,17 +743,6 @@ namespace UmarahBooking.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Manisik.Models.AIConversation", b =>
-                {
-                    b.HasOne("Manisik.Models.ApplicationUser", "User")
-                        .WithMany("AIConversations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Manisik.Models.Booking", b =>
                 {
                     b.HasOne("Manisik.Models.ApplicationUser", "User")
@@ -960,8 +916,6 @@ namespace UmarahBooking.Data.Migrations
 
             modelBuilder.Entity("Manisik.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("AIConversations");
-
                     b.Navigation("Bookings");
                 });
 

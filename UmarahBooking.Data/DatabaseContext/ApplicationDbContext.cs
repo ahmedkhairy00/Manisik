@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
 {
@@ -21,7 +20,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<Traveler> Travelers { get; set; } = null!;
     public DbSet<Payment> Payments { get; set; } = null!;
     public DbSet<PaymentEvent> PaymentEvents { get; set; } = null!;
-    public DbSet<AIConversation> AIConversations { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -34,12 +32,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             .HasForeignKey(b => b.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // ApplicationUser (int) -> AIConversation (1:N)
-        builder.Entity<AIConversation>()
-            .HasOne(c => c.User)
-            .WithMany(u => u.AIConversations)
-            .HasForeignKey(c => c.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        //// ApplicationUser (int) -> AIConversation (1:N)
+        //builder.Entity<AIConversation>()
+        //    .HasOne(c => c.User)
+        //    .WithMany(u => u.AIConversations)
+        //    .HasForeignKey(c => c.UserId)
+        //    .OnDelete(DeleteBehavior.Cascade);
 
         // Booking -> BookingHotel (1:N)
         builder.Entity<BookingHotel>()

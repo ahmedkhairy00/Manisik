@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Manisik.Models
@@ -34,7 +32,7 @@ namespace Manisik.Models
         // Kept nullable to avoid EF Core collection initialization warnings.
         public ICollection<Booking>? Bookings { get; set; }
 
-        public ICollection<AIConversation>? AIConversations { get; set; }
+        // public ICollection<AIConversation>? AIConversations { get; set; }
 
     }
 }
