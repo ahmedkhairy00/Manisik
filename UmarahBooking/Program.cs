@@ -1,16 +1,13 @@
-using Manisik.Models;
+﻿using Manisik.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using System.Security.Principal;
 using System.Text;
 using UmarahBooking.Core.Interfaces;
 using UmarahBooking.Core.Mapping;
-using UmarahBooking.Core.Mapping;
+using UmarahBooking.Core.Services;
 using UmarahBooking.Data.Repositories;
 using UmarahBooking.Data.Seed;
 
@@ -53,7 +50,8 @@ namespace UmarahBooking
             // Add Generic Interface and Genreic Repository
             //builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            builder.Services.AddScoped<IHotelService, HotelService>();
+            builder.Services.AddScoped<IBookingHotelService, BookingHotelService>();
             //Ensure Identity is configured in Program.cs:
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
@@ -96,6 +94,16 @@ namespace UmarahBooking
                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
                };
            });
+
+            builder.Services.AddCors(opt =>
+            {
+                opt.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
             var app = builder.Build();
 
 
@@ -120,7 +128,7 @@ namespace UmarahBooking
                     c.RoutePrefix = "swagger"; // root URL will show Swagger
                 });
             }
-
+            app.UseCors("AllowAll");
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

@@ -1,21 +1,61 @@
 INSERT INTO [dbo].[Hotels] (Name, HotelCity, Address, StarRating, DistanceToHaram, Description, ImageUrl, IsActive, CreatedAt)
 VALUES
-('Hilton Makkah', 0, 'Al Haram Rd', 5, 200, 'A luxurious 5-star hotel with direct views of the Holy Haram.', '/images/hilton-makkah.jpg', 1, GETDATE()),
-('Anwar Al Madinah', 1, 'Prince Mohammed St', 4, 300, 'Elegant hotel near the Prophet’s Mosque with modern rooms.', '/images/anwar-al-madinah.jpg', 1, GETDATE()),
-('Swissotel Al Maqam', 0, 'Abraj Al Bait', 4, 250, 'Located in the Abraj Al Bait complex with direct access to Masjid Al Haram.', '/images/swissotel-al-maqam.jpg', 1, GETDATE()),
-('Dar Al Iman Intercontinental', 0, 'King Fahd Rd', 3, 400, 'Luxury hotel facing the Prophet’s Mosque.', '/images/dar-al-iman.jpeg', 1, GETDATE()),
-('Conrad Makkah', 1, 'King Abdulaziz Rd', 5, 150, '5-star hotel with luxury suites and direct Haram views.', '/images/conrad-makkah.jpg', 1, GETDATE()),
-('Pullman Zamzam', 1, 'Abraj Al Bait Towers', 4, 350, 'Modern rooms with Haram views, close to shopping and dining.', '/images/pullman-zamzam.jpg', 1, GETDATE());
+('Hilton Makkah', 0, 'Al Haram Rd', 5, 200, 'A luxurious 5-star hotel with direct views of the Holy Haram.', '/images/hotels/hilton-makkah.jpg', 1, GETDATE()),
+('Anwar Al Madinah', 1, 'Prince Mohammed St', 4, 300, 'Elegant hotel near the Prophet’s Mosque with modern rooms.', '/images/hotels/anwar-al-madinah.jpg', 1, GETDATE()),
+('Swissotel Al Maqam', 0, 'Abraj Al Bait', 4, 250, 'Located in the Abraj Al Bait complex with direct access to Masjid Al Haram.', '/images/hotels/swissotel-al-maqam.jpg', 1, GETDATE()),
+('Dar Al Iman Intercontinental', 0, 'King Fahd Rd', 3, 400, 'Luxury hotel facing the Prophet’s Mosque.', '/images/hotels/dar-al-iman.jpeg', 1, GETDATE()),
+('Conrad Makkah', 1, 'King Abdulaziz Rd', 5, 150, '5-star hotel with luxury suites and direct Haram views.', '/images/hotels/conrad-makkah.jpg', 1, GETDATE()),
+('Pullman Zamzam', 1, 'Abraj Al Bait Towers', 4, 350, 'Modern rooms with Haram views, close to shopping and dining.', '/images/hotels/pullman-zamzam.jpg', 1, GETDATE());
 
 INSERT INTO [dbo].[HotelRooms] 
 (RoomType, Capacity, PricePerNight, AvailableRooms, IsActive, HotelId)
 VALUES
-(0, 2, 350, 20, 1, 1),
-(1, 4, 280, 15, 1, 2),
-(2, 3, 320, 25, 1, 3),
-(3, 5, 250, 10, 1, 4),
-(0, 2, 400, 5, 1, 5),
-(1, 3, 270, 12, 1, 6);
+(0, 2, 350, 20, 1, 7),
+(1, 4, 280, 15, 1, 8),
+(2, 3, 320, 25, 1, 9),
+(3, 5, 250, 10, 1, 10),
+(0, 2, 400, 5, 1, 11),
+(0, 3, 270, 12, 1, 12);
+
+--new 
+INSERT INTO [dbo].[HotelRooms] 
+(RoomType, Capacity, PricePerNight, AvailableRooms, IsActive, HotelId)
+VALUES
+-- Hotel 7
+(0, 1, 200, 10, 1, 7), -- Single
+(1, 2, 300, 8, 1, 7),  -- Double
+(2, 3, 500, 5, 1, 7),  -- Suite
+(3, 5, 700, 3, 1, 7),  -- Family
+
+-- Hotel 8
+(0, 1, 180, 12, 1, 8),
+(1, 2, 280, 10, 1, 8),
+(2, 3, 450, 6, 1, 8),
+(3, 5, 650, 4, 1, 8),
+
+-- Hotel 9
+(0, 1, 220, 15, 1, 9),
+(1, 2, 320, 10, 1, 9),
+(2, 3, 520, 7, 1, 9),
+(3, 5, 750, 4, 1, 9),
+
+-- Hotel 10
+(0, 1, 210, 9, 1, 10),
+(1, 2, 310, 7, 1, 10),
+(2, 3, 480, 5, 1, 10),
+(3, 5, 700, 3, 1, 10),
+
+-- Hotel 11
+(0, 1, 230, 6, 1, 11),
+(1, 2, 330, 5, 1, 11),
+(2, 3, 550, 4, 1, 11),
+(3, 5, 780, 2, 1, 11),
+
+-- Hotel 12
+(0, 1, 190, 10, 1, 12),
+(1, 2, 290, 8, 1, 12),
+(2, 3, 470, 5, 1, 12),
+(3, 5, 690, 3, 1, 12);
 
 
 INSERT INTO [dbo].[GroundTransports]

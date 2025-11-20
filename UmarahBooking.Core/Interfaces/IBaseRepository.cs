@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using UmarahBooking.Core.Const;
 
 namespace UmarahBooking.Core.Interfaces
@@ -25,5 +22,6 @@ namespace UmarahBooking.Core.Interfaces
             Expression<Func<T, object>> orderBy = null,
             string orderByDirection = OrderBy.Ascending
         );
+        IQueryable<T> GetAllAsQuerable();
     }
 }

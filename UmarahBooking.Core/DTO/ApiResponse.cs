@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UmarahBooking.Core.DTO
+﻿namespace UmarahBooking.Core.DTO
 {
     public class ApiResponse<T>
     {

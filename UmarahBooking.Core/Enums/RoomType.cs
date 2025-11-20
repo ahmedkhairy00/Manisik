@@ -1,7 +1,16 @@
-﻿namespace Manisik.Enums
+﻿using System.Runtime.Serialization;
+
+namespace Manisik.Enums
 {
     public enum RoomType
     {
-         Single,Double, Suite,Family
+        [EnumMember(Value = "Single")]
+        Single,
+        [EnumMember(Value = "Double")]
+        Double,
+        [EnumMember(Value = "Suite")]
+        Suite,
+        [EnumMember(Value = "Family")]
+        Family
     }
 }

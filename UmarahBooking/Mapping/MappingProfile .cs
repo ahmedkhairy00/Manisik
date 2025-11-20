@@ -2,7 +2,6 @@
 using Manisik.Enums;
 using Manisik.Models;
 using UmarahBooking.Core.DTO;
-using System.Linq;
 
 namespace UmarahBooking.Core.Mapping
 {
@@ -15,8 +14,9 @@ namespace UmarahBooking.Core.Mapping
             // ------------------------------
             CreateMap<Hotel, HotelDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.HotelId))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.HotelCity))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.HotelCity.ToString()))
                 .ForMember(dest => dest.Rooms, opt => opt.MapFrom(src => src.Rooms));
+
 
             CreateMap<HotelDto, Hotel>()
                 .ForMember(dest => dest.HotelId, opt => opt.MapFrom(src => src.Id))
@@ -29,7 +29,9 @@ namespace UmarahBooking.Core.Mapping
             CreateMap<HotelRoom, RoomDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.HotelRoomId))
                 .ForMember(dest => dest.TotalRooms, opt => opt.MapFrom(src => src.AvailableRooms))
-                .ForMember(dest => dest.HotelId, opt => opt.MapFrom(src => src.HotelId));
+                .ForMember(dest => dest.HotelId, opt => opt.MapFrom(src => src.HotelId))
+                .ForMember(dest => dest.RoomType, opt => opt.MapFrom(src => src.RoomType.ToString()));
+
 
             CreateMap<RoomDto, HotelRoom>()
                 .ForMember(dest => dest.HotelRoomId, opt => opt.Ignore()) // DB generated
@@ -41,9 +43,17 @@ namespace UmarahBooking.Core.Mapping
             CreateMap<BookingHotel, HotelBookingDto>()
                 .ForMember(dest => dest.HotelName, opt => opt.MapFrom(src => src.Hotel.Name))
                 .ForMember(dest => dest.RoomType, opt => opt.MapFrom(src => src.Room.RoomType))
+                .ForMember(dest => dest.NumberOfNights, opt => opt.MapFrom(src =>
+                    (int)((src.CheckOutDate - src.CheckInDate).TotalDays)))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalPrice))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.ToString()))
                 .ReverseMap()
-                .ForMember(dest => dest.Hotel, opt => opt.Ignore()) // handled separately
-                .ForMember(dest => dest.Room, opt => opt.Ignore()); // handled separately
+                .ForMember(dest => dest.Hotel, opt => opt.Ignore())
+                .ForMember(dest => dest.Room, opt => opt.Ignore())
+                .ForMember(dest => dest.TotalPrice, opt => opt.Ignore()) // calculated in service
+                .ForMember(dest => dest.NumberOfRooms, opt => opt.Condition(src => src.NumberOfRooms > 0))
+                .ForMember(dest => dest.BookingId, opt => opt.Ignore()); // set manually when creating booking
+
 
             // ------------------------------
             // BOOKING MODEL <-> BOOKING DTO

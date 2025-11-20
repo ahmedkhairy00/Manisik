@@ -2266,6 +2266,7 @@
       "System.Threading.Tasks.Extensions/4.5.4": {},
       "UmarahBooking.Core/1.0.0": {
         "dependencies": {
+          "AutoMapper": "12.0.1",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.11",
           "Microsoft.Extensions.Http": "9.0.11"
         },

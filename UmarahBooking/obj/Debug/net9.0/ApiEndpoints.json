@@ -1082,269 +1082,24 @@
   },
   {
     "ContainingType": "UmarahBooking.Controllers.HotelController",
-    "Method": "BookHotel",
-    "RelativePath": "api/Hotel/BookHotel",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "bookingDto",
-        "Type": "UmarahBooking.Core.DTO.BookingDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "UmarahBooking.Core.DTO.ApiResponse\u00601[[UmarahBooking.Core.DTO.BookingDto, UmarahBooking.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 201
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 400
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 404
-      },
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 500
-      }
-    ]
-  },
-  {
-    "ContainingType": "UmarahBooking.Controllers.HotelController",
-    "Method": "CreateHotel",
-    "RelativePath": "api/Hotel/CreateHotel",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "hotelDto",
-        "Type": "UmarahBooking.Core.DTO.HotelDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "UmarahBooking.Core.DTO.ApiResponse\u00601[[UmarahBooking.Core.DTO.HotelDto, UmarahBooking.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 201
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 400
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 401
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 403
-      },
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 500
-      }
-    ]
-  },
-  {
-    "ContainingType": "UmarahBooking.Controllers.HotelController",
-    "Method": "DeleteHotel",
-    "RelativePath": "api/Hotel/DeleteHotel/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "UmarahBooking.Core.DTO.ApiResponse\u00601[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 404
-      },
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 500
-      }
-    ]
-  },
-  {
-    "ContainingType": "UmarahBooking.Controllers.HotelController",
-    "Method": "EditHotel",
-    "RelativePath": "api/Hotel/EditHotel/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "hotelDto",
-        "Type": "UmarahBooking.Core.DTO.HotelDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "UmarahBooking.Core.DTO.ApiResponse\u00601[[UmarahBooking.Core.DTO.HotelDto, UmarahBooking.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 400
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 404
-      },
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 500
-      }
-    ]
-  },
-  {
-    "ContainingType": "UmarahBooking.Controllers.HotelController",
-    "Method": "GetAllHotels",
-    "RelativePath": "api/Hotel/GetAllHotels",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "UmarahBooking.Core.DTO.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[UmarahBooking.Core.DTO.HotelDto, UmarahBooking.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      },
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 500
-      }
-    ]
-  },
-  {
-    "ContainingType": "UmarahBooking.Controllers.HotelController",
-    "Method": "GetAllHotelsBySearch",
-    "RelativePath": "api/Hotel/GetAllHotelsBySearch/{name}",
+    "Method": "GetAllFiltered",
+    "RelativePath": "api/Hotel/getallFiltered",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "name",
+        "Name": "city",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
+      },
+      {
+        "Name": "filter",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "UmarahBooking.Core.DTO.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[UmarahBooking.Core.DTO.HotelDto, UmarahBooking.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 404
-      },
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 500
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "UmarahBooking.Controllers.HotelController",
@@ -1387,22 +1142,22 @@
     ]
   },
   {
-    "ContainingType": "UmarahBooking.Controllers.HotelController",
-    "Method": "GetHotelByRating",
-    "RelativePath": "api/Hotel/GetHotelByRating/{rating}",
-    "HttpMethod": "GET",
+    "ContainingType": "UmarahBooking.Controllers.HotelBookingController",
+    "Method": "BookHotel",
+    "RelativePath": "api/HotelBooking/BookHotel",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "rating",
-        "Type": "System.Int32",
+        "Name": "dto",
+        "Type": "UmarahBooking.Core.DTO.HotelBookingDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "UmarahBooking.Core.DTO.ApiResponse\u00601[[UmarahBooking.Core.DTO.HotelDto, UmarahBooking.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "UmarahBooking.Core.DTO.ApiResponse\u00601[[UmarahBooking.Core.DTO.HotelBookingDto, UmarahBooking.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1417,7 +1172,7 @@
           "application/json",
           "text/json"
         ],
-        "StatusCode": 404
+        "StatusCode": 400
       },
       {
         "Type": "System.Void",
@@ -1425,76 +1180,6 @@
         "StatusCode": 500
       }
     ]
-  },
-  {
-    "ContainingType": "UmarahBooking.Controllers.HotelController",
-    "Method": "GetHotelsByAllRooms",
-    "RelativePath": "api/Hotel/GetHotelsByAllRooms",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "UmarahBooking.Core.DTO.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[UmarahBooking.Core.DTO.HotelDto, UmarahBooking.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 404
-      },
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 500
-      }
-    ]
-  },
-  {
-    "ContainingType": "UmarahBooking.Controllers.HotelController",
-    "Method": "GetHotelsBySearchAndSkipWithOrder",
-    "RelativePath": "api/Hotel/hotels/search",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "search",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "take",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "skip",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "orderBy",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "orderDirection",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
   },
   {
     "ContainingType": "UmarahBooking.Controllers.InternationalTransportController",

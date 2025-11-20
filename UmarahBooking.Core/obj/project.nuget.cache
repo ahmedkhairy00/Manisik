@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "wJJD0QQFvQ0=",
+  "dgSpecHash": "2SmM3ePR6rc=",
   "success": true,
   "projectFilePath": "D:\\GitHub\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\nwrha\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\nwrha\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\9.0.11\\microsoft.aspnetcore.cryptography.internal.9.0.11.nupkg.sha512",
     "C:\\Users\\nwrha\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\9.0.11\\microsoft.aspnetcore.cryptography.keyderivation.9.0.11.nupkg.sha512",
     "C:\\Users\\nwrha\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\9.0.11\\microsoft.aspnetcore.identity.entityframeworkcore.9.0.11.nupkg.sha512",
+    "C:\\Users\\nwrha\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\nwrha\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.11\\microsoft.entityframeworkcore.9.0.11.nupkg.sha512",
     "C:\\Users\\nwrha\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\9.0.11\\microsoft.entityframeworkcore.abstractions.9.0.11.nupkg.sha512",
     "C:\\Users\\nwrha\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\9.0.11\\microsoft.entityframeworkcore.analyzers.9.0.11.nupkg.sha512",

@@ -1,10 +1,4 @@
-﻿using Manisik.Enums;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace UmarahBooking.Core.DTO
 {
@@ -26,9 +20,9 @@ namespace UmarahBooking.Core.DTO
         [StringLength(200, MinimumLength = 2)]
         public string Name { get; set; } = string.Empty;
 
-     
+
         [Required]
-        public HotelCity City { get; set; }
+        public string City { get; set; }
 
         [Required]
         [StringLength(500)]
@@ -50,7 +44,7 @@ namespace UmarahBooking.Core.DTO
         [Url(ErrorMessage = "Invalid URL format")]
         public string? ImageUrl { get; set; }
 
-        
+
 
         // ========== ROOMS (Nullable - populated in detail view only) ==========
         /// <summary>
@@ -65,5 +59,5 @@ namespace UmarahBooking.Core.DTO
         public int? CreatedByUserId { get; set; }
     }
 
-  
+
 }
