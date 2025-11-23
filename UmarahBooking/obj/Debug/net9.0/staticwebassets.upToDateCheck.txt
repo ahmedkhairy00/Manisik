@@ -1,6 +1,0 @@
-wwwroot\images\hotels\anwar-al-madinah.jpg
-wwwroot\images\hotels\conrad-makkah.jpg
-wwwroot\images\hotels\dar-al-iman.jpeg
-wwwroot\images\hotels\hilton-makkah.jpg
-wwwroot\images\hotels\pullman-zamzam.jpg
-wwwroot\images\hotels\swissotel-al-maqam.jpg
