@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using UmarahBooking.Core.DTO;
 using UmarahBooking.Core.Interfaces;
 
@@ -20,8 +21,8 @@ namespace UmarahBooking.Controllers
         /// <summary>
         /// Book a hotel room for the logged-in user
         /// </summary>
-        //[Authorize] // change from AllowAnonymous to require login
-        [AllowAnonymous]
+        [Authorize] // change from AllowAnonymous to require login
+        //[AllowAnonymous]
         [ProducesResponseType(typeof(ApiResponse<HotelBookingDto>), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
@@ -34,12 +35,13 @@ namespace UmarahBooking.Controllers
                     return BadRequest(ApiResponse<HotelBookingDto>.ErrorResponse("Invalid booking data"));
 
 
-                //var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-                //if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-                //{
-                //    return BadRequest(ApiResponse<HotelBookingDto>.ErrorResponse("User not found or not logged in"));
-                //}
-                int userId = 2;
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                {
+                    return BadRequest(ApiResponse<HotelBookingDto>.ErrorResponse("User not found or not logged in"));
+                }
+
 
                 var bookingHotel = await _bookingService.BookHotelAsync(dto, userId);
 

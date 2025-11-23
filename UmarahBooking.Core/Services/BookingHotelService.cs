@@ -27,6 +27,8 @@ namespace UmarahBooking.Core.Services
 
             var room = await GetRoomAsync(dto.HotelId, dto.RoomId);
 
+            await EnsureUserCanBookInCityAsync(userId, room.HotelId);
+
             int remainingRooms = await CheckRoomAvailabilityAsync(dto, room);
             if (dto.NumberOfRooms > remainingRooms)
                 throw new InvalidOperationException($"Only {remainingRooms} rooms available for selected dates");
@@ -57,6 +59,16 @@ namespace UmarahBooking.Core.Services
             bookingHotel.TotalPrice = totalPrice;
 
             await _unitOfWork.BookingHotels.AddAsync(bookingHotel);
+
+            room.AvailableRooms -= dto.NumberOfRooms;
+
+            if (room.AvailableRooms <= 0)
+            {
+                room.AvailableRooms = 0;
+                room.IsActive = false;
+            }
+
+            await _unitOfWork.HotelRooms.UpdateAsync(room);
 
             return bookingHotel;
         }
@@ -102,6 +114,48 @@ namespace UmarahBooking.Core.Services
                 throw new InvalidOperationException("Selected room not found");
 
             return room;
+        }
+        private async Task EnsureUserCanBookInCityAsync(int userId, int hotelId)
+        {
+
+            var hotel = await _unitOfWork.Hotels.GetByIdAsync(hotelId);
+            if (hotel == null)
+                throw new InvalidOperationException("Hotel not found");
+
+            string city = hotel.HotelCity.ToString().Trim().ToLower() ?? "";
+
+
+            var existingBooking = await _unitOfWork.BookingHotels
+                .GetAllAsQuerable()
+                .Include(bh => bh.Hotel)
+                .Where(bh => bh.Booking.UserId == userId &&
+                             bh.Hotel.HotelCity.ToString().ToLower() == city)
+                .FirstOrDefaultAsync();
+
+            if (existingBooking != null)
+            {
+                throw new InvalidOperationException(
+                    $"You already booked a hotel in {hotel.HotelCity.ToString()} , You can only book once per city"
+                );
+            }
+        }
+        private async Task EnsureNoDateConflictAsync(int userId, DateTime newCheckIn, DateTime newCheckOut)
+        {
+            var existingBookings = await _unitOfWork.BookingHotels
+                .GetAllAsQuerable()
+                .Include(bh => bh.Hotel)
+                .Where(bh => bh.Booking.UserId == userId)
+                .ToListAsync();
+
+            foreach (var booking in existingBookings)
+            {
+                if (booking.CheckOutDate > newCheckIn && booking.CheckInDate < newCheckOut)
+                {
+                    throw new InvalidOperationException(
+                        "Your new booking dates conflict with existing reservations"
+                    );
+                }
+            }
         }
 
 
