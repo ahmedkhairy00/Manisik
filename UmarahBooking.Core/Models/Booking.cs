@@ -30,39 +30,38 @@ namespace Manisik.Models
         //---------------nullable columns---------------------------
 
         // Human-friendly booking number, e.g. BK-2025-0001
-        [Required]
         [MaxLength(20)]
         public string? BookingNumber { get; set; } = default!;
 
 
-        [Required]
+
         public TripType? TripType { get; set; }  // Umrah or Hajj
 
         // Total price for the whole booking - stored as decimal(18,2)
-        [Required]
+
         [Column(TypeName = "decimal(18,2)")]
         public decimal? TotalPrice { get; set; }
 
 
 
         // Travel window
-        [Required]
+
         [DataType(DataType.Date)]
         public DateTime? TravelStartDate { get; set; }
 
-        [Required]
+
         [DataType(DataType.Date)]
         public DateTime? TravelEndDate { get; set; }
 
-        [Required]
+
         [Range(1, 100)]
         public int? NumberOfTravelers { get; set; }
 
         // Payment Info
-        [Required]
+
         public PaymentStatus? PaymentStatus { get; set; }
 
-        [Required]
+
         public PaymentMethod? PaymentMethod { get; set; }
 
         // Provider-specific identifier (Stripe PaymentIntent id or PayPal Order id)
