@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UmarahBooking.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c3f8d844c305cd0b7d125f4286d691db02d9db0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b2fd321682c59ae2250379d5ad60f875c82e35f9")]
 [assembly: System.Reflection.AssemblyProductAttribute("UmarahBooking.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UmarahBooking.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
