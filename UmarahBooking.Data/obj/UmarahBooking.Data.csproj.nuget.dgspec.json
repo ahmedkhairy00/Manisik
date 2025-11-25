@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\GitHub\\Manisik\\UmarahBooking.Data\\UmarahBooking.Data.csproj": {}
+    "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Data\\UmarahBooking.Data.csproj": {}
   },
   "projects": {
-    "D:\\GitHub\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj": {
+    "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj",
+        "projectUniqueName": "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj",
         "projectName": "UmarahBooking.Core",
-        "projectPath": "D:\\GitHub\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj",
-        "packagesPath": "C:\\Users\\nwrha\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\Manisik\\UmarahBooking.Core\\obj\\",
+        "projectPath": "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj",
+        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\nwrha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -79,24 +79,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\GitHub\\Manisik\\UmarahBooking.Data\\UmarahBooking.Data.csproj": {
+    "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Data\\UmarahBooking.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\Manisik\\UmarahBooking.Data\\UmarahBooking.Data.csproj",
+        "projectUniqueName": "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Data\\UmarahBooking.Data.csproj",
         "projectName": "UmarahBooking.Data",
-        "projectPath": "D:\\GitHub\\Manisik\\UmarahBooking.Data\\UmarahBooking.Data.csproj",
-        "packagesPath": "C:\\Users\\nwrha\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\Manisik\\UmarahBooking.Data\\obj\\",
+        "projectPath": "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Data\\UmarahBooking.Data.csproj",
+        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\nwrha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -111,8 +111,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\GitHub\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj": {
-                "projectPath": "D:\\GitHub\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj"
+              "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj": {
+                "projectPath": "C:\\Users\\DELL\\OneDrive\\Desktop\\dotnet\\Graduation Project\\Manisik\\UmarahBooking.Core\\UmarahBooking.Core.csproj"
               }
             }
           }
@@ -168,7 +168,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

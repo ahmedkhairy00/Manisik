@@ -2110,14 +2110,14 @@
             "name": "departureAirport",
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/DepartureAirport"
+              "type": "string"
             }
           },
           {
             "name": "arrivalAirport",
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/ArrivalAirport"
+              "type": "string"
             }
           }
         ],
@@ -2760,15 +2760,6 @@
   },
   "components": {
     "schemas": {
-      "ArrivalAirport": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
       "AssignRoleDto": {
         "required": [
           "roleName",
@@ -3027,18 +3018,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "DepartureAirport": {
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5
-        ],
-        "type": "integer",
-        "format": "int32"
       },
       "Gender": {
         "enum": [
@@ -3445,7 +3424,8 @@
             "nullable": true
           },
           "internationalTransportType": {
-            "$ref": "#/components/schemas/InternationalTransportType"
+            "minLength": 1,
+            "type": "string"
           },
           "carrierName": {
             "maxLength": 200,

@@ -1,7 +1,14 @@
-﻿namespace Manisik.Enums
+﻿using System.Runtime.Serialization;
+
+namespace Manisik.Enums
 {
     public enum ArrivalAirport
     {
-        Jeddah, Madinah, Taif
+        [EnumMember(Value = "Jeddah")]
+        Jeddah,
+        [EnumMember(Value = "Madinah")]
+        Madinah,
+        [EnumMember(Value = "Taif")]
+        Taif
     }
 }
