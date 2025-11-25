@@ -112,6 +112,17 @@ namespace UmarahBooking.Core.Mapping
                 .ReverseMap()
                 .ForMember(dest => dest.PaymentId, opt => opt.Ignore())
                 .ForMember(dest => dest.Booking, opt => opt.Ignore());
+
+
+
+
+
+            CreateMap<InternationalTransport, InternationalTransportDto>()
+            .ForMember(dest => dest.DepartureAirport, opt => opt.MapFrom(src => src.DepartureAirport.ToString()))
+            .ForMember(dest => dest.ArrivalAirport, opt => opt.MapFrom(src => src.ArrivalAirport.ToString()))
+            .ForMember(dest => dest.internationalTransportType, opt => opt.MapFrom(src => src.TransportType.ToString()));
+
         }
     }
+
 }

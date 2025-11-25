@@ -117,16 +117,17 @@ namespace UmarahBooking.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> SearchByRoute(
-            [FromQuery] Manisik.Enums.DepartureAirport departureAirport,
-            [FromQuery] Manisik.Enums.ArrivalAirport arrivalAirport)
+            [FromQuery] string departureAirport,
+            [FromQuery] string arrivalAirport)
         {
             try
             {
                 // Search for transports matching the route
                 var transports = await _unitOfWork.InternationalTransports.FindAllBySearch(
-                    t => t.DepartureAirport == departureAirport &&
-                         t.ArrivalAirport == arrivalAirport &&
-                         t.IsActive);
+                    t => t.DepartureAirport.ToString() == departureAirport &&
+                    t.ArrivalAirport.ToString() == arrivalAirport &&
+                    t.IsActive
+                    );
 
                 if (!transports.Any())
                 {

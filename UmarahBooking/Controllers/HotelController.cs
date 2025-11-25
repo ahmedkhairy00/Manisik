@@ -24,15 +24,13 @@ namespace UmarahBooking.Controllers
         public HotelController(
             ILogger<HotelController> logger,
             IHotelService hotelService
-            //IUnitOfWork unitOfWork,
-            //IMapper mapper, 
+
             )
         {
             _logger = logger;
 
             _hotelService = hotelService;
-            //_unitOfWork = unitOfWork;
-            //_mapper = mapper;
+
         }
 
         #endregion

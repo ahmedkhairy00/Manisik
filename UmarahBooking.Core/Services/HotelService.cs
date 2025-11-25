@@ -55,7 +55,8 @@ namespace UmarahBooking.Core.Services
             if (hotel == null)
                 return null;
 
-            hotel.Rooms = hotel.Rooms?.Where(r => r.IsActive).ToList();
+            //hotel.Rooms = hotel.Rooms?.Where(r => r.IsActive).ToList();
+            hotel.Rooms = hotel.Rooms?.ToList();
 
             var hotelDto = _mapper.Map<HotelDto>(hotel);
             return hotelDto;
