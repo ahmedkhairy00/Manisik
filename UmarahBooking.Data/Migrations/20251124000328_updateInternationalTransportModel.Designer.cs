@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace UmarahBooking.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251124000328_updateInternationalTransportModel")]
+    partial class updateInternationalTransportModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -298,10 +301,6 @@ namespace UmarahBooking.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Duration")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("InternalTransportType")
                         .HasColumnType("int");
 
@@ -311,15 +310,7 @@ namespace UmarahBooking.Data.Migrations
                     b.Property<decimal>("PricePerPerson")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Route")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ServiceName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("rate")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("GroundTransportId");
@@ -436,6 +427,10 @@ namespace UmarahBooking.Data.Migrations
                     b.Property<DateTime>("DepartureDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Duration")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("FlightClass")
                         .HasMaxLength(50)
                         .HasColumnType("int");
@@ -451,21 +446,12 @@ namespace UmarahBooking.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("ReturnDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Stops")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("TransportType")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("rate")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("review")
                         .HasColumnType("int");
 
                     b.HasKey("InternationalTransportId");

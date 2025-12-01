@@ -29,6 +29,14 @@ namespace Manisik.Models
 
         [Required]
         public bool IsActive { get; set; }
+        [Required]
+        public string Route { get; set; }
+
+        [Required]
+        public string Duration { get; set; }
+
+        [Required]
+        public string rate { get; set; }
 
         // Navigation
         public ICollection<BookingGroundTransport> BookingGroundTransport { get; set; }

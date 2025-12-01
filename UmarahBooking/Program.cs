@@ -52,6 +52,8 @@ namespace UmarahBooking
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IHotelService, HotelService>();
             builder.Services.AddScoped<IBookingHotelService, BookingHotelService>();
+            builder.Services.AddScoped<IInternationalTransportBookingService, InternationationalTransportBookingService>();
+
             //Ensure Identity is configured in Program.cs:
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>

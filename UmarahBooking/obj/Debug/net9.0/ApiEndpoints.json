@@ -658,6 +658,46 @@
     ]
   },
   {
+    "ContainingType": "UmarahBooking.Controllers.BookingInternationalTransportController",
+    "Method": "BookInternationalTransport",
+    "RelativePath": "api/BookingInternationalTransport/BookInteranationalTransport",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "UmarahBooking.Core.DTO.TransportBookingDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "UmarahBooking.Core.DTO.ApiResponse\u00601[[UmarahBooking.Core.DTO.TransportBookingDto, UmarahBooking.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
     "ContainingType": "UmarahBooking.Controllers.ChatBotAiController",
     "Method": "Chat",
     "RelativePath": "api/ChatBotAi/chat",
@@ -1433,7 +1473,7 @@
         "IsRequired": false
       },
       {
-        "Name": "endDate",
+        "Name": "returnDate",
         "Type": "System.DateTime",
         "IsRequired": false
       }

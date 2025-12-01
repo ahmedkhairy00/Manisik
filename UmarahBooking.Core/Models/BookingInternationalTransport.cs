@@ -12,6 +12,7 @@ namespace Manisik.Models
         [Required]
         public int BookingId { get; set; }
         [ForeignKey(nameof(BookingId))]
+        
         public Booking Booking { get; set; }
 
         [Required]

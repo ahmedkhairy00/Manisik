@@ -116,13 +116,13 @@ namespace UmarahBooking.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> SearchByType(
-            [FromQuery] Manisik.Enums.InternalTransportType transportType)
+            [FromQuery] string transportType)
         {
             try
             {
                 // Search for transports by type
                 var transports = await _unitOfWork.GroundTransports.FindAllBySearch(
-                    t => t.InternalTransportType == transportType && t.IsActive);
+                    t => t.InternalTransportType.ToString() == transportType && t.IsActive);
 
                 if (!transports.Any())
                 {

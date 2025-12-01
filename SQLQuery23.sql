@@ -67,7 +67,7 @@ VALUES
 ('PrivateCar',0,130,'PrivateCar',1,1),
 ('Taxi',1,80,'Taxi',2,1),
 ('SharedBus',2,40,'SharedBus',30,1);
-
+/*
 INSERT INTO [dbo].[InternationalTransports] 
 (TransportType, CarrierName, DepartureAirport, ArrivalAirport, DepartureDate, ArrivalDate, Price, AvailableSeats, FlightNumber, IsActive)
 VALUES
@@ -76,7 +76,128 @@ VALUES
 (0, 'Flynas', 2, 0, '2025-12-22', '2025-12-22', 600, 180, 'XY303', 1),
 (0, 'Flyadeal', 3, 1, '2025-12-23', '2025-12-23', 650, 170, 'FA404', 1),
 (0, 'AirCairo', 4, 2, '2025-12-24', '2025-12-24', 400, 160, 'AC505', 1),
-(0, 'NileAir', 5, 0, '2025-12-25', '2025-12-25', 800, 200, 'NP606', 1);
+(0, 'NileAir', 5, 0, '2025-12-25', '2025-12-25', 800, 200, 'NP606', 1);*/
+ 
+delete  from  [dbo].[InternationalTransports];
+delete  from  [dbo].[BookingInternationalTransports];
+INSERT INTO [dbo].[InternationalTransports] 
+(TransportType, CarrierName, DepartureAirport, ArrivalAirport, DepartureDate, ArrivalDate, ReturnDate, Price, AvailableSeats, FlightNumber, IsActive, Duration, Stops, FlightClass, rate, review)
+VALUES
+(0, 'Saudia', 0, 0, '2025-12-20', '2025-12-21', '2025-12-27', 500, 150, 'SV101', 1, '5 h 40 m', 0, 0, 4, 120),
+(0, 'EgyptAir', 1, 1, '2025-12-21', '2025-12-22', '2025-12-28', 700, 200, 'MS202', 1, '2 h 00 m', 0, 0, 5, 180),
+(0, 'Flynas', 2, 0, '2025-12-22', '2025-12-23', '2025-12-30', 600, 180, 'XY303', 1, '4 h 30 m', 0, 1, 3, 95),
+(0, 'Flyadeal', 3, 1, '2025-12-23', '2025-12-24', '2025-12-29', 650, 170, 'FA404', 1, '7 h 30 m', 0, 1, 4, 140),
+(0, 'AirCairo', 4, 2, '2025-12-24', '2025-12-25', '2026-01-02', 400, 160, 'AC505', 1, '8 h 30 m', 0, 2, 2, 60),
+(0, 'NileAir', 5, 0, '2025-12-25', '2025-12-26', '2026-01-03', 800, 200, 'NP606', 1, '2 h 30 m', 0, 2, 5, 200),
+(1, 'RedSeaFerries', 6, 0, '2025-12-22', '2025-12-23', '2025-12-30', 300, 100, 'RSF001', 1, '12 h 00 m', 1, 0, 4.8, 500),
+(1, 'MediterraneanLines', 7, 0, '2025-12-23', '2025-12-24', '2025-12-29', 350, 120, 'ML002', 1, '15 h 30 m', 0, 3, 5, 750),
+(1, 'NileCruises', 8, 1, '2025-12-24', '2025-12-25', '2026-01-02', 400, 80, 'NC003', 1, '20 h 00 m', 0, 0, 5, 600);
+
+delete from [dbo].[GroundTransports];
+INSERT INTO [dbo].[GroundTransports]
+(ServiceName, InternalTransportType, PricePerPerson, Description, Capacity, IsActive,Duration,Route,rate)
+VALUES
+-- Service 1
+('SAPTCO (Public Bus)', 
+ 0, 
+ 25.00,
+ ' AC, Comfortable seats, WiFi',
+ 50,
+ 1,
+ ' 1h 30m',
+ ' Jeddah - Makkah',
+ 4),
+
+('Al Khalij Bus Services', 
+ 0, 
+ 35.00,
+ 'AC, Reclining seats, Refreshments, Prayer stops',
+ 50,
+ 1,
+ '4h 30m',
+ 'Makkah - Madinah',
+ 4),
+
+('Haramain High-Speed Train', 
+ 1, 
+ 60.00,
+ 'AC, WiFi, Comfortable seats',
+ 300,
+ 1,
+ '45 min',
+ 'Jeddah - Makkah',
+ 4),
+
+('Haramain Express Train', 
+ 1, 
+ 80.00,
+ ' AC, WiFi, Refreshments, Spacious seats',
+ 350,
+ 1,
+ '2h 00m',
+ 'Makkah - Madinah',
+ 4),
+
+('Blacklane Chauffeur Service',
+ 3,
+ 180.00,
+ 'Luxury sedan, AC, Professional driver',
+ 3,
+ 1,
+ '1h 20m',
+ 'Jeddah - Makkah',
+ 4),
+
+('UberX', 
+ 2, 
+ 90.00,
+ 'AC, 4 seats',
+ 4,
+ 1,
+ '1h 20m',
+ 'Jeddah - Makkah',
+ 4),
+
+('Careem Go', 
+ 2, 
+ 95.00,
+ ' AC, 4 seats, Water',
+ 4,
+ 1,
+ '4h 10m',
+ 'Makkah - Madinah',
+ 4),
+
+('Elite Chauffeur Saudi Arabia',
+ 3,
+ 220.00,
+ 'Luxury private SUV , Leather seats, AC, Professional chauffeur',
+ 4,
+ 1,
+ '4h 10m',
+ 'Makkah - Madinah',
+ 4),
+
+('Makkah Limousine',
+ 3,
+ 150.00,
+ 'Standard private car , AC, Comfortable seats, 4 passengers',
+ 4,
+ 1,
+ '1h 30m',
+ 'Jeddah - Makkah',
+ 4),
+
+('Saudi VIP Taxi',
+ 3,
+ 130.00,
+ 'Private taxi service , AC, 4 seats, Driver included',
+ 4,
+ 1,
+ '4h 00m',
+ 'Madinah - Makkah',
+ 4);
+ 
 
 
 

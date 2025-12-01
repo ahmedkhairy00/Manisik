@@ -118,11 +118,31 @@ namespace UmarahBooking.Core.Mapping
 
 
             CreateMap<InternationalTransport, InternationalTransportDto>()
+           
+             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.InternationalTransportId))
             .ForMember(dest => dest.DepartureAirport, opt => opt.MapFrom(src => src.DepartureAirport.ToString()))
             .ForMember(dest => dest.ArrivalAirport, opt => opt.MapFrom(src => src.ArrivalAirport.ToString()))
-            .ForMember(dest => dest.internationalTransportType, opt => opt.MapFrom(src => src.TransportType.ToString()));
+            .ForMember(dest => dest.internationalTransportType, opt => opt.MapFrom(src => src.TransportType.ToString()))
+            .ForMember(dest => dest.FlightClass, opt => opt.MapFrom(src => src.FlightClass.ToString()))
+            .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => (src.ArrivalDate - src.DepartureDate).ToString(@"dd\:hh\:mm")))
+            ;
 
+
+            CreateMap<GroundTransport, GroundTransportDto>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.InternalTransportType.ToString()));
+
+
+
+
+            CreateMap<TransportBookingDto, BookingInternationalTransport>()
+           .ForMember(dest => dest.InternationalTransportId, opt => opt.MapFrom(src => src.TransportId))
+           .ForMember(dest => dest.NumberOfSeats, opt => opt.MapFrom(src => src.NumberOfSeats))
+           .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.NumberOfSeats * (src.PricePerSeat ?? 0)))
+           .ForMember(dest => dest.BookingId, opt => opt.Ignore()) 
+           .ForMember(dest => dest.Booking, opt => opt.Ignore())   
+           .ForMember(dest => dest.InternationalTransport, opt => opt.Ignore()); 
         }
+    
     }
 
 }

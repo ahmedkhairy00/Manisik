@@ -20,7 +20,7 @@ namespace UmarahBooking.Core.DTO
         public string? ServiceNameAr { get; set; }
 
         [Required]
-        public InternalTransportType Type { get; set; }
+        public string Type { get; set; }
 
         [Required]
         [Range(0.01, 10000)]
@@ -37,6 +37,15 @@ namespace UmarahBooking.Core.DTO
         public int Capacity { get; set; }
 
         public bool IsActive { get; set; } = true;
+
+        [Required]
+        public string Route { get; set; }
+
+        [Required]
+        public string Duration { get; set; }
+
+        [Required]
+        public string rate { get; set; }
         public DateTime? CreatedAt { get; set; }
     }
 }

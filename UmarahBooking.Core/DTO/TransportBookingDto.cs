@@ -13,7 +13,7 @@ namespace UmarahBooking.Core.DTO
         [Required]
         public int TransportId { get; set; }
 
-        public InternationalTransportType? Type { get; set; }
+        public string? Type { get; set; }
         public string? CarrierName { get; set; }
         public string? FlightNumber { get; set; }
 

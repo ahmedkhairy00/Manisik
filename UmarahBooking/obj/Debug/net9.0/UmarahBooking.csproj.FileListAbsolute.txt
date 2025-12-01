@@ -1156,10 +1156,10 @@ C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\o
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\staticwebassets.development.json
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\UmarahBo.63A5EB22.Up2Date
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\UmarahBooking.dll
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\refint\UmarahBooking.dll
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\UmarahBooking.pdb
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\UmarahBooking.genruntimeconfig.cache
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\ref\UmarahBooking.dll
+C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
