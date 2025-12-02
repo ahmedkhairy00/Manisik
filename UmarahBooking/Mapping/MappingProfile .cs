@@ -118,6 +118,7 @@ namespace UmarahBooking.Core.Mapping
 
 
             CreateMap<InternationalTransport, InternationalTransportDto>()
+
            
              .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.InternationalTransportId))
             .ForMember(dest => dest.DepartureAirport, opt => opt.MapFrom(src => src.DepartureAirport.ToString()))
@@ -141,6 +142,11 @@ namespace UmarahBooking.Core.Mapping
            .ForMember(dest => dest.BookingId, opt => opt.Ignore()) 
            .ForMember(dest => dest.Booking, opt => opt.Ignore())   
            .ForMember(dest => dest.InternationalTransport, opt => opt.Ignore()); 
+
+            .ForMember(dest => dest.DepartureAirport, opt => opt.MapFrom(src => src.DepartureAirport.ToString()))
+            .ForMember(dest => dest.ArrivalAirport, opt => opt.MapFrom(src => src.ArrivalAirport.ToString()))
+            .ForMember(dest => dest.internationalTransportType, opt => opt.MapFrom(src => src.TransportType.ToString()));
+
         }
     
     }

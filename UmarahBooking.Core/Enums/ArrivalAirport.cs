@@ -9,6 +9,7 @@ namespace Manisik.Enums
         [EnumMember(Value = "Madinah")]
         Madinah,
         [EnumMember(Value = "Taif")]
+<<<<<<< Updated upstream
         Taif,
 
 
@@ -30,5 +31,8 @@ namespace Manisik.Enums
         AlexandriaPort,
         [EnumMember(Value = "HurghadaPort")]
         HurghadaPort
+=======
+        Taif
+>>>>>>> Stashed changes
     }
 }
