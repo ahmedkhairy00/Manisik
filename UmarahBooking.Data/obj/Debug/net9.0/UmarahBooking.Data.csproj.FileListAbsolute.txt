@@ -52,7 +52,7 @@ D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\refint\UmarahBooking.Data.
 D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.pdb
 D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\UmarahBooking.Data.genruntimeconfig.cache
 D:\GitHub\Manisik\UmarahBooking.Data\obj\Debug\net9.0\ref\UmarahBooking.Data.dll
->>>>>>> Stashed changes
+
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking.Data\bin\Debug\net9.0\UmarahBooking.Data.deps.json
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking.Data\bin\Debug\net9.0\UmarahBooking.Data.runtimeconfig.json
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking.Data\bin\Debug\net9.0\UmarahBooking.Data.dll
