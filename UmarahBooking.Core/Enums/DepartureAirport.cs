@@ -4,7 +4,7 @@ namespace Manisik.Enums
     public enum DepartureAirport
     {
         [EnumMember(Value = "CairoInternational")] 
-<<<<<<< Updated upstream
+
         CairoInternational,        // CAI//0
         [EnumMember(Value = "BorgElArabAlexandria")]
         BorgElArabAlexandria,      // HBE//1
@@ -27,24 +27,6 @@ namespace Manisik.Enums
 
 
 
-       [EnumMember(Value = "Jeddah")]
-        Jeddah,
-        [EnumMember(Value = "Madinah")]
-        Madinah,
-        [EnumMember(Value = "Taif")]
-        Taif,
-=======
-        CairoInternational,        // CAI
-        [EnumMember(Value = "BorgElArabAlexandria")]
-        BorgElArabAlexandria,      // HBE
-        [EnumMember(Value = "SharmElSheikhInternational")]
-        SharmElSheikhInternational,// SSH
-        [EnumMember(Value = "HurghadaInternational")]
-        HurghadaInternational,     // HRG
-        [EnumMember(Value = "AssiutInternational")]
-        AssiutInternational,       // ATZ
-        [EnumMember(Value = "SohagInternational")]
-        SohagInternational         // HMB
->>>>>>> Stashed changes
+
     }
 }

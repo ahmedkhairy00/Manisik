@@ -4,7 +4,7 @@ namespace Manisik.Enums
 {
     public enum InternalTransportType
     {
-<<<<<<< Updated upstream
+
         [EnumMember(Value = "PublicBus")]
         PublicBus ,
 
@@ -17,13 +17,6 @@ namespace Manisik.Enums
         [EnumMember(Value = "PrivateCar")]
         PrivateCar 
 
-=======
-        [EnumMember(Value = "PrivateCar")]
-        PrivateCar,
-        [EnumMember(Value = "SharedBus")]
-        SharedBus,
-        [EnumMember(Value = "Taxi")]
-        Taxi,
->>>>>>> Stashed changes
+
     }
 }

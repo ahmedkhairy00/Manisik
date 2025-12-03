@@ -1,9 +1,9 @@
 INSERT INTO [dbo].[Hotels] (Name, HotelCity, Address, StarRating, DistanceToHaram, Description, ImageUrl, IsActive, CreatedAt)
 VALUES
 ('Hilton Makkah', 0, 'Al Haram Rd', 5, 200, 'A luxurious 5-star hotel with direct views of the Holy Haram.', '/images/hotels/hilton-makkah.jpg', 1, GETDATE()),
-('Anwar Al Madinah', 1, 'Prince Mohammed St', 4, 300, 'Elegant hotel near the Prophet’s Mosque with modern rooms.', '/images/hotels/anwar-al-madinah.jpg', 1, GETDATE()),
+('Anwar Al Madinah', 1, 'Prince Mohammed St', 4, 300, 'Elegant hotel near the Prophetï¿½s Mosque with modern rooms.', '/images/hotels/anwar-al-madinah.jpg', 1, GETDATE()),
 ('Swissotel Al Maqam', 0, 'Abraj Al Bait', 4, 250, 'Located in the Abraj Al Bait complex with direct access to Masjid Al Haram.', '/images/hotels/swissotel-al-maqam.jpg', 1, GETDATE()),
-('Dar Al Iman Intercontinental', 0, 'King Fahd Rd', 3, 400, 'Luxury hotel facing the Prophet’s Mosque.', '/images/hotels/dar-al-iman.jpeg', 1, GETDATE()),
+('Dar Al Iman Intercontinental', 0, 'King Fahd Rd', 3, 400, 'Luxury hotel facing the Prophetï¿½s Mosque.', '/images/hotels/dar-al-iman.jpeg', 1, GETDATE()),
 ('Conrad Makkah', 1, 'King Abdulaziz Rd', 5, 150, '5-star hotel with luxury suites and direct Haram views.', '/images/hotels/conrad-makkah.jpg', 1, GETDATE()),
 ('Pullman Zamzam', 1, 'Abraj Al Bait Towers', 4, 350, 'Modern rooms with Haram views, close to shopping and dining.', '/images/hotels/pullman-zamzam.jpg', 1, GETDATE());
 
@@ -197,10 +197,6 @@ VALUES
  '4h 00m',
  'Madinah - Makkah',
  4);
- 
-
-
-
 INSERT INTO [dbo].[Bookings]
 (BookingNumber, BookingStatus, TripType, TotalPrice, BookingDate, TravelStartDate, TravelEndDate, NumberOfTravelers, PaymentStatus, PaymentMethod, PaymentIntentId, PaymentDate, CreatedAt, UpdatedAt, UserId)
 VALUES
