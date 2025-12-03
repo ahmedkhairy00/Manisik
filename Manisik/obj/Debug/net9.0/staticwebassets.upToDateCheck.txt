@@ -1,0 +1,6 @@
+wwwroot\images\anwar-al-madinah.jpg
+wwwroot\images\conrad-makkah.jpg
+wwwroot\images\dar-al-iman.jpeg
+wwwroot\images\hilton-makkah.jpg
+wwwroot\images\pullman-zamzam.jpg
+wwwroot\images\swissotel-al-maqam.jpg
