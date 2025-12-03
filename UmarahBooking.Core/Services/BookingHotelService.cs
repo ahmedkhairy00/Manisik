@@ -28,6 +28,7 @@ namespace UmarahBooking.Core.Services
             var room = await GetRoomAsync(dto.HotelId, dto.RoomId);
 
             await EnsureUserCanBookInCityAsync(userId, room.HotelId);
+            await EnsureNoDateConflictAsync(userId, dto.CheckInDate, dto.CheckOutDate);
 
             int remainingRooms = await CheckRoomAvailabilityAsync(dto, room);
             if (dto.NumberOfRooms > remainingRooms)
@@ -107,7 +108,7 @@ namespace UmarahBooking.Core.Services
         {
             var room = await _unitOfWork.HotelRooms
                 .GetAllAsQuerable()
-                .Where(r => r.HotelId == hotelId && r.HotelRoomId == roomId && r.IsActive)
+                .Where(r => r.HotelId == hotelId && r.HotelRoomId == roomId)
                 .FirstOrDefaultAsync();
 
             if (room == null)
