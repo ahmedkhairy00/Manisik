@@ -11,3 +11,16 @@ C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking.C
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking.Core\obj\Debug\net9.0\refint\UmarahBooking.Core.dll
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.pdb
 C:\Users\DELL\OneDrive\Desktop\dotnet\Graduation Project\Manisik\UmarahBooking.Core\obj\Debug\net9.0\ref\UmarahBooking.Core.dll
+D:\GitHub\Manisik\UmarahBooking.Core\bin\Debug\net9.0\UmarahBooking.Core.deps.json
+D:\GitHub\Manisik\UmarahBooking.Core\bin\Debug\net9.0\UmarahBooking.Core.dll
+D:\GitHub\Manisik\UmarahBooking.Core\bin\Debug\net9.0\UmarahBooking.Core.pdb
+D:\GitHub\Manisik\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.csproj.AssemblyReference.cache
+D:\GitHub\Manisik\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitHub\Manisik\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.AssemblyInfoInputs.cache
+D:\GitHub\Manisik\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.AssemblyInfo.cs
+D:\GitHub\Manisik\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.csproj.CoreCompileInputs.cache
+D:\GitHub\Manisik\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.sourcelink.json
+D:\GitHub\Manisik\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.dll
+D:\GitHub\Manisik\UmarahBooking.Core\obj\Debug\net9.0\refint\UmarahBooking.Core.dll
+D:\GitHub\Manisik\UmarahBooking.Core\obj\Debug\net9.0\UmarahBooking.Core.pdb
+D:\GitHub\Manisik\UmarahBooking.Core\obj\Debug\net9.0\ref\UmarahBooking.Core.dll

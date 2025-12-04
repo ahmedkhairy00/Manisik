@@ -28,6 +28,7 @@ namespace UmarahBooking.Core.Services
             var room = await GetRoomAsync(dto.HotelId, dto.RoomId);
 
             await EnsureUserCanBookInCityAsync(userId, room.HotelId);
+            await EnsureNoDateConflictAsync(userId, dto.CheckInDate, dto.CheckOutDate);
 
             int remainingRooms = await CheckRoomAvailabilityAsync(dto, room);
             if (dto.NumberOfRooms > remainingRooms)

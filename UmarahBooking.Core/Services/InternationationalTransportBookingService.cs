@@ -2,17 +2,12 @@
 using Manisik.Enums;
 using Manisik.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UmarahBooking.Core.DTO;
 using UmarahBooking.Core.Interfaces;
 
 namespace UmarahBooking.Core.Services
 {
-    public class InternationationalTransportBookingService: IInternationalTransportBookingService
+    public class InternationationalTransportBookingService : IInternationalTransportBookingService
 
     {
 
@@ -34,7 +29,7 @@ namespace UmarahBooking.Core.Services
             if (dto.NumberOfSeats > flight.AvailableSeats)
                 throw new InvalidOperationException($"Only {flight.AvailableSeats} seats are available for this flight.");
 
-           
+
 
 
 
@@ -61,7 +56,7 @@ namespace UmarahBooking.Core.Services
 
             if (existingFlightsCount >= 2)
             {
-                throw new InvalidOperationException("You can only book 2 flights (Round Trip).");
+                throw new InvalidOperationException("You can only book 1 flight");
             }
             // Map DTO to Entity
             var bookingTransport = _mapper.Map<BookingInternationalTransport>(dto);
@@ -74,7 +69,7 @@ namespace UmarahBooking.Core.Services
             if (flight.AvailableSeats < 0) flight.AvailableSeats = 0;
             await _unitOfWork.InternationalTransports.UpdateAsync(flight);
 
-         
+
 
             return bookingTransport;
         }
