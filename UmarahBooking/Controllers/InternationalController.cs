@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using UmarahBooking.Core.DTO;
 using UmarahBooking.Core.Interfaces;
+using UmarahBooking.Core.Services;
 
 namespace UmarahBooking.Controllers
 {
@@ -20,18 +21,21 @@ namespace UmarahBooking.Controllers
         private readonly ILogger<InternationalTransportController> _logger;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
+       
         /// <summary>
         /// Constructor with dependency injection
         /// </summary>
         public InternationalTransportController(
             ILogger<InternationalTransportController> logger,
             IUnitOfWork unitOfWork,
-            IMapper mapper)
+            IMapper mapper
+           
+            )
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            
         }
 
         #endregion
@@ -166,27 +170,32 @@ namespace UmarahBooking.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> SearchByDateRange(
             [FromQuery] DateTime startDate,
-            [FromQuery] DateTime endDate)
+            [FromQuery] DateTime returnDate)
         {
             try
             {
                 // Validate date range
-                if (startDate >= endDate)
+                if (startDate >= returnDate)
                 {
                     return BadRequest(ApiResponse<IEnumerable<InternationalTransportDto>>.ErrorResponse(
                         "Start date must be before end date"));
                 }
 
                 // Search transports within date range
+                //var transports = await _unitOfWork.InternationalTransports.FindAllBySearch(
+                //    t => t.DepartureDate.Date == startDate.Date &&
+                //         t.ReturnDate.Value.Date == returnDate.Date &&
+                //         t.IsActive);
                 var transports = await _unitOfWork.InternationalTransports.FindAllBySearch(
-                    t => t.DepartureDate >= startDate &&
-                         t.DepartureDate <= endDate &&
-                         t.IsActive);
+                t => t.DepartureDate >= startDate.Date && t.DepartureDate < startDate.Date.AddDays(1) &&
+                     t.ReturnDate.HasValue &&
+                     t.ReturnDate.Value >= returnDate.Date && t.ReturnDate.Value < returnDate.Date.AddDays(1) &&
+                     t.IsActive);
 
                 if (!transports.Any())
                 {
                     return NotFound(ApiResponse<IEnumerable<InternationalTransportDto>>.ErrorResponse(
-                        $"No transports available between {startDate:yyyy-MM-dd} and {endDate:yyyy-MM-dd}"));
+                        $"No transports available in {startDate:yyyy-MM-dd} and {returnDate:yyyy-MM-dd}"));
                 }
 
                 var transportDtos = _mapper.Map<IEnumerable<InternationalTransportDto>>(transports);

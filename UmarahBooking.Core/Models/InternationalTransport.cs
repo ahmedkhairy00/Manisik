@@ -1,6 +1,4 @@
 ﻿using Manisik.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -36,6 +34,7 @@ namespace Manisik.Models
         [Required]
         public DateTime ArrivalDate { get; set; }
 
+        public DateTime? ReturnDate { get; set; }
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
@@ -49,6 +48,19 @@ namespace Manisik.Models
 
         [Required]
         public bool IsActive { get; set; }
+
+        //public int Duration { get; set; }
+
+
+        [MaxLength(50)]
+        public flightDegree FlightClass { get; set; }
+
+        public int? rate { get; set; }
+
+        public int? review { get; set; }
+
+        [MaxLength(50)]
+        public string Stops { get; set; }
 
         // Navigation
         public ICollection<BookingInternationalTransport> BookingInternationalTransport { get; set; }

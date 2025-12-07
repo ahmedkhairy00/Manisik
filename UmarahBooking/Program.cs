@@ -169,6 +169,7 @@ namespace UmarahBooking
             services.AddScoped<IBookingHotelService, BookingHotelService>();
             services.AddScoped<IBookingGroundTransportService, BookingGroundTransportService>();
             services.AddScoped<IBookingInternationalTransportService, BookingInternationalTransportService>();
+            services.AddScoped<IInternationalTransportBookingService, InternationationalTransportBookingService>();
             services.AddScoped<ChatBotService>();
             services.AddSingleton<ChatMemoryService>();
         }

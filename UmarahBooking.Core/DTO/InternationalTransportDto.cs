@@ -39,6 +39,8 @@ namespace UmarahBooking.Core.DTO
         [Required]
         public DateTime ArrivalDate { get; set; }
 
+        public DateTime? ReturnDate { get; set; }
+
         [Required]
         [Range(0.01, 100000)]
         public decimal Price { get; set; }
@@ -53,8 +55,20 @@ namespace UmarahBooking.Core.DTO
         [StringLength(50)]
         public string? FlightNumber { get; set; }
 
+
+        public string Duration { get; set; }
+
+        [MaxLength(50)]
+        public string FlightClass { get; set; }
+
+        [MaxLength(50)]
+        public string Stops { get; set; }
+
+
         public bool IsActive { get; set; } = true;
         public DateTime? CreatedAt { get; set; }
         public int? CreatedByUserId { get; set; }
+
+       
     }
 }
