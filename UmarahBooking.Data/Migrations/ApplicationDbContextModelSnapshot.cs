@@ -122,8 +122,9 @@ namespace UmarahBooking.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("BookingStatus")
-                        .HasColumnType("int");
+                    b.Property<string>("BookingStatus")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -137,11 +138,17 @@ namespace UmarahBooking.Data.Migrations
                     b.Property<string>("PaymentIntentId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PaymentMethod")
-                        .HasColumnType("int");
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("varchar(50)");
 
-                    b.Property<int?>("PaymentStatus")
-                        .HasColumnType("int");
+                    b.Property<string>("PaymentStatus")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime?>("ReservedUntil")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("ServiceFee")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
@@ -152,8 +159,9 @@ namespace UmarahBooking.Data.Migrations
                     b.Property<DateTime?>("TravelStartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("TripType")
-                        .HasColumnType("int");
+                    b.Property<string>("TripType")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -227,8 +235,8 @@ namespace UmarahBooking.Data.Migrations
                     b.Property<DateTime>("CheckOutDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("City")
-                        .HasColumnType("int");
+                    b.Property<string>("City")
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("HotelId")
                         .HasColumnType("int");
@@ -298,8 +306,9 @@ namespace UmarahBooking.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("InternalTransportType")
-                        .HasColumnType("int");
+                    b.Property<string>("InternalTransportType")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -331,6 +340,9 @@ namespace UmarahBooking.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CreatedByUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -339,8 +351,9 @@ namespace UmarahBooking.Data.Migrations
                     b.Property<decimal>("DistanceToHaram")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("HotelCity")
-                        .HasColumnType("int");
+                    b.Property<string>("HotelCity")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -404,8 +417,9 @@ namespace UmarahBooking.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InternationalTransportId"));
 
-                    b.Property<int>("ArrivalAirport")
-                        .HasColumnType("int");
+                    b.Property<string>("ArrivalAirport")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("ArrivalDate")
                         .HasColumnType("datetime2");
@@ -418,8 +432,9 @@ namespace UmarahBooking.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("DepartureAirport")
-                        .HasColumnType("int");
+                    b.Property<string>("DepartureAirport")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("DepartureDate")
                         .HasColumnType("datetime2");
@@ -435,8 +450,9 @@ namespace UmarahBooking.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("TransportType")
-                        .HasColumnType("int");
+                    b.Property<string>("TransportType")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("InternationalTransportId");
 
@@ -456,6 +472,10 @@ namespace UmarahBooking.Data.Migrations
 
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ClientSecret")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -486,11 +506,13 @@ namespace UmarahBooking.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("PaymentMethod")
-                        .HasColumnType("int");
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("TransactionId")
                         .HasMaxLength(200)
@@ -540,6 +562,33 @@ namespace UmarahBooking.Data.Migrations
                     b.ToTable("PaymentEvents");
                 });
 
+            modelBuilder.Entity("Manisik.Models.Subscriber", b =>
+                {
+                    b.Property<int>("SubscriberId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubscriberId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("SubscriberId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Subscribers");
+                });
+
             modelBuilder.Entity("Manisik.Models.Traveler", b =>
                 {
                     b.Property<int>("TravelerId")
@@ -573,8 +622,9 @@ namespace UmarahBooking.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("Gender")
-                        .HasColumnType("int");
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<bool?>("IsMainTraveler")
                         .HasColumnType("bit");

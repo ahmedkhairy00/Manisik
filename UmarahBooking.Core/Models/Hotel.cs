@@ -17,6 +17,8 @@ namespace Manisik.Models
         public string Name { get; set; }
 
         [Required]
+        [Column(TypeName = "varchar(50)")]
+
         public HotelCity HotelCity { get; set; } // Makkah, Madinah
 
         [Required]
@@ -47,5 +49,7 @@ namespace Manisik.Models
         
         public ICollection<HotelRoom>? Rooms { get; set; }
         public ICollection<BookingHotel> BookingHotels { get; set; }
+
+        public int? CreatedByUserId { get; set; }
     }
 }

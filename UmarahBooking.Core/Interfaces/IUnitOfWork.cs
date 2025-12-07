@@ -1,4 +1,5 @@
 ﻿using Manisik.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,11 @@ namespace UmarahBooking.Core.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-       
+
         // ========== REPOSITORY PROPERTIES ==========
+
+        // ✅ Add this property
+        DbContext Context { get; }
 
         /// <summary>
         /// Repository for Hotel entity operations
@@ -69,6 +73,11 @@ namespace UmarahBooking.Core.Interfaces
         /// </summary>
         IBaseRepository<ApplicationUser> Users { get; }
 
+        /// <summary>
+        /// Repository for Subscriber entity operations
+        /// </summary>
+        IBaseRepository<Subscriber> Subscribers { get; }
+
         // ========== TRANSACTION METHODS ==========
 
         /// <summary>
@@ -93,5 +102,3 @@ namespace UmarahBooking.Core.Interfaces
         Task RollbackTransaction();
     }
 }
-
-    

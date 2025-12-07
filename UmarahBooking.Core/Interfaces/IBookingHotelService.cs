@@ -11,5 +11,7 @@ namespace UmarahBooking.Core.Interfaces
         int CalculateNumberOfNights(DateTime checkIn, DateTime checkOut);
         void ValidateDates(HotelBookingDto dto);
         Task<HotelRoom> GetRoomAsync(int hotelId, int roomId);
+        Task<IEnumerable<PendingHotelBookingDto>> GetPendingHotelBookingsAsync(int userId);
+        Task<bool> DeletePendingHotelBookingAsync(int bookingHotelId, int userId);
     }
 }

@@ -26,6 +26,7 @@ namespace Manisik.Models
         [ForeignKey(nameof(RoomId))]
         public HotelRoom Room { get; set; }
 
+        [Column(TypeName = "varchar(50)")]
         public HotelCity? City { get; set; }
 
 

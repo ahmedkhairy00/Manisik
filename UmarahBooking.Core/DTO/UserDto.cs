@@ -15,13 +15,6 @@ namespace UmarahBooking.Core.DTO
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Password - ONLY for registration, NULL for other operations
-        /// Frontend: if (isRegistration) { include password field }
-        /// </summary>
-        [StringLength(100, MinimumLength = 8)]
-        public string? Password { get; set; }
-
         [Required]
         [StringLength(100, MinimumLength = 2)]
         public string FirstName { get; set; } = string.Empty;
@@ -37,7 +30,7 @@ namespace UmarahBooking.Core.DTO
         public string? Country { get; set; }
 
         [RegularExpression("^(en|ar)$")]
-        public string ?PreferredLanguage { get; set; } = "en";
+        public string? PreferredLanguage { get; set; } = "en";
 
         // Response-only fields
         public List<string>? Roles { get; set; }
@@ -50,7 +43,28 @@ namespace UmarahBooking.Core.DTO
         public string FullName => $"{FirstName} {LastName}";
     }
 
-    
+    public class UserWithBookingsDto
+    {
+        public int UserId { get; set; }
+        public string Email { get; set; }
+        public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Country { get; set; }
+        public List<BookingSummaryDto> Bookings { get; set; }
+    }
+
+    public class BookingSummaryDto
+    {
+        public int BookingId { get; set; }
+        public string BookingNumber { get; set; }
+        public string BookingType { get; set; }
+        public string Status { get; set; }
+        public decimal TotalPrice { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public int HotelsCount { get; set; }
+        public int TravelersCount { get; set; }
+    }
+
 }
 
 

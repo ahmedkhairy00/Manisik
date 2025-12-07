@@ -20,9 +20,11 @@ namespace UmarahBooking.Core.Services
             string? city = null,
             string? filter = null)
         {
-            IQueryable<Hotel> query = _unitOfWork.Hotels.GetAllAsQuerable().Where(h => h.IsActive == true);
+            IQueryable<Hotel> query = _unitOfWork.Hotels.GetAllAsQuerable()
+                .Include(h => h.Rooms)
+                .Where(h => h.IsActive == true);
 
-            if (!string.IsNullOrEmpty(city))
+            if (!string.IsNullOrEmpty(city) && city.ToLower() != "all")
             {
                 query = query.Where(h => h.HotelCity.ToString().ToLower() == city.ToLower());
             }
@@ -40,7 +42,7 @@ namespace UmarahBooking.Core.Services
             var hotels = await query.ToListAsync();
 
             if (!hotels.Any())
-                return null;
+                return Enumerable.Empty<HotelDto>();
 
             var hotelDtos = _mapper.Map<IEnumerable<HotelDto>>(hotels);
             return hotelDtos;

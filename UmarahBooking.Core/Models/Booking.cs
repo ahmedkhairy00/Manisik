@@ -13,6 +13,7 @@ namespace Manisik.Models
         public int BookingId { get; set; }
 
         [Required]
+        [Column(TypeName = "varchar(50)")]
         public BookingStatus BookingStatus { get; set; } = BookingStatus.Pending;
 
         // When the booking was created
@@ -34,10 +35,12 @@ namespace Manisik.Models
         public string? BookingNumber { get; set; } = default!;
 
 
+        [Column(TypeName = "varchar(50)")]
+        public TripType TripType { get; set; }  // Umrah or Hajj
 
-        public TripType? TripType { get; set; }  // Umrah or Hajj
-
-        // Total price for the whole booking - stored as decimal(18,2)
+        // Total price for the whole booking and Fees - stored as decimal(18,2)
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? ServiceFee { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal? TotalPrice { get; set; }
@@ -58,9 +61,11 @@ namespace Manisik.Models
         public int? NumberOfTravelers { get; set; }
 
         // Payment Info
+        [Column(TypeName = "varchar(50)")]
 
         public PaymentStatus? PaymentStatus { get; set; }
 
+        [Column(TypeName = "varchar(50)")]
 
         public PaymentMethod? PaymentMethod { get; set; }
 
@@ -69,6 +74,10 @@ namespace Manisik.Models
 
         [DataType(DataType.Date)]
         public DateTime? PaymentDate { get; set; }
+
+        // Reservation TTL - when a Pending booking reservation expires it should be cancelled by background job
+        [DataType(DataType.Date)]
+        public DateTime? ReservedUntil { get; set; }
 
         // Audit timestamps
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;

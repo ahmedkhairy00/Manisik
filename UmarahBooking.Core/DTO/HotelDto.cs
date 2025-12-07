@@ -41,10 +41,10 @@ namespace UmarahBooking.Core.DTO
         [StringLength(2000)]
         public string? DescriptionAr { get; set; }
 
-        [Url(ErrorMessage = "Invalid URL format")]
         public string? ImageUrl { get; set; }
 
-
+        public decimal PricePerNight { get; set; }
+        public int AvailableRooms { get; set; }
 
         // ========== ROOMS (Nullable - populated in detail view only) ==========
         /// <summary>

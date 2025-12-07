@@ -9,7 +9,7 @@ namespace UmarahBooking.Core.DTO
     public class BookingDto
     {
         // ========== IDENTITY ==========
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public string? BookingNumber { get; set; }
 
         // ========== USER ==========
@@ -18,10 +18,10 @@ namespace UmarahBooking.Core.DTO
 
         // ========== BOOKING TYPE ==========
         [Required]
-        public TripType Type { get; set; }
+        public string Type { get; set; }
 
         [Required]
-        public BookingStatus Status { get; set; }
+        public string Status { get; set; }
 
         [Required]
         public DateTime TravelStartDate { get; set; }
@@ -86,8 +86,7 @@ namespace UmarahBooking.Core.DTO
                    MadinahHotel != null &&
                    InternationalTransport != null &&
                    Travelers != null &&
-                   Travelers.Count == NumberOfTravelers &&
-                   Payment != null;
+                   Travelers.Any(); // ✅ Just check travelers exist
         }
 
         /// <summary>
@@ -98,9 +97,9 @@ namespace UmarahBooking.Core.DTO
             if (MakkahHotel == null) return 1;
             if (MadinahHotel == null) return 2;
             if (InternationalTransport == null) return 3;
-            if (Travelers == null || Travelers.Count == 0) return 4;
-            if (Payment == null) return 5;
-            return 6; // Complete
+            if (GroundTransport == null) return 4; // Optional but in sequence
+            if (Travelers == null || !Travelers.Any()) return 5;
+            return 6; // Complete (payment happens AFTER booking creation)
         }
     }
 }

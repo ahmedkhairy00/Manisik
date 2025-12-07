@@ -14,6 +14,8 @@ namespace Manisik.Models
         public string ?ServiceName { get; set; }
 
         [Required]
+        [Column(TypeName = "varchar(50)")]
+
         public InternalTransportType InternalTransportType { get; set; }
 
         [Required]
@@ -31,6 +33,6 @@ namespace Manisik.Models
         public bool IsActive { get; set; }
 
         // Navigation
-        public ICollection<BookingGroundTransport> BookingGroundTransport { get; set; }
+        public ICollection<BookingGroundTransport> BookingGroundTransport { get; set; } = new List<BookingGroundTransport>();
     }
 }

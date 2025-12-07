@@ -12,5 +12,6 @@ namespace Manisik.Enums
         Suite,
         [EnumMember(Value = "Family")]
         Family
+        
     }
 }

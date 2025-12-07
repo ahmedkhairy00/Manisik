@@ -20,6 +20,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<Traveler> Travelers { get; set; } = null!;
     public DbSet<Payment> Payments { get; set; } = null!;
     public DbSet<PaymentEvent> PaymentEvents { get; set; } = null!;
+    public DbSet<Subscriber> Subscribers { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -32,12 +33,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             .HasForeignKey(b => b.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        //// ApplicationUser (int) -> AIConversation (1:N)
-        //builder.Entity<AIConversation>()
-        //    .HasOne(c => c.User)
-        //    .WithMany(u => u.AIConversations)
-        //    .HasForeignKey(c => c.UserId)
-        //    .OnDelete(DeleteBehavior.Cascade);
 
         // Booking -> BookingHotel (1:N)
         builder.Entity<BookingHotel>()
@@ -108,5 +103,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             .WithMany(p => p.PaymentEvents)
             .HasForeignKey(pe => pe.PaymentId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Subscriber configuration
+        builder.Entity<Subscriber>()
+            .HasKey(s => s.Id);
+
+        builder.Entity<Subscriber>()
+            .HasIndex(s => s.Email)
+            .IsUnique();
+        builder.Entity<Subscriber>()
+            .Property(s => s.SubscribedAt);
     }
 }

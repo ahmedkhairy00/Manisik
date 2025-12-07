@@ -1,7 +1,7 @@
-﻿namespace Manisik.Enums
-{
-    public enum Gender
+﻿    namespace Manisik.Enums
     {
-        Male,Female
+        public enum Gender
+        {
+            Male,Female
+        }
     }
-}

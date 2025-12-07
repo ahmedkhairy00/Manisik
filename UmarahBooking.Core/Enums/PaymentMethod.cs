@@ -1,8 +1,8 @@
-﻿namespace Manisik.Enums
-{
-    public enum PaymentMethod
+﻿    namespace Manisik.Enums
     {
-        Stripe,
-        PayPal
+        public enum PaymentMethod
+        {
+            Stripe,
+            PayPal
+        }
     }
-}

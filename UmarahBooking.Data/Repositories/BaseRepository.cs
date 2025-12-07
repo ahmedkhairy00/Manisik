@@ -14,14 +14,14 @@ namespace UmarahBooking.Data.Repositories
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             await _context.Set<T>().AddAsync(entity);
-            await _context.SaveChangesAsync();
+            // SaveChanges removed to centralize commits in UnitOfWork
             return entity;
         }
 
         public async Task DeleteAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
-            await _context.SaveChangesAsync();
+            // SaveChanges removed to centralize commits in UnitOfWork
         }
 
         public async Task<IEnumerable<T>> FindAllBySearch(Expression<Func<T, bool>> predicate)
@@ -81,9 +81,7 @@ namespace UmarahBooking.Data.Repositories
 
         public IQueryable<T> GetAllAsQuerable() => _context.Set<T>().AsNoTracking();
 
-
-
-        public async Task<T?> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
             if (id <= 0) throw new ArgumentException("ID must be greater than zero.", nameof(id));
             return await _context.Set<T>().FindAsync(id);
@@ -92,7 +90,7 @@ namespace UmarahBooking.Data.Repositories
         public async Task<T> UpdateAsync(T entity)
         {
             _context.Set<T>().Update(entity);
-            await _context.SaveChangesAsync();
+            // SaveChanges removed to centralize commits in UnitOfWork
             return entity;
         }
     }

@@ -41,6 +41,8 @@ namespace Manisik.Models
         public string Nationality { get; set; }
 
         [Required]
+        [Column(TypeName = "varchar(50)")]
+
         public Gender Gender { get; set; }
 
         [MaxLength(20)]

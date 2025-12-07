@@ -7,5 +7,7 @@
         Cancelled, // Payment is cancelled
         Refunded,  // Payment is refunded
         Paid,    // Payment completed successfully
+        Failed,
+        Completed,
     }
 }

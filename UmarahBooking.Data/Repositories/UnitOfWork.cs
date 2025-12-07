@@ -1,4 +1,5 @@
 ﻿using Manisik.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using UmarahBooking.Core.Interfaces;
 
@@ -17,6 +18,7 @@ namespace UmarahBooking.Data.Repositories
         private bool _disposed = false;
 
         // Repository instances (lazy initialization)
+
         private IBaseRepository<Hotel>? _hotels;
         private IBaseRepository<HotelRoom>? _hotelRooms;
         private IBaseRepository<InternationalTransport>? _internationalTransports;
@@ -28,6 +30,7 @@ namespace UmarahBooking.Data.Repositories
         private IBaseRepository<Traveler>? _travelers;
         private IBaseRepository<Payment>? _payments;
         private IBaseRepository<ApplicationUser>? _users;
+        private IBaseRepository<Subscriber>? _subscribers;
 
         #endregion
 
@@ -50,6 +53,9 @@ namespace UmarahBooking.Data.Repositories
         /// Gets the Hotels repository
         /// Creates a new instance if one doesn't exist (lazy initialization)
         /// </summary>
+        /// 
+        public DbContext Context => _context;
+
         public IBaseRepository<Hotel> Hotels
         {
             get
@@ -179,6 +185,18 @@ namespace UmarahBooking.Data.Repositories
             }
         }
 
+        /// <summary>
+        /// Gets the Subscribers repository
+        /// </summary>
+        public IBaseRepository<Subscriber> Subscribers
+        {
+            get
+            {
+                _subscribers ??= new BaseRepository<Subscriber>(_context);
+                return _subscribers;
+            }
+        }
+
         #endregion
 
         #region Transaction Methods
@@ -189,15 +207,8 @@ namespace UmarahBooking.Data.Repositories
         /// <returns>Number of rows affected</returns>
         public async Task<int> SaveChanges()
         {
-            try
-            {
-                return await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                // Log the exception here if you have a logging service
-                throw new Exception("An error occurred while saving changes to the database", ex);
-            }
+            // Let EF throw its original exceptions so callers can react to specific exception types
+            return await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -280,7 +291,7 @@ namespace UmarahBooking.Data.Repositories
         /// <summary>
         /// Protected implementation of Dispose pattern
         /// </summary>
-        /// <param name="disposing">True if disposing managed resources</param>
+        /// <param name="disposing">True if disposing managed resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -307,126 +318,3 @@ namespace UmarahBooking.Data.Repositories
         #endregion
     }
 }
-
-// ================================================================
-// USAGE EXAMPLES
-// ================================================================
-
-/*
-// Example 1: Simple CRUD operation
-public async Task<Hotel> CreateHotel(HotelDto hotelDto)
-{
-    var hotel = _mapper.Map<Hotel>(hotelDto);
-    
-    await _unitOfWork.Hotels.AddAsync(hotel);
-    await _unitOfWork.SaveChanges();
-    
-    return hotel;
-}
-
-// Example 2: Multiple operations with transaction
-public async Task<Booking> CreateCompleteBooking(BookingDto bookingDto)
-{
-    // Begin transaction to ensure all operations succeed or fail together
-    await _unitOfWork.BeginTransaction();
-    
-    try
-    {
-        // 1. Create booking
-        var booking = _mapper.Map<Booking>(bookingDto);
-        await _unitOfWork.Bookings.AddAsync(booking);
-        await _unitOfWork.SaveChanges(); // Save to get booking ID
-        
-        // 2. Add hotel bookings
-        foreach (var hotelDto in bookingDto.Hotels)
-        {
-            var bookingHotel = new BookingHotel 
-            { 
-                BookingId = booking.BookingId,
-                HotelId = hotelDto.HotelId,
-                // ... other properties
-            };
-            await _unitOfWork.BookingHotels.AddAsync(bookingHotel);
-        }
-        
-        // 3. Add travelers
-        foreach (var travelerDto in bookingDto.Travelers)
-        {
-            var traveler = _mapper.Map<Traveler>(travelerDto);
-            traveler.BookingId = booking.BookingId;
-            await _unitOfWork.Travelers.AddAsync(traveler);
-        }
-        
-        // 4. Save all changes and commit transaction
-        await _unitOfWork.CommitTransaction();
-        
-        return booking;
-    }
-    catch (Exception)
-    {
-        // If any operation fails, rollback all changes
-        await _unitOfWork.RollbackTransaction();
-        throw;
-    }
-}
-
-// Example 3: Querying with related data
-public async Task<IEnumerable<Hotel>> GetHotelsWithRooms()
-{
-    return await _unitOfWork.Hotels.FindWithAsync(new[] { "Rooms" });
-}
-
-// Example 4: Complex search with filtering
-public async Task<IEnumerable<Hotel>> SearchHotels(string city, int minRating)
-{
-    return await _unitOfWork.Hotels.FindAllBySearch(
-        h => h.HotelCity.ToString() == city && h.StarRating >= minRating
-    );
-}
-
-// Example 5: Pagination and sorting
-public async Task<IEnumerable<Hotel>> GetHotelsPaginated(int page, int pageSize)
-{
-    var skip = (page - 1) * pageSize;
-    
-    return await _unitOfWork.Hotels.FindAllBySearchAndSkipWithOrder(
-        h => h.IsActive,
-        take: pageSize,
-        skip: skip,
-        orderBy: h => h.Name,
-        orderDirection: Core.Const.OrderBy.Ascending
-    );
-}
-*/
-
-// ================================================================
-// BENEFITS OF UNIT OF WORK PATTERN
-// ================================================================
-
-/*
-1. SINGLE POINT OF COMMIT:
-   - All changes are saved together with one SaveChanges() call
-   - Ensures data consistency
-
-2. TRANSACTION SUPPORT:
-   - BeginTransaction(), CommitTransaction(), RollbackTransaction()
-   - Ensures all-or-nothing operations for complex scenarios
-
-3. REDUCES BOILERPLATE CODE:
-   - No need to inject multiple repositories
-   - Single injection: IUnitOfWork
-
-4. CENTRALIZED DATABASE CONTEXT:
-   - One DbContext instance per request
-   - Better memory management
-   - Prevents context conflicts
-
-5. EASIER TESTING:
-   - Mock IUnitOfWork instead of multiple repositories
-   - Simpler unit test setup
-
-6. REPOSITORY LIFECYCLE MANAGEMENT:
-   - Lazy initialization of repositories
-   - Only creates repositories when needed
-   - Proper disposal of resources
-*/

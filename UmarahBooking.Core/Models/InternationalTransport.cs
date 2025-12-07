@@ -13,15 +13,21 @@ namespace Manisik.Models
         public int InternationalTransportId { get; set; }
 
         [Required]
+        [Column(TypeName = "varchar(50)")]
+
         public InternationalTransportType TransportType { get; set; }
 
         [MaxLength(100)]
         public string CarrierName { get; set; }
 
         [Required]
+        [Column(TypeName = "varchar(50)")]
+
         public DepartureAirport DepartureAirport { get; set; }
 
         [Required]
+        [Column(TypeName = "varchar(50)")]
+
         public ArrivalAirport ArrivalAirport { get; set; }
 
         [Required]

@@ -24,10 +24,14 @@ namespace Manisik.Models
         public decimal Amount { get; set; }
 
         [Required]
+        [Column(TypeName = "varchar(50)")]
+
         public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.Stripe;
 
         [Required]
-        public PaymentStatus Status { get; set; }
+        [Column(TypeName = "varchar(50)")]
+
+        public PaymentStatus Status { get; set; } = PaymentStatus.Paid;
 
         // Important for Stripe / PayPal
         [MaxLength(200)]
@@ -52,7 +56,6 @@ namespace Manisik.Models
         // Navigation properties - initialize collections to avoid null refs 
         // every payment can have multiple events (created, succeeded, failed, refunded, etc)
         public ICollection<PaymentEvent> PaymentEvents { get; set; } = new List<PaymentEvent>();
-
-
+        public string ClientSecret { get; set; }
     }
 }

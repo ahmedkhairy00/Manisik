@@ -13,7 +13,7 @@ namespace UmarahBooking.Core.Services
 
         public ChatMemoryService(IConfiguration cfg)
         {
-            // keep last 5 messages 
+            // keep last N messages (configurable)
             _maxMessagesPerSession = cfg.GetValue<int?>("Chat:MaxMessagesPerSession") ?? 5;
         }
 
