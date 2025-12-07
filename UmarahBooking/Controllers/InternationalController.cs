@@ -50,8 +50,8 @@ namespace UmarahBooking.Controllers
         {
             try
             {
-                // Fetch all transport options
-                var transports = await _unitOfWork.InternationalTransports.GetAllAsync();
+                // Fetch all active transport options
+                var transports = await _unitOfWork.InternationalTransports.FindAllBySearch(t => t.IsActive);
 
                 // Map to DTOs
                 var transportDtos = _mapper.Map<IEnumerable<InternationalTransportDto>>(transports);
@@ -541,8 +541,8 @@ namespace UmarahBooking.Controllers
                 _logger.LogInformation("International transport {TransportId} deleted successfully", id);
 
                 return Ok(ApiResponse<string>.SuccessResponse(
-                    null,
-                    $"Transport with ID {id} deleted successfully"));
+                    string.Empty,
+                    $"Transport with ID {id} deleted successfully. The transport is no longer available for booking."));
             }
             catch (Exception ex)
             {

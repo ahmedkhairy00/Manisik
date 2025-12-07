@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿    using AutoMapper;
 using Manisik.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,8 +50,8 @@ namespace UmarahBooking.Controllers
         {
             try
             {
-                // Fetch all ground transport services
-                var transports = await _unitOfWork.GroundTransports.GetAllAsync();
+                // Fetch all active ground transport services
+                var transports = await _unitOfWork.GroundTransports.FindAllBySearch(t => t.IsActive);
 
                 // Map to DTOs
                 var transportDtos = _mapper.Map<IEnumerable<GroundTransportDto>>(transports);
@@ -61,7 +61,7 @@ namespace UmarahBooking.Controllers
                     $"{transports.Count()} ground transport services retrieved successfully"));
             }
             catch (Exception ex)
-            {
+             {
                 _logger.LogError(ex, "Error occurred while retrieving all ground transports");
                 return StatusCode(500, ApiResponse<IEnumerable<GroundTransportDto>>.ErrorResponse(
                     "An error occurred while retrieving ground transport services"));
@@ -480,8 +480,8 @@ namespace UmarahBooking.Controllers
                 _logger.LogInformation("Ground transport {TransportId} deleted successfully", id);
 
                 return Ok(ApiResponse<string>.SuccessResponse(
-                    null,
-                    $"Ground transport with ID {id} deleted successfully"));
+                    string.Empty,
+                    $"Ground transport with ID {id} deleted successfully. The service is no longer available."));
             }
             catch (Exception ex)
             {

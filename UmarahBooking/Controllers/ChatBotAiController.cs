@@ -30,10 +30,10 @@ namespace UmarahBooking.Controllers
             }
             catch (Exception ex)
             {
-                // do not expose internals in production
                 return StatusCode(500, new { error = "AI service error", detail = ex.Message });
             }
         }
+
         [HttpPost("clear")]
         public IActionResult Clear([FromQuery] string sessionId)
         {

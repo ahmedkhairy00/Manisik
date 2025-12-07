@@ -3,6 +3,7 @@ using Manisik.Enums;
 using Manisik.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using UmarahBooking.Core.DTO;
 using UmarahBooking.Core.Interfaces;
@@ -171,6 +172,26 @@ namespace UmarahBooking.Controllers
             }
         }
 
+        // Get Booking with BookingId
+        [HttpGet("BookingId/{id:int}")]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> GetBookingByBookingId(int id)
+        {
+            var booking = await _unitOfWork.Bookings.FindBySearch(b => b.BookingId == id);
+
+            if (booking == null)
+            {
+                return NotFound(ApiResponse<BookingDto>.ErrorResponse(
+                        $"Booking with ID {id} not found"));
+            }
+
+            var bookingDto = _mapper.Map<BookingDto>(booking);
+
+            return Ok(ApiResponse<BookingDto>.SuccessResponse(
+                bookingDto,
+                $"Booking retrieved successfully with BookingId {bookingDto.Id}"));
+        }
         /// <summary>
         /// Search bookings by status (Admin only)
         /// </summary>
@@ -219,10 +240,6 @@ namespace UmarahBooking.Controllers
         /// <returns>Created booking</returns>
         [HttpPost("CreateBooking")]
         [Authorize(Roles = "User,Admin")]
-        [ProducesResponseType(typeof(ApiResponse<BookingDto>), 201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
         public async Task<IActionResult> CreateBooking([FromBody] BookingDto bookingDto)
         {
             try
@@ -243,77 +260,122 @@ namespace UmarahBooking.Controllers
                 var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
                 {
-                    return Unauthorized(ApiResponse<BookingDto>.ErrorResponse(
-                        "Invalid user token"));
+                    return Unauthorized(ApiResponse<BookingDto>.ErrorResponse("Invalid user token"));
                 }
 
-                // Business validation: Check if booking is complete
-                if (!bookingDto.IsComplete())
+                // ✅ NEW: Get or create pending booking
+                var booking = await _unitOfWork.Context.Set<Booking>()
+                    .Where(b => b.UserId == userId && b.BookingStatus == BookingStatus.Pending)
+                    .FirstOrDefaultAsync();
+
+                if (booking == null)
                 {
-                    return BadRequest(ApiResponse<BookingDto>.ErrorResponse(
-                        $"Booking is incomplete. You are at step {bookingDto.GetCurrentStep()} of 6"));
+                    // Generate unique booking number
+                    var bookingNumber = await GenerateBookingNumber();
+
+                    // Calculate fees
+                    decimal basePrice = bookingDto.TotalPrice ?? 0;
+                    decimal fee = basePrice * 0.10m;
+                    decimal totalWithFee = basePrice + fee;
+
+                    // Create new booking
+                    booking = new Booking
+                    {
+                        BookingNumber = bookingNumber,
+                        UserId = userId,
+                        TripType = Enum.Parse<TripType>(bookingDto.Type, true),
+                        BookingStatus = BookingStatus.Pending,
+                        TravelStartDate = bookingDto.TravelStartDate,
+                        TravelEndDate = bookingDto.TravelEndDate ?? bookingDto.TravelStartDate,
+                        NumberOfTravelers = bookingDto.NumberOfTravelers,
+                        ServiceFee = fee,
+                        TotalPrice = totalWithFee,
+                        PaymentStatus = PaymentStatus.Pending,
+                        PaymentMethod = bookingDto.PaymentMethod ?? PaymentMethod.Stripe,
+                        BookingDate = DateTime.UtcNow,
+                        CreatedAt = DateTime.UtcNow
+                    };
+
+                    await _unitOfWork.Bookings.AddAsync(booking);
+                    await _unitOfWork.SaveChanges();
+                }
+                else
+                {
+                    // ✅ Update existing pending booking
+                    decimal basePrice = bookingDto.TotalPrice ?? 0;
+                    decimal fee = basePrice * 0.10m;
+                    decimal totalWithFee = basePrice + fee;
+
+                    booking.TripType = Enum.Parse<TripType>(bookingDto.Type, true);
+                    booking.TravelStartDate = bookingDto.TravelStartDate;
+                    booking.TravelEndDate = bookingDto.TravelEndDate ?? bookingDto.TravelStartDate;
+                    booking.NumberOfTravelers = bookingDto.NumberOfTravelers;
+                    booking.ServiceFee = fee;
+                    booking.TotalPrice = totalWithFee;
+                    booking.UpdatedAt = DateTime.UtcNow;
+
+                    await _unitOfWork.Bookings.UpdateAsync(booking);
+                    await _unitOfWork.SaveChanges();
                 }
 
-                // Generate unique booking number
-                var bookingNumber = await GenerateBookingNumber();
+                // ✅ Verify pending bookings exist (they should from earlier steps)
+                var hotelBookings = await _unitOfWork.BookingHotels
+                    .GetAllAsQuerable()
+                    .Where(bh => bh.BookingId == booking.BookingId)
+                    .ToListAsync();
 
-                // Create booking entity
-                var booking = new Booking
+                var transportBookings = await _unitOfWork.BookingInternationalTransports
+                    .GetAllAsQuerable()
+                    .Where(bit => bit.BookingId == booking.BookingId)
+                    .ToListAsync();
+
+                var groundBookings = await _unitOfWork.BookingGroundTransports
+                    .GetAllAsQuerable()
+                    .Where(bgt => bgt.BookingId == booking.BookingId)
+                    .ToListAsync();
+
+                // ✅ If no pending bookings found, create them from DTO
+                if (!hotelBookings.Any())
                 {
-                    BookingNumber = bookingNumber,
-                    UserId = userId,
-                    TripType = bookingDto.Type,
-                    BookingStatus = BookingStatus.Pending,
-                    TravelStartDate = bookingDto.TravelStartDate,
-                    TravelEndDate = bookingDto.TravelEndDate ?? bookingDto.TravelStartDate,
-                    NumberOfTravelers = bookingDto.NumberOfTravelers,
-                    TotalPrice = bookingDto.TotalPrice ?? 0,
-                    PaymentStatus = PaymentStatus.Pending,
-                    PaymentMethod = bookingDto.PaymentMethod ?? PaymentMethod.Stripe,
-                    BookingDate = DateTime.UtcNow,
-                    CreatedAt = DateTime.UtcNow
-                };
+                    if (bookingDto.MakkahHotel != null)
+                        await ProcessHotelBooking(booking.BookingId, bookingDto.MakkahHotel, HotelCity.Makkah);
 
-                // Save booking to get ID
-                await _unitOfWork.Bookings.AddAsync(booking);
-                await _unitOfWork.SaveChanges();
-
-                // Process Makkah Hotel
-                if (bookingDto.MakkahHotel != null)
-                {
-                    await ProcessHotelBooking(booking.BookingId, bookingDto.MakkahHotel, HotelCity.Makkah);
+                    if (bookingDto.MadinahHotel != null)
+                        await ProcessHotelBooking(booking.BookingId, bookingDto.MadinahHotel, HotelCity.Madinah);
                 }
 
-                // Process Madinah Hotel
-                if (bookingDto.MadinahHotel != null)
-                {
-                    await ProcessHotelBooking(booking.BookingId, bookingDto.MadinahHotel, HotelCity.Madinah);
-                }
-
-                // Process International Transport
-                if (bookingDto.InternationalTransport != null)
+                if (!transportBookings.Any() && bookingDto.InternationalTransport != null)
                 {
                     await ProcessInternationalTransport(booking.BookingId, bookingDto.InternationalTransport);
                 }
 
-                // Process Ground Transport
-                if (bookingDto.GroundTransport != null)
+                if (!groundBookings.Any() && bookingDto.GroundTransport != null)
                 {
                     await ProcessGroundTransport(booking.BookingId, bookingDto.GroundTransport);
                 }
 
-                // Process Travelers
+                // ✅ Process Travelers (always update/create)
+                // Delete existing travelers for this booking
+                var existingTravelers = await _unitOfWork.Travelers
+                    .GetAllAsQuerable()
+                    .Where(t => t.BookingId == booking.BookingId)
+                    .ToListAsync();
+
+                foreach (var traveler in existingTravelers)
+                {
+                    await _unitOfWork.Travelers.DeleteAsync(traveler);
+                }
+
+                // Add new travelers
                 if (bookingDto.Travelers != null && bookingDto.Travelers.Any())
                 {
                     await ProcessTravelers(booking.BookingId, bookingDto.Travelers);
                 }
 
-                // Save all changes
                 await _unitOfWork.SaveChanges();
 
-                _logger.LogInformation(
-                    "Booking {BookingNumber} created successfully for user {UserId}",
-                    bookingNumber, userId);
+                _logger.LogInformation("Booking {BookingNumber} finalized for user {UserId}",
+                    booking.BookingNumber, userId);
 
                 // Reload booking with all related data
                 var createdBooking = await _unitOfWork.Bookings.GetByIdAsync(booking.BookingId);
@@ -324,11 +386,18 @@ namespace UmarahBooking.Controllers
                     new { id = booking.BookingId },
                     ApiResponse<BookingDto>.SuccessResponse(
                         createdBookingDto,
-                        "Booking created successfully"));
+                        "Booking finalized successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while creating booking");
+
+                var env = HttpContext.RequestServices.GetService<Microsoft.Extensions.Hosting.IHostEnvironment>();
+                if (env?.IsDevelopment() ?? false)
+                {
+                    return StatusCode(500, ApiResponse<BookingDto>.ErrorResponse($"Unexpected error: {ex.Message}"));
+                }
+
                 return StatusCode(500, ApiResponse<BookingDto>.ErrorResponse(
                     "An error occurred while creating the booking"));
             }
@@ -490,8 +559,8 @@ namespace UmarahBooking.Controllers
                     booking.BookingNumber, userId);
 
                 return Ok(ApiResponse<string>.SuccessResponse(
-                    null,
-                    $"Booking {booking.BookingNumber} cancelled successfully"));
+                    string.Empty,
+                    $"Booking {booking.BookingNumber} cancelled successfully. Your reservation has been removed."));
             }
             catch (Exception ex)
             {
@@ -515,7 +584,7 @@ namespace UmarahBooking.Controllers
 
             // Get count of bookings this year
             var bookingsThisYear = await _unitOfWork.Bookings.FindAllBySearch(
-                b => b.BookingNumber.StartsWith(prefix));
+                b => !string.IsNullOrEmpty(b.BookingNumber) && b.BookingNumber.StartsWith(prefix));
 
             var count = bookingsThisYear.Count() + 1;
             return $"{prefix}{count:D4}"; // BK-2025-0001
@@ -551,7 +620,7 @@ namespace UmarahBooking.Controllers
             var bookingTransport = new BookingInternationalTransport
             {
                 BookingId = bookingId,
-                InternationalTransportId = transportDto.TransportId,
+                InternationalTransportId = (int)transportDto.TransportId,
                 NumberOfSeats = transportDto.NumberOfSeats,
                 TotalPrice = transportDto.TotalPrice ?? 0
             };
