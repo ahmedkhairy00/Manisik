@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using Manisik.Models;
+using AutoMapper;
+using UmarahBooking.Core.Models;
+using UmarahBooking.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -89,34 +90,59 @@ namespace UmarahBooking.Controllers
                     hotelDto.ImageUrl = "/images/hotels/default-hotel.jpg";
                 }
 
-                var hotel = _mapper.Map<Hotel>(hotelDto);
-                hotel.IsActive = true;
-                
-                // Set creator - defensive check
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out int uid))
+                using var transaction = await _unitOfWork.Context.Database.BeginTransactionAsync();
+                try
                 {
-                    _logger.LogWarning("CreateHotel: User ID claim missing or invalid");
-                    return Unauthorized(ApiResponse<HotelDto>.ErrorResponse(
-                        "User authentication error. Please log in again."));
+                    var hotel = _mapper.Map<Hotel>(hotelDto);
+                    hotel.IsActive = true;
+                    
+                    // Set creator - defensive check
+                    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out int uid))
+                    {
+                        _logger.LogWarning("CreateHotel: User ID claim missing or invalid");
+                        return Unauthorized(ApiResponse<HotelDto>.ErrorResponse(
+                            "User authentication error. Please log in again."));
+                    }
+                    
+                    hotel.CreatedByUserId = uid;
+
+                    await _unitOfWork.Hotels.AddAsync(hotel);
+                    await _unitOfWork.SaveChanges();
+
+                    // Create rooms if provided (AutoMapper ignores Rooms on HotelDto -> Hotel mapping)
+                    if (hotelDto.Rooms != null && hotelDto.Rooms.Any())
+                    {
+                        foreach (var roomDto in hotelDto.Rooms)
+                        {
+                            var room = _mapper.Map<HotelRoom>(roomDto);
+                            room.HotelId = hotel.HotelId;
+                            room.IsActive = roomDto.IsActive;
+                            await _unitOfWork.HotelRooms.AddAsync(room);
+                        }
+                        await _unitOfWork.SaveChanges();
+                    }
+
+                    await transaction.CommitAsync();
+
+                    _logger.LogInformation(
+                        "Hotel {HotelName} created successfully with ID {HotelId}",
+                        hotel.Name, hotel.HotelId);
+
+                    // Reload hotel with rooms for response
+                    var createdHotel = await _hotelService.GetHotelByIdAsync(hotel.HotelId);
+                    return CreatedAtAction(
+                        nameof(GetHotelById),
+                        new { id = hotel.HotelId },
+                        ApiResponse<HotelDto>.SuccessResponse(
+                            createdHotel,
+                            "Hotel created successfully"));
                 }
-                
-                hotel.CreatedByUserId = uid;
-
-                await _unitOfWork.Hotels.AddAsync(hotel);
-                await _unitOfWork.SaveChanges();
-
-                _logger.LogInformation(
-                    "Hotel {HotelName} created successfully with ID {HotelId}",
-                    hotel.Name, hotel.HotelId);
-
-                var createdHotelDto = _mapper.Map<HotelDto>(hotel);
-                return CreatedAtAction(
-                    nameof(GetHotelById),
-                    new { id = hotel.HotelId },
-                    ApiResponse<HotelDto>.SuccessResponse(
-                        createdHotelDto,
-                        "Hotel created successfully"));
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw; // Re-throw to be caught by outer catch
+                }
             }
             catch (Exception ex)
             {
@@ -126,6 +152,9 @@ namespace UmarahBooking.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates an existing hotel (Admin or Owner)
+        /// </summary>
         /// <summary>
         /// Updates an existing hotel (Admin or Owner)
         /// </summary>
@@ -186,15 +215,92 @@ namespace UmarahBooking.Controllers
                     hotelDto.ImageUrl = hotel.ImageUrl;
                 }
 
-                _mapper.Map(hotelDto, hotel);
-                // Ensure ID isn't changed
-                hotel.HotelId = id;
-                
+                // Update hotel properties
+                hotel.Name = hotelDto.Name;
+                // Safe enum parsing for City
+                if (Enum.TryParse<HotelCity>(hotelDto.City, true, out var parsedCity))
+                {
+                    hotel.HotelCity = parsedCity;
+                }
+                else
+                {
+                    hotel.HotelCity = HotelCity.Makkah; // Default value
+                }
+                hotel.Address = hotelDto.Address;
+                hotel.StarRating = hotelDto.StarRating;
+                hotel.DistanceToHaram = hotelDto.DistanceToHaram;
+                hotel.Description = hotelDto.Description;
+                hotel.ImageUrl = hotelDto.ImageUrl;
+
+                // Handle Rooms - Load existing rooms first
+                var existingRooms = await _unitOfWork.HotelRooms.FindAllBySearch(r => r.HotelId == id);
+
+                if (hotelDto.Rooms != null && hotelDto.Rooms.Any())
+                {
+                    // Get IDs of rooms in the update request
+                    var incomingRoomIds = hotelDto.Rooms
+                        .Where(r => r.Id > 0)
+                        .Select(r => r.Id)
+                        .ToList();
+
+                    // Remove rooms that are not in the update request
+                    var roomsToRemove = existingRooms
+                        .Where(r => !incomingRoomIds.Contains(r.HotelRoomId))
+                        .ToList();
+
+                    foreach (var room in roomsToRemove)
+                    {
+                        await _unitOfWork.HotelRooms.DeleteAsync(room);
+                    }
+
+                    // Update or add rooms
+                    foreach (var roomDto in hotelDto.Rooms)
+                    {
+                        if (roomDto.Id > 0)
+                        {
+                            // Update existing room
+                            var existingRoom = existingRooms.FirstOrDefault(r => r.HotelRoomId == roomDto.Id);
+                            if (existingRoom != null)
+                            {
+                                // Safe enum parsing for RoomType
+                                if (Enum.TryParse<RoomType>(roomDto.RoomType, true, out var parsedRoomType))
+                                {
+                                    existingRoom.RoomType = parsedRoomType;
+                                }
+                                existingRoom.Capacity = roomDto.Capacity;
+                                existingRoom.PricePerNight = roomDto.PricePerNight;
+                                existingRoom.AvailableRooms = roomDto.AvailableRooms;
+                                existingRoom.IsActive = roomDto.IsActive;
+                                await _unitOfWork.HotelRooms.UpdateAsync(existingRoom);
+                            }
+                        }
+                        else
+                        {
+                            // Add new room
+                            var newRoom = new HotelRoom
+                            {
+                                HotelId = id,
+                                RoomType = Enum.TryParse<RoomType>(roomDto.RoomType, true, out var newRoomType) ? newRoomType : RoomType.Single,
+                                Capacity = roomDto.Capacity,
+                                PricePerNight = roomDto.PricePerNight,
+                                AvailableRooms = roomDto.AvailableRooms,
+                                IsActive = roomDto.IsActive
+                            };
+                            await _unitOfWork.HotelRooms.AddAsync(newRoom);
+
+                            _logger.LogInformation(
+                                "Adding new room {RoomType} to hotel {HotelId}",
+                                newRoom.RoomType, id);
+                        }
+                    }
+                }
+
                 await _unitOfWork.Hotels.UpdateAsync(hotel);
                 await _unitOfWork.SaveChanges();
 
-                var updatedDto = _mapper.Map<HotelDto>(hotel);
-                return Ok(ApiResponse<HotelDto>.SuccessResponse(updatedDto, "Hotel updated successfully"));
+                // Reload hotel with rooms for response
+                var updatedHotel = await _hotelService.GetHotelByIdAsync(id);
+                return Ok(ApiResponse<HotelDto>.SuccessResponse(updatedHotel, "Hotel updated successfully"));
             }
             catch (Exception ex)
             {
@@ -254,7 +360,10 @@ namespace UmarahBooking.Controllers
                 if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
                     return Unauthorized(ApiResponse<IEnumerable<HotelDto>>.ErrorResponse("User not found"));
 
-                var hotels = await _unitOfWork.Hotels.FindAllBySearch(h => h.CreatedByUserId == userId && h.IsActive);
+                // Include Rooms in the query so they appear in edit form
+                var hotels = await _unitOfWork.Hotels.FindWithAsync(
+                    h => h.CreatedByUserId == userId && h.IsActive,
+                    new[] { "Rooms" });
                 var dtos = _mapper.Map<IEnumerable<HotelDto>>(hotels);
 
                 return Ok(ApiResponse<IEnumerable<HotelDto>>.SuccessResponse(dtos));
@@ -314,3 +423,4 @@ namespace UmarahBooking.Controllers
         }
     }
 }
+

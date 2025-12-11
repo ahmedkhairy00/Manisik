@@ -1,7 +1,11 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
-namespace Manisik.Enums
+namespace UmarahBooking.Core.Enums
 {
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
     public enum InternalTransportType
     {
 
@@ -20,3 +24,4 @@ namespace Manisik.Enums
 
     }
 }
+

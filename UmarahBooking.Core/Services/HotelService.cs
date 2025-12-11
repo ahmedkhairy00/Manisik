@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using Manisik.Models;
+using AutoMapper;
+using UmarahBooking.Core.Enums;
+using UmarahBooking.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using UmarahBooking.Core.DTO;
 using UmarahBooking.Core.Interfaces;
@@ -24,9 +25,13 @@ namespace UmarahBooking.Core.Services
                 .Include(h => h.Rooms)
                 .Where(h => h.IsActive == true);
 
+            // Parse city string to enum for proper SQL translation
             if (!string.IsNullOrEmpty(city) && city.ToLower() != "all")
             {
-                query = query.Where(h => h.HotelCity.ToString().ToLower() == city.ToLower());
+                if (Enum.TryParse<HotelCity>(city, ignoreCase: true, out var hotelCity))
+                {
+                    query = query.Where(h => h.HotelCity == hotelCity);
+                }
             }
 
             if (!string.IsNullOrEmpty(filter))
@@ -67,3 +72,4 @@ namespace UmarahBooking.Core.Services
 
     }
 }
+

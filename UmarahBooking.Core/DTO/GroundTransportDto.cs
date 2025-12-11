@@ -1,4 +1,4 @@
-using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -38,16 +38,14 @@ namespace UmarahBooking.Core.DTO
 
         public bool IsActive { get; set; } = true;
 
-        [Required]
-        public string Route { get; set; }
+        public string? Route { get; set; } = string.Empty;
 
-        [Required]
-        public string Duration { get; set; }
+        public string? Duration { get; set; } = string.Empty;
 
-        [Required]
-        public string rate { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public string? rate { get; set; } = string.Empty;
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
+
 
 

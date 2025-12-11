@@ -1,4 +1,4 @@
-using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,7 +13,7 @@ namespace UmarahBooking.Core.DTO
         public int Id { get; set; }
 
         [Required]
-        public  string internationalTransportType { get; set; }
+        public  string TransportType { get; set; }
 
         [Required]
         [StringLength(200)]
@@ -56,7 +56,7 @@ namespace UmarahBooking.Core.DTO
         public string? FlightNumber { get; set; }
 
 
-        public string Duration { get; set; }
+        public string? Duration { get; set; } = string.Empty;
 
         [MaxLength(50)]
         public string FlightClass { get; set; }
@@ -69,6 +69,18 @@ namespace UmarahBooking.Core.DTO
         public DateTime? CreatedAt { get; set; }
         public int? CreatedByUserId { get; set; }
 
-       
+
+        // Custom validator: ensure AvailableSeats <= TotalSeats
+        public static ValidationResult? ValidateAvailableSeats(int availableSeats, ValidationContext context)
+        {
+            var instance = context.ObjectInstance as InternationalTransportDto;
+            if (instance != null && availableSeats > instance.TotalSeats)
+            {
+                return new ValidationResult($"AvailableSeats ({availableSeats}) cannot be greater than TotalSeats ({instance.TotalSeats}).");
+            }
+            return ValidationResult.Success;
+        }
+
     }
 }
+

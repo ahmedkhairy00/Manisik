@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Manisik.Models
+namespace UmarahBooking.Core.Models
 {
     public class PaymentEvent
     {
@@ -33,3 +33,4 @@ namespace Manisik.Models
         public string? Payload { get; set; }
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using Manisik.Models;
+using UmarahBooking.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,3 +13,4 @@ namespace UmarahBooking.Core.Interfaces
       Task<BookingInternationalTransport> BookInternationalTransportAsync(int userId, TransportBookingDto dto);
     }
 }
+

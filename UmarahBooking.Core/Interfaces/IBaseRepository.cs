@@ -12,7 +12,8 @@ namespace UmarahBooking.Core.Interfaces
         Task DeleteAsync(T entity);
 
         Task<IEnumerable<T>> FindWithAsync(string[] includes = null);
-        Task<T> FindBySearch(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> FindWithAsync(Expression<Func<T, bool>> predicate, string[] includes = null);
+        Task<T?> FindBySearch(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> FindAllBySearch(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> FindAllBySearchAndSkip(Expression<Func<T, bool>> predicate, int? take, int? skip);
         Task<IEnumerable<T>> FindAllBySearchAndSkipWithOrder(

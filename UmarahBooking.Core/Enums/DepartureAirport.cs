@@ -1,5 +1,5 @@
-﻿using System.Runtime.Serialization;
-namespace Manisik.Enums
+using System.Runtime.Serialization;
+namespace UmarahBooking.Core.Enums
 {
     public enum DepartureAirport
     {
@@ -23,3 +23,4 @@ namespace Manisik.Enums
         HurghadaPort,
     }
 }
+

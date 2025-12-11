@@ -1,6 +1,6 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
-namespace Manisik.Enums
+namespace UmarahBooking.Core.Enums
 {
     public enum InternationalTransportType
     {
@@ -10,3 +10,4 @@ namespace Manisik.Enums
         Ship
     }
 }
+

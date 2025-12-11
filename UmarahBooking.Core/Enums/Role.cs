@@ -1,4 +1,4 @@
-namespace Manisik.Enums
+namespace UmarahBooking.Core.Enums
 {
     // Application roles used for authorization and seeding
     public enum Role
@@ -19,3 +19,4 @@ namespace Manisik.Enums
         public static readonly string[] All = new[] { Admin, User, HotelManager, TransportManager };
     }
 }
+

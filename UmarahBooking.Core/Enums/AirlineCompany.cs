@@ -1,6 +1,6 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
-namespace Manisik.Enums
+namespace UmarahBooking.Core.Enums
 {
     public enum AirlineCompany
     {
@@ -18,3 +18,4 @@ namespace Manisik.Enums
         NileAir
     }
 }
+

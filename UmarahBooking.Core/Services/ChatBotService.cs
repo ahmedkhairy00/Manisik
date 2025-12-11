@@ -1,9 +1,9 @@
-﻿// ChatBotService.cs – نسخة كاملة 2025
-// تقرأ كل Models + Enums + بيانات الجداول وتبعتها للـ AI
-// لو الـ AI ردّ بنتيجة → تُعرض، لو لا → fallback لـ AI خارجي
+// ChatBotService.cs � ???? ????? 2025
+// ???? ?? Models + Enums + ?????? ??????? ??????? ??? AI
+// ?? ??? AI ??? ?????? ? ?????? ?? ?? ? fallback ?? AI ?????
 
-using Manisik.Enums;
-using Manisik.Models;
+using UmarahBooking.Core.Enums;
+using UmarahBooking.Core.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -241,7 +241,7 @@ namespace UmarahBooking.Core.Services
                 var responseText = await res.Content.ReadAsStringAsync();
                 using var doc = JsonDocument.Parse(responseText);
                 var reply = doc.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
-                return reply ?? "عفواً، لم يتم تلقي رد من مزوّد الخدمة.";
+                return reply ?? "?????? ?? ??? ???? ?? ?? ????? ??????.";
             }
             catch (Exception ex)
             {

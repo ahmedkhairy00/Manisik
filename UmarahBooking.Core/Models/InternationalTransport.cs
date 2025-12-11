@@ -1,8 +1,8 @@
-﻿using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Manisik.Models
+namespace UmarahBooking.Core.Models
 {
     public class InternationalTransport
     {
@@ -39,12 +39,19 @@ namespace Manisik.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
+        [MaxLength(50)]
+        public string Duration { get; set; } = string.Empty; // NEW
+
         [Required]
         [Range(1, 500)]
         public int AvailableSeats { get; set; }
 
         [MaxLength(20)]
         public string FlightNumber { get; set; }
+
+        [Required]
+        [Range(1, 500)]
+        public int TotalSeats { get; set; } = 52; // NEW: total seats of the transport
 
         [Required]
         public bool IsActive { get; set; }
@@ -66,3 +73,4 @@ namespace Manisik.Models
         public ICollection<BookingInternationalTransport> BookingInternationalTransport { get; set; }
     }
 }
+

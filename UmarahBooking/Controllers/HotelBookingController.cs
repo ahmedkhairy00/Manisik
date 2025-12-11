@@ -46,7 +46,14 @@ namespace UmarahBooking.Controllers
 
                 var bookingHotel = await _bookingService.BookHotelAsync(dto, userId);
 
-                return Ok(ApiResponse<HotelBookingDto>.SuccessResponse(new HotelBookingDto(), "Hotel booking completed successfully. Your room reservation has been confirmed."));
+                // Return the BookingId so frontend can track it
+                return Ok(ApiResponse<dynamic>.SuccessResponse(new 
+                { 
+                    BookingId = bookingHotel.BookingId,
+                    BookingHotelId = bookingHotel.BookingHotelId,
+                    NumberOfRooms = bookingHotel.NumberOfRooms,
+                    TotalPrice = bookingHotel.TotalPrice
+                }, "Hotel booking completed successfully."));
             }
             catch (InvalidOperationException ex)
             {

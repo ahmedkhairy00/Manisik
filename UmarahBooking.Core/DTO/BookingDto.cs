@@ -1,4 +1,4 @@
-﻿using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace UmarahBooking.Core.DTO
@@ -21,7 +21,7 @@ namespace UmarahBooking.Core.DTO
         public string Type { get; set; }
 
         [Required]
-        public string Status { get; set; }
+        public string Status { get; set; } = BookingStatus.Pending.ToString();
 
         [Required]
         public DateTime TravelStartDate { get; set; }
@@ -86,7 +86,7 @@ namespace UmarahBooking.Core.DTO
                    MadinahHotel != null &&
                    InternationalTransport != null &&
                    Travelers != null &&
-                   Travelers.Any(); // ✅ Just check travelers exist
+                   Travelers.Any(); // ? Just check travelers exist
         }
 
         /// <summary>
@@ -103,3 +103,4 @@ namespace UmarahBooking.Core.DTO
         }
     }
 }
+

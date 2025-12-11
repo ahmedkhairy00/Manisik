@@ -1,10 +1,10 @@
-﻿using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Manisik.Models
+namespace UmarahBooking.Core.Models
 {
     public class Hotel
     {
@@ -53,3 +53,4 @@ namespace Manisik.Models
         public int? CreatedByUserId { get; set; }
     }
 }
+

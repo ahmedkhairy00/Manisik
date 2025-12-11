@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Manisik.Models;
+using UmarahBooking.Core.Models;
 using UmarahBooking.Core.DTO;
 using UmarahBooking.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
-using System.Net.Mail;
-using System.Net;
-using Microsoft.Extensions.Configuration;
 
 namespace UmarahBooking.Controllers
 {
@@ -18,14 +15,14 @@ namespace UmarahBooking.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<SubscriberController> _logger;
         private readonly IHostEnvironment _env;
-        private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public SubscriberController(IUnitOfWork unitOfWork, ILogger<SubscriberController> logger, IHostEnvironment env, IConfiguration configuration)
+        public SubscriberController(IUnitOfWork unitOfWork, ILogger<SubscriberController> logger, IHostEnvironment env, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _env = env;
-            _configuration = configuration;
+            _emailService = emailService;
         }
 
         [HttpPost("Subscribe")]
@@ -89,46 +86,7 @@ namespace UmarahBooking.Controllers
                 _logger.LogInformation("New subscriber added: {Email}", email);
 
                 // Attempt to send confirmation email (non-blocking)
-                try
-                {
-                    var smtpSection = _configuration.GetSection("Smtp");
-                    var host = smtpSection["Host"] ?? string.Empty;
-                    var port = smtpSection.GetValue<int?>("Port") ?? 587;
-                    var username = smtpSection["Username"] ?? string.Empty;
-                    var password = smtpSection["Password"] ?? string.Empty; // recommended to set via user-secrets or env var
-                    var from = smtpSection["From"] ?? username;
-                    var fromName = smtpSection["FromName"] ?? "Manisik";
-
-                    if (!string.IsNullOrEmpty(host) && !string.IsNullOrEmpty(from))
-                    {
-                        using var mail = new MailMessage();
-                        mail.From = new MailAddress(from, fromName);
-                        mail.To.Add(email);
-                        mail.Subject = "Subscription confirmed";
-                        mail.IsBodyHtml = true;
-                        mail.Body = $"<p>Thank you for subscribing to <strong>Manisik</strong> newsletter.</p><p>You will receive updates to: {WebUtility.HtmlEncode(email)}</p>";
-
-                        using var smtp = new SmtpClient(host, port);
-                        smtp.EnableSsl = true;
-
-                        if (!string.IsNullOrEmpty(username))
-                        {
-                            smtp.Credentials = new NetworkCredential(username, password);
-                        }
-
-                        // Send synchronously - it's quick; if concerned, move to background job
-                        smtp.Send(mail);
-                    }
-                    else
-                    {
-                        _logger.LogDebug("SMTP settings missing - skipping send confirmation email");
-                    }
-                }
-                catch (Exception mailEx)
-                {
-                    // Log but do not fail the subscription if mail sending fails
-                    _logger.LogError(mailEx, "Failed to send subscription confirmation email to {Email}", email);
-                }
+                _ = _emailService.SendWelcomeEmailAsync(email);
 
                 return Ok(ApiResponse<string>.SuccessResponse(string.Empty, "Subscribed successfully"));
             }
@@ -160,5 +118,57 @@ namespace UmarahBooking.Controllers
                 return StatusCode(500, ApiResponse<IEnumerable<SubscriberDto>>.ErrorResponse("An error occurred while retrieving subscribers"));
             }
         }
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Broadcast")]
+        [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Broadcast([FromBody] BroadcastDto dto)
+        {
+            try
+            {
+                if (dto == null || string.IsNullOrWhiteSpace(dto.Subject) || string.IsNullOrWhiteSpace(dto.Body))
+                    return BadRequest(ApiResponse<string>.ErrorResponse("Subject and Body are required"));
+
+                // 1. Get all active subscribers
+                var subscribers = await _unitOfWork.Subscribers.FindAllBySearch(s => s.IsActive);
+                var subEmails = subscribers.Select(s => s.Email).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                // 2. Get all users
+                var users = await _unitOfWork.Context.Set<ApplicationUser>().ToListAsync();
+                foreach (var u in users)
+                {
+                    if (!string.IsNullOrEmpty(u.Email))
+                        subEmails.Add(u.Email);
+                }
+
+                // 3. Send Emails (Fire and forget batch)
+                _ = Task.Run(async () =>
+                {
+                    foreach (var email in subEmails)
+                    {
+                        await _emailService.SendBroadcastEmailAsync(email, dto.Subject, dto.Body);
+                        // Tiny delay to be nice to SMTP server
+                        await Task.Delay(50); 
+                    }
+                    _logger.LogInformation("Broadcast sent to {Count} recipients", subEmails.Count);
+                });
+
+                return Ok(ApiResponse<string>.SuccessResponse(string.Empty, $"Broadcast queued for {subEmails.Count} recipients"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error executing broadcast");
+                return StatusCode(500, ApiResponse<string>.ErrorResponse("Failed to queue broadcast"));
+            }
+        }
     }
-}
+
+    public class BroadcastDto
+    {
+        public string Subject { get; set; }
+        public string Body { get; set; }
+    }
+    }
+
+

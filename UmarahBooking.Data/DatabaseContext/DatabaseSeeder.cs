@@ -1,4 +1,4 @@
-﻿using Manisik.Models;
+using UmarahBooking.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,7 +17,7 @@ namespace UmarahBooking.Data.Seed
     {
         #region Application Info
 
-        public const string ApplicationName = "Manisik";
+        public const string ApplicationName = "UmarahBooking";
         public const string ApplicationDescription = "Umrah & Hajj Booking Management System";
 
         #endregion
@@ -68,6 +68,10 @@ namespace UmarahBooking.Data.Seed
                 // Seed Default Admin
                 await SeedAdminUser(userManager, logger);
 
+                // Seed Hotels (User Data)
+                var unitOfWork = serviceProvider.GetRequiredService<UmarahBooking.Core.Interfaces.IUnitOfWork>();
+                await SeedHotels(unitOfWork, logger);
+
                 logger.LogInformation("========================================");
                 logger.LogInformation("Database Seeding Completed Successfully");
                 logger.LogInformation("========================================");
@@ -98,13 +102,13 @@ namespace UmarahBooking.Data.Seed
                     var result = await roleManager.CreateAsync(identityRole);
 
                     if (result.Succeeded)
-                        logger.LogInformation("✓ Role '{RoleName}' created successfully - {Description}", role.Name, role.Description);
+                        logger.LogInformation("? Role '{RoleName}' created successfully - {Description}", role.Name, role.Description);
                     else
-                        logger.LogError("✗ Failed to create role '{RoleName}': {Errors}", role.Name, string.Join(", ", result.Errors.Select(e => e.Description)));
+                        logger.LogError("? Failed to create role '{RoleName}': {Errors}", role.Name, string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
                 else
                 {
-                    logger.LogInformation("⚠ Role '{RoleName}' already exists - skipping", role.Name);
+                    logger.LogInformation("? Role '{RoleName}' already exists - skipping", role.Name);
                 }
             }
         }
@@ -116,7 +120,7 @@ namespace UmarahBooking.Data.Seed
             var existingAdmin = await userManager.FindByEmailAsync(DefaultAdmin.Email);
             if (existingAdmin != null)
             {
-                logger.LogWarning("⚠ Admin user '{Email}' already exists - skipping", DefaultAdmin.Email);
+                logger.LogWarning("? Admin user '{Email}' already exists - skipping", DefaultAdmin.Email);
                 return;
             }
 
@@ -136,7 +140,7 @@ namespace UmarahBooking.Data.Seed
             var createResult = await userManager.CreateAsync(adminUser, DefaultAdmin.Password);
             if (!createResult.Succeeded)
             {
-                logger.LogError("✗ Failed to create admin user: {Errors}", string.Join(", ", createResult.Errors.Select(e => e.Description)));
+                logger.LogError("? Failed to create admin user: {Errors}", string.Join(", ", createResult.Errors.Select(e => e.Description)));
                 return;
             }
 
@@ -144,17 +148,107 @@ namespace UmarahBooking.Data.Seed
             if (roleResult.Succeeded)
             {
                 logger.LogInformation("========================================");
-                logger.LogInformation("✓ Default Admin User Created Successfully");
+                logger.LogInformation("? Default Admin User Created Successfully");
                 logger.LogInformation("Email: {Email}", DefaultAdmin.Email);
                 logger.LogInformation("Password: {Password}", DefaultAdmin.Password);
                 logger.LogInformation("Role: {Role}", Roles.Admin);
-                logger.LogWarning("⚠ SECURITY WARNING: Please change the default admin password after first login!");
+                logger.LogWarning("? SECURITY WARNING: Please change the default admin password after first login!");
                 logger.LogInformation("========================================");
             }
             else
             {
-                logger.LogError("✗ Failed to assign Admin role to user: {Errors}", string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+                logger.LogError("? Failed to assign Admin role to user: {Errors}", string.Join(", ", roleResult.Errors.Select(e => e.Description)));
             }
+        }
+
+        private static async Task SeedHotels(UmarahBooking.Core.Interfaces.IUnitOfWork unitOfWork, ILogger logger)
+        {
+            var existingHotels = await unitOfWork.Hotels.GetAllAsync();
+            if (existingHotels.Any())
+            {
+                logger.LogInformation("Skipping Hotel Seeding: Data already exists.");
+                return;
+            }
+
+            logger.LogInformation("Seeding Initial Hotels...");
+
+            var hotels = new List<Hotel>
+            {
+                new Hotel
+                {
+                    Name = "Hilton Makkah",
+                    HotelCity = UmarahBooking.Core.Enums.HotelCity.Makkah,
+                    Address = "Al Haram Rd",
+                    StarRating = 5,
+                    DistanceToHaram = 200.00m,
+                    Description = "Luxurious hotel near Haram",
+                    ImageUrl = "/images/hotels/hilton-makkah.jpg",
+                    IsActive = true
+                },
+                new Hotel
+                {
+                    Name = "Anwar Al Madinah",
+                    HotelCity = UmarahBooking.Core.Enums.HotelCity.Madinah,
+                    Address = "Prince Mohammed St",
+                    StarRating = 4,
+                    DistanceToHaram = 300.00m,
+                    Description = "Near Prophet Mosque",
+                    ImageUrl = "/images/hotels/anwar-madinah.jpg",
+                    IsActive = true
+                },
+                new Hotel
+                {
+                    Name = "Swissotel Al Maqam",
+                    HotelCity = UmarahBooking.Core.Enums.HotelCity.Makkah,
+                    Address = "Abraj Al Bait",
+                    StarRating = 4,
+                    DistanceToHaram = 350.00m,
+                    Description = "Connected to Abraj Complex",
+                    ImageUrl = "/images/hotels/swissotel.jpg",
+                    IsActive = true
+                },
+                new Hotel
+                {
+                    Name = "Dar Al Iman",
+                    HotelCity = UmarahBooking.Core.Enums.HotelCity.Madinah,
+                    Address = "King Fahd Rd",
+                    StarRating = 5,
+                    DistanceToHaram = 250.00m,
+                    Description = "Luxury suites",
+                    ImageUrl = "/images/hotels/dar-al-iman.jpg",
+                    IsActive = true
+                },
+                new Hotel
+                {
+                    Name = "Conrad Makkah",
+                    HotelCity = UmarahBooking.Core.Enums.HotelCity.Makkah,
+                    Address = "King Abdulaziz Rd",
+                    StarRating = 5,
+                    DistanceToHaram = 150.00m,
+                    Description = "Premium suites",
+                    ImageUrl = "/images/hotels/conrad.jpg",
+                    IsActive = true
+                },
+                new Hotel
+                {
+                    Name = "Pullman Zamzam",
+                    HotelCity = UmarahBooking.Core.Enums.HotelCity.Makkah,
+                    Address = "Abraj Al Bait",
+                    StarRating = 4,
+                    DistanceToHaram = 300.00m,
+                    Description = "Modern design",
+                    ImageUrl = "/images/hotels/pullman.jpg",
+                    IsActive = true
+                }
+            };
+
+            foreach (var hotel in hotels)
+            {
+                await unitOfWork.Hotels.AddAsync(hotel);
+            }
+            await unitOfWork.SaveChanges();
+
+            logger.LogInformation($"? Seeded {hotels.Count} Hotels successfully.");
         }
 
         #endregion
@@ -182,3 +276,4 @@ namespace UmarahBooking.Data.Seed
         #endregion
     }
 }
+

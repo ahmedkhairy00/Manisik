@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using UmarahBooking.Core.Const;
 using UmarahBooking.Core.Interfaces;
+using UmarahBooking.Data.DatabaseContext;
 
 namespace UmarahBooking.Data.Repositories
 {
@@ -66,6 +67,20 @@ namespace UmarahBooking.Data.Repositories
         public async Task<IEnumerable<T>> FindWithAsync(string[]? includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> FindWithAsync(Expression<Func<T, bool>> predicate, string[]? includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>().Where(predicate);
             if (includes != null)
             {
                 foreach (var include in includes)

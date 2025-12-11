@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Manisik.Models
+namespace UmarahBooking.Core.Models
 {
     public class Subscriber
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }  // ✔ matches DB (Id)
+        public int Id { get; set; }  // ? matches DB (Id)
 
         [Required]
         [EmailAddress]
@@ -17,6 +17,7 @@ namespace Manisik.Models
 
         public bool IsActive { get; set; } = true;
 
-        public DateTime SubscribedAt { get; set; }  // ✔ matches DB (SubscribedAt)
+        public DateTime SubscribedAt { get; set; }  // ? matches DB (SubscribedAt)
     }
 }
+

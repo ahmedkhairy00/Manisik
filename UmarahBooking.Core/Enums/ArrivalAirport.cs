@@ -1,6 +1,6 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
-namespace Manisik.Enums
+namespace UmarahBooking.Core.Enums
 {
     public enum ArrivalAirport
     {
@@ -12,3 +12,4 @@ namespace Manisik.Enums
         Taif
     }
 }
+
