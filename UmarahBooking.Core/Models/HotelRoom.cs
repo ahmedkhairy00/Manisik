@@ -1,8 +1,8 @@
-﻿using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Manisik.Models
+namespace UmarahBooking.Core.Models
 {
     public class HotelRoom
     {
@@ -35,3 +35,4 @@ namespace Manisik.Models
         public Hotel Hotel { get; set; }
     }
 }
+

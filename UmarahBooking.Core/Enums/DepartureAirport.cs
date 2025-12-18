@@ -1,5 +1,5 @@
-﻿using System.Runtime.Serialization;
-namespace Manisik.Enums
+using System.Runtime.Serialization;
+namespace UmarahBooking.Core.Enums
 {
     public enum DepartureAirport
     {
@@ -7,6 +7,8 @@ namespace Manisik.Enums
         Cairo,        // CAI//0
         [EnumMember(Value = "BorgElArabAlexandria")]
         BorgElArabAlexandria,      // HBE//1
+        [EnumMember(Value = "Alexandria")]
+        Alexandria = BorgElArabAlexandria,  // Alias for BorgElArabAlexandria
         [EnumMember(Value = "SharmElSheikh")]
         SharmElSheikh,// SSH//2
         [EnumMember(Value = "Hurghada")]
@@ -23,3 +25,5 @@ namespace Manisik.Enums
         HurghadaPort,
     }
 }
+
+

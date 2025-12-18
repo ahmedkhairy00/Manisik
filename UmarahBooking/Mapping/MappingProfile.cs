@@ -1,6 +1,6 @@
 using AutoMapper;
-using Manisik.Enums;
-using Manisik.Models;
+using UmarahBooking.Core.Enums;
+using UmarahBooking.Core.Models;
 using UmarahBooking.Core.DTO;
 
 namespace UmarahBooking.Core.Mapping
@@ -21,7 +21,7 @@ namespace UmarahBooking.Core.Mapping
 
             CreateMap<HotelDto, Hotel>()
             .ForMember(dest => dest.HotelId, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.HotelCity, opt => opt.MapFrom(src => (HotelCity)Enum.Parse(typeof(HotelCity), src.City)))
+            .ForMember(dest => dest.HotelCity, opt => opt.MapFrom(src => ParseHotelCity(src.City)))
             .ForMember(dest => dest.Rooms, opt => opt.Ignore());
 
 
@@ -37,6 +37,7 @@ namespace UmarahBooking.Core.Mapping
 
             CreateMap<RoomDto, HotelRoom>()
                 .ForMember(dest => dest.HotelRoomId, opt => opt.Ignore()) // DB generated
+                .ForMember(dest => dest.RoomType, opt => opt.MapFrom(src => ParseRoomType(src.RoomType)))
                 .ForMember(dest => dest.AvailableRooms, opt => opt.MapFrom(src => src.TotalRooms));
 
             // ------------------------------
@@ -198,7 +199,7 @@ namespace UmarahBooking.Core.Mapping
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.GroundTransportId))
                 .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
                 .ForMember(dest => dest.ServiceNameAr, opt => opt.Ignore())
-                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.InternalTransportType))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.InternalTransportType.ToString()))
                 .ForMember(dest => dest.PricePerPerson, opt => opt.MapFrom(src => src.PricePerPerson))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.DescriptionAr, opt => opt.Ignore())
@@ -208,7 +209,7 @@ namespace UmarahBooking.Core.Mapping
                 .ReverseMap()
                 .ForMember(dest => dest.GroundTransportId, opt => opt.MapFrom(src => src.Id.HasValue ? src.Id.Value : 0))
                 .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.ServiceName))
-                .ForMember(dest => dest.InternalTransportType, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.InternalTransportType, opt => opt.MapFrom(src => ParseInternalTransportType(src.Type)))
                 .ForMember(dest => dest.PricePerPerson, opt => opt.MapFrom(src => src.PricePerPerson))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Capacity, opt => opt.MapFrom(src => src.Capacity))
@@ -218,21 +219,31 @@ namespace UmarahBooking.Core.Mapping
             // INTERNATIONAL TRANSPORT ENTITY <-> DTO
             // ------------------------------
             CreateMap<InternationalTransport, InternationalTransportDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.InternationalTransportId))
-                .ForMember(dest => dest.internationalTransportType, opt => opt.MapFrom(src => src.TransportType.ToString()))
-                .ForMember(dest => dest.CarrierName, opt => opt.MapFrom(src => src.CarrierName))
-                .ForMember(dest => dest.DepartureAirport, opt => opt.MapFrom(src => src.DepartureAirport.ToString()))
-                .ForMember(dest => dest.DepartureAirportCode, opt => opt.Ignore())
-                .ForMember(dest => dest.ArrivalAirport, opt => opt.MapFrom(src => src.ArrivalAirport.ToString()))
-                .ForMember(dest => dest.ArrivalAirportCode, opt => opt.Ignore())
-                .ForMember(dest => dest.DepartureDate, opt => opt.MapFrom(src => src.DepartureDate))
-                .ForMember(dest => dest.ArrivalDate, opt => opt.MapFrom(src => src.ArrivalDate))
-                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
-                .ForMember(dest => dest.TotalSeats, opt => opt.MapFrom(src => src.AvailableSeats))
-                .ForMember(dest => dest.AvailableSeats, opt => opt.MapFrom(src => src.AvailableSeats))
-                .ForMember(dest => dest.FlightNumber, opt => opt.MapFrom(src => src.FlightNumber))
-                .ForMember(dest => dest.FlightNumber, opt => opt.MapFrom(src => src.FlightNumber))
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
+           .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.InternationalTransportId))
+           .ForMember(dest => dest.TransportType, opt => opt.MapFrom(src => src.TransportType.ToString()))
+           .ForMember(dest => dest.CarrierName, opt => opt.MapFrom(src => src.CarrierName))
+           .ForMember(dest => dest.DepartureAirport, opt => opt.MapFrom(src => src.DepartureAirport.ToString()))
+           .ForMember(dest => dest.DepartureAirportCode, opt => opt.Ignore())
+           .ForMember(dest => dest.ArrivalAirport, opt => opt.MapFrom(src => src.ArrivalAirport.ToString()))
+           .ForMember(dest => dest.ArrivalAirportCode, opt => opt.Ignore())
+           .ForMember(dest => dest.DepartureDate, opt => opt.MapFrom(src => src.DepartureDate))
+           .ForMember(dest => dest.ArrivalDate, opt => opt.MapFrom(src => src.ArrivalDate))
+           .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+           .ForMember(dest => dest.TotalSeats, opt => opt.MapFrom(src => src.TotalSeats))
+           .ForMember(dest => dest.AvailableSeats, opt => opt.MapFrom(src => src.AvailableSeats))
+           .ForMember(dest => dest.FlightNumber, opt => opt.MapFrom(src => src.FlightNumber))
+           .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+           .ForMember(dest => dest.FlightClass, opt => opt.MapFrom(src => src.FlightClass.ToString()))
+           .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration))
+           .ForMember(dest => dest.Stops, opt => opt.MapFrom(src => src.Stops))
+           .ReverseMap()
+           .ForMember(dest => dest.InternationalTransportId, opt => opt.MapFrom(src => src.Id))
+           .ForMember(dest => dest.TransportType, opt => opt.MapFrom(src => ParseInternationalTransportType(src.TransportType)))
+           .ForMember(dest => dest.DepartureAirport, opt => opt.MapFrom(src => ParseDepartureAirport(src.DepartureAirport)))
+           .ForMember(dest => dest.ArrivalAirport, opt => opt.MapFrom(src => ParseArrivalAirport(src.ArrivalAirport)))
+           .ForMember(dest => dest.FlightClass, opt => opt.MapFrom(src => ParseFlightClass(src.FlightClass)))
+           .ForMember(dest => dest.BookingInternationalTransport, opt => opt.Ignore());
+
         }
 
         // Helper methods used in MapFrom expressions — allowed because MapFrom references method call only
@@ -244,8 +255,8 @@ namespace UmarahBooking.Core.Mapping
 
         private static DepartureAirport ParseDepartureAirport(string? value)
         {
-            if (string.IsNullOrWhiteSpace(value)) return DepartureAirport.CairoInternational;
-            return Enum.TryParse<DepartureAirport>(value, true, out var d) ? d : DepartureAirport.CairoInternational;
+            if (string.IsNullOrWhiteSpace(value)) return DepartureAirport.Cairo;
+            return Enum.TryParse<DepartureAirport>(value, true, out var d) ? d : DepartureAirport.Cairo;
         }
 
         private static ArrivalAirport ParseArrivalAirport(string? value)
@@ -253,5 +264,31 @@ namespace UmarahBooking.Core.Mapping
             if (string.IsNullOrWhiteSpace(value)) return ArrivalAirport.Jeddah;
             return Enum.TryParse<ArrivalAirport>(value, true, out var a) ? a : ArrivalAirport.Jeddah;
         }
+
+        private static flightDegree ParseFlightClass(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return flightDegree.Economy;
+            return Enum.TryParse<flightDegree>(value, true, out var result) ? result : flightDegree.Economy;
+        }
+
+        private static InternalTransportType ParseInternalTransportType(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return InternalTransportType.PrivateCar;
+            return Enum.TryParse<InternalTransportType>(value, true, out var result) ? result : InternalTransportType.PrivateCar;
+        }
+
+        private static HotelCity ParseHotelCity(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return HotelCity.Makkah;
+            return Enum.TryParse<HotelCity>(value, true, out var result) ? result : HotelCity.Makkah;
+        }
+
+        private static RoomType ParseRoomType(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return RoomType.Single;
+            return Enum.TryParse<RoomType>(value, true, out var result) ? result : RoomType.Single;
+        }
+
     }
 }
+

@@ -1,8 +1,8 @@
-﻿using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Manisik.Models
+namespace UmarahBooking.Core.Models
 {
     // Booking aggregate representing a customer's Umrah/Hajj booking
     public class Booking
@@ -95,3 +95,4 @@ namespace Manisik.Models
         public Payment? Payment { get; set; }
     }
 }
+

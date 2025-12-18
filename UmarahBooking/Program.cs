@@ -1,4 +1,4 @@
-﻿using Manisik.Models;
+using UmarahBooking.Core.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +12,10 @@ using UmarahBooking.Core.Mapping;
 using UmarahBooking.Core.Services;
 using UmarahBooking.Data.Repositories;
 using UmarahBooking.Data.Seed;
+using UmarahBooking.Data.DatabaseContext;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using UmarahBooking.Middleware;
 
 namespace UmarahBooking
 {   
@@ -100,12 +102,15 @@ namespace UmarahBooking
             // Configure Rate Limiting
             ConfigureRateLimiting(builder.Services);
 
+            // Configure Memory Cache for server-side caching
+            builder.Services.AddMemoryCache();
+
             // Configure CORS
             builder.Services.AddCors(opt =>
             {
                 opt.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200")
+                    policy.WithOrigins("http://localhost:4200", "https://manisik.runasp.net", "https://manisik-client.web.app")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
@@ -129,7 +134,7 @@ namespace UmarahBooking
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Manisik API",
+                    Title = "UmarahBooking API",
                     Version = "v1",
                     Description = "API for Umarah Booking System"
                 });
@@ -170,6 +175,8 @@ namespace UmarahBooking
             services.AddScoped<IBookingGroundTransportService, BookingGroundTransportService>();
             services.AddScoped<IBookingInternationalTransportService, BookingInternationalTransportService>();
             services.AddScoped<IInternationalTransportBookingService, InternationationalTransportBookingService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IPdfGenerationService, PdfGenerationService>();
             services.AddScoped<ChatBotService>();
             services.AddSingleton<ChatMemoryService>();
         }
@@ -267,6 +274,18 @@ namespace UmarahBooking
                             QueueLimit = 0
                         }));
 
+                // Payment endpoints rate limit
+                options.AddPolicy("payment", context =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 10,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 0
+                        }));
+
                 // Global rate limiter (more permissive)
                 options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
                 {
@@ -309,11 +328,17 @@ namespace UmarahBooking
                 app.UseHsts();
             }
 
+            // Register global exception handler regarding of environment to catch Production 500s
+            app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
+            // CORS (Must be before Rate Limiting and Auth to handle preflight/errors correctly)
+            // Enable static files to serve images
+//app.UseStaticFiles();
+
+app.UseCors("AllowAll");
+
             // Rate limiting
             app.UseRateLimiter();
-
-            // CORS
-            app.UseCors("AllowAll");
 
             // HTTPS Redirection
             app.UseHttpsRedirection();
@@ -326,20 +351,22 @@ namespace UmarahBooking
                 context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
                 context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
                 // CSP allows: Stripe, Google Fonts, common image CDNs, and inline styles for Angular
+                // Added worker-src for Stripe
                 context.Response.Headers["Content-Security-Policy"] = 
                     "default-src 'self'; " +
                     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.network; " +
                     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
                     "font-src 'self' https://fonts.gstatic.com; " +
                     "img-src 'self' data: blob: https://images.unsplash.com https://*.stripe.com; " +
+                    "worker-src 'self' blob:; " + 
                     "frame-src 'self' https://js.stripe.com https://hooks.stripe.com; " +
                     "connect-src 'self' http://localhost:* https://api.stripe.com https://m.stripe.network;";
                 await next();
             });
 
             // Static files
+            // app.UseStaticFiles(); // Already configured above
             app.UseStaticFiles();
-
             // Authentication & Authorization
             app.UseAuthentication();
             app.UseAuthorization();

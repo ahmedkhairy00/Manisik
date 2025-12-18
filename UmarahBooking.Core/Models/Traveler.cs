@@ -1,9 +1,9 @@
-﻿using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Manisik.Models
+namespace UmarahBooking.Core.Models
 {
     public class Traveler
     {
@@ -58,5 +58,10 @@ namespace Manisik.Models
         public bool? IsMainTraveler { get; set; } = true;
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
+        /// <summary>
+        /// URL/Path to the traveler's photo for visa document
+        /// </summary>
+        public string? PhotoUrl { get; set; }
     }
 }
+

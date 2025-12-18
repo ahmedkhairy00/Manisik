@@ -1,7 +1,8 @@
-﻿using Manisik.Models;
+﻿namespace UmarahBooking.Data.DatabaseContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using UmarahBooking.Core.Models;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
 {
@@ -113,5 +114,62 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             .IsUnique();
         builder.Entity<Subscriber>()
             .Property(s => s.SubscribedAt);
+
+        // Enum String Conversion Check
+        builder.Entity<Hotel>()
+            .Property(h => h.HotelCity)
+            .HasConversion<string>();
+
+        builder.Entity<HotelRoom>()
+            .Property(r => r.RoomType)
+            .HasConversion<string>();
+
+        builder.Entity<Booking>()
+            .Property(b => b.BookingStatus) // Fixed
+            .HasConversion<string>();
+
+        builder.Entity<Booking>()
+            .Property(b => b.TripType)
+            .HasConversion<string>();
+
+        builder.Entity<Payment>()
+            .Property(p => p.PaymentMethod) // Fixed
+            .HasConversion<string>();
+
+        builder.Entity<Payment>()
+            .Property(p => p.Status)
+            .HasConversion<string>();
+
+        builder.Entity<Traveler>()
+            .Property(t => t.Gender)
+            .HasConversion<string>();
+
+        builder.Entity<InternationalTransport>()
+            .Property(it => it.TransportType)
+            .HasConversion<string>();
+            
+        builder.Entity<InternationalTransport>()
+            .Property(it => it.DepartureAirport)
+            .HasConversion<string>();
+            
+        builder.Entity<InternationalTransport>()
+            .Property(it => it.ArrivalAirport)
+            .HasConversion<string>();
+            
+        // Airline property does not exist in IntTransport model (it uses CarrierName string)
+        // builder.Entity<InternationalTransport>()
+        //    .Property(it => it.Airline)
+        //    .HasConversion<string>();
+
+        builder.Entity<InternationalTransport>()
+            .Property(it => it.FlightClass) // Fixed
+            .HasConversion<string>();
+
+        builder.Entity<GroundTransport>()
+            .Property(gt => gt.InternalTransportType) // Fixed
+            .HasConversion<string>();
+            
+        // Identity Role is usually handled by IdentityDbContext, but if custom:
+        // builder.Entity<IdentityRole<int>>().... handled by base
     }
 }

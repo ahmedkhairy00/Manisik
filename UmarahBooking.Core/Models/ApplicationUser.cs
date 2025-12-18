@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace Manisik.Models
+namespace UmarahBooking.Core.Models
 {
     // NOTE: Switched ApplicationUser to be Guid-keyed to follow project requirement
     // ApplicationUser now inherits from IdentityUser<Guid>. This will require
@@ -36,3 +36,4 @@ namespace Manisik.Models
 
     }
 }
+

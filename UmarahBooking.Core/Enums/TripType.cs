@@ -1,4 +1,4 @@
-﻿namespace Manisik.Enums
+namespace UmarahBooking.Core.Enums
 {
     public enum TripType
     {
@@ -6,3 +6,4 @@
         Hajj
     }
 }
+

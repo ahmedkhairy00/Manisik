@@ -1,4 +1,4 @@
-﻿using Manisik.Models;
+using UmarahBooking.Core.Models;
 using UmarahBooking.Core.DTO;
 
 namespace UmarahBooking.Core.Interfaces
@@ -15,3 +15,4 @@ namespace UmarahBooking.Core.Interfaces
         Task<bool> DeletePendingHotelBookingAsync(int bookingHotelId, int userId);
     }
 }
+

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using UmarahBooking.Core.DTO;
 using UmarahBooking.Core.Interfaces;
-using Manisik.Models;
+using UmarahBooking.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +16,14 @@ namespace UmarahBooking.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<PaymentController> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public PaymentController(IUnitOfWork unitOfWork, ILogger<PaymentController> logger, IConfiguration configuration)
+        public PaymentController(IUnitOfWork unitOfWork, ILogger<PaymentController> logger, IConfiguration configuration, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         [HttpPost("CreatePayment")]
@@ -72,8 +74,8 @@ namespace UmarahBooking.Controllers
                     BookingId = booking.BookingId,
                     Amount = amount,
                     Currency = currency,
-                    PaymentMethod = Manisik.Enums.PaymentMethod.Stripe,
-                    Status = Manisik.Enums.PaymentStatus.Pending,
+                    PaymentMethod = UmarahBooking.Core.Enums.PaymentMethod.Stripe,
+                    Status = UmarahBooking.Core.Enums.PaymentStatus.Pending,
                     PaymentIntentId = pi.Id,
                     ClientSecret = pi.ClientSecret,
                     CreatedAt = DateTime.UtcNow,
@@ -83,8 +85,8 @@ namespace UmarahBooking.Controllers
                 await _unitOfWork.Payments.AddAsync(payment);
 
                 // Mark booking payment status as pending and set ReservedUntil to give user time to complete payment
-                booking.PaymentStatus = Manisik.Enums.PaymentStatus.Pending;
-                booking.BookingStatus = Manisik.Enums.BookingStatus.Pending;
+                booking.PaymentStatus = UmarahBooking.Core.Enums.PaymentStatus.Pending;
+                booking.BookingStatus = UmarahBooking.Core.Enums.BookingStatus.Pending;
                 booking.ReservedUntil = DateTime.UtcNow.AddMinutes(30);
                 await _unitOfWork.Bookings.UpdateAsync(booking);
 
@@ -155,20 +157,35 @@ namespace UmarahBooking.Controllers
 
                             if (payment != null)
                             {
-                                payment.Status = Manisik.Enums.PaymentStatus.Paid;
+                                payment.Status = UmarahBooking.Core.Enums.PaymentStatus.Paid;
                                 payment.PaidAt = DateTime.UtcNow;
                                 // use LatestChargeId available on PaymentIntent in newer Stripe.NET versions
                                 payment.TransactionId = pi.LatestChargeId;
                                 await _unitOfWork.Payments.UpdateAsync(payment);
 
-                                var booking = await _unitOfWork.Bookings.GetByIdAsync(payment.BookingId);
-                                if (booking != null)
+                                var booking = await _unitOfWork.Bookings.FindWithAsync(b => b.BookingId == payment.BookingId, new[] { "User" });
+                                var bookingEntity = booking.FirstOrDefault();
+                                
+                                if (bookingEntity != null)
                                 {
-                                    booking.PaymentStatus = Manisik.Enums.PaymentStatus.Paid;
-                                    booking.BookingStatus = Manisik.Enums.BookingStatus.Confirmed;
-                                    booking.PaymentIntentId = pi.Id;
-                                    booking.PaymentDate = DateTime.UtcNow;
-                                    await _unitOfWork.Bookings.UpdateAsync(booking);
+                                    bookingEntity.PaymentStatus = UmarahBooking.Core.Enums.PaymentStatus.Paid;
+                                    bookingEntity.BookingStatus = UmarahBooking.Core.Enums.BookingStatus.Confirmed;
+                                    bookingEntity.PaymentIntentId = pi.Id;
+                                    bookingEntity.PaymentDate = DateTime.UtcNow;
+                                    await _unitOfWork.Bookings.UpdateAsync(bookingEntity);
+                                    
+                                    // Send Success Email
+                                    if (bookingEntity.User != null && !string.IsNullOrEmpty(bookingEntity.User.Email))
+                                    {
+                                        _ = _emailService.SendPaymentSuccessEmailAsync(
+                                            bookingEntity.User.Email, 
+                                            bookingEntity.BookingNumber ?? bookingEntity.BookingId.ToString(), 
+                                            payment.Amount,
+                                            bookingEntity.User.FullName ?? "Customer",
+                                            bookingEntity.TravelStartDate ?? DateTime.UtcNow,
+                                            bookingEntity.TravelEndDate ?? bookingEntity.TravelStartDate ?? DateTime.UtcNow,
+                                            bookingEntity.TripType.ToString());
+                                    }
                                 }
 
                                 await _unitOfWork.SaveChanges();
@@ -187,7 +204,7 @@ namespace UmarahBooking.Controllers
 
                             if (payment != null)
                             {
-                                payment.Status = Manisik.Enums.PaymentStatus.Failed;
+                                payment.Status = UmarahBooking.Core.Enums.PaymentStatus.Failed;
                                 payment.FailureReason = piFail.LastPaymentError?.Message;
                                 await _unitOfWork.Payments.UpdateAsync(payment);
                                 await _unitOfWork.SaveChanges();
@@ -211,3 +228,4 @@ namespace UmarahBooking.Controllers
         }
     }
 }
+

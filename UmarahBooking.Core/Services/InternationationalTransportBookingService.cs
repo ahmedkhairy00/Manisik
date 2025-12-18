@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using Manisik.Enums;
-using Manisik.Models;
+using AutoMapper;
+using UmarahBooking.Core.Enums;
+using UmarahBooking.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using UmarahBooking.Core.DTO;
 using UmarahBooking.Core.Interfaces;
@@ -22,7 +22,10 @@ namespace UmarahBooking.Core.Services
         public async Task<BookingInternationalTransport> BookInternationalTransportAsync(int userId, TransportBookingDto dto)
         {
             // Check flight exists
-            var flight = await _unitOfWork.InternationalTransports.GetByIdAsync(dto.TransportId);
+            if (!dto.TransportId.HasValue)
+                throw new InvalidOperationException("Transport ID is required");
+
+            var flight = await _unitOfWork.InternationalTransports.GetByIdAsync(dto.TransportId.Value);
             if (flight == null) throw new InvalidOperationException("Flight not found");
 
             // Check seats availability
@@ -76,3 +79,4 @@ namespace UmarahBooking.Core.Services
 
     }
 }
+

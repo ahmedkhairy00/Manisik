@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Manisik.Models;
+using UmarahBooking.Core.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -62,7 +62,7 @@ namespace UmarahBooking.Core.Services
 
             var expiredBookings = await unitOfWork.Bookings
                 .GetAllAsQuerable()
-                .Where(b => b.BookingStatus == Manisik.Enums.BookingStatus.Pending && b.ReservedUntil != null && b.ReservedUntil < now)
+                .Where(b => b.BookingStatus == UmarahBooking.Core.Enums.BookingStatus.Pending && b.ReservedUntil != null && b.ReservedUntil < now)
                 .ToListAsync(cancellationToken);
 
             foreach (var booking in expiredBookings)
@@ -88,7 +88,7 @@ namespace UmarahBooking.Core.Services
                         await unitOfWork.BookingHotels.DeleteAsync(item);
                     }
 
-                    booking.BookingStatus = Manisik.Enums.BookingStatus.Cancelled;
+                    booking.BookingStatus = UmarahBooking.Core.Enums.BookingStatus.Cancelled;
                     await unitOfWork.Bookings.UpdateAsync(booking);
 
                     await unitOfWork.SaveChanges();
@@ -109,3 +109,4 @@ namespace UmarahBooking.Core.Services
         }
     }
 }
+

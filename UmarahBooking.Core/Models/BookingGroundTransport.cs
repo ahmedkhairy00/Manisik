@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Manisik.Models
+namespace UmarahBooking.Core.Models
 {
     public class BookingGroundTransport
     {
@@ -41,3 +41,4 @@ namespace Manisik.Models
         public decimal TotalPrice { get; set; }
         }
 }
+

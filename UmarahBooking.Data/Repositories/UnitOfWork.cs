@@ -1,7 +1,8 @@
-﻿using Manisik.Models;
+using UmarahBooking.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using UmarahBooking.Core.Interfaces;
+using UmarahBooking.Data.DatabaseContext;
 
 namespace UmarahBooking.Data.Repositories
 {
@@ -29,6 +30,7 @@ namespace UmarahBooking.Data.Repositories
         private IBaseRepository<BookingGroundTransport>? _bookingGroundTransports;
         private IBaseRepository<Traveler>? _travelers;
         private IBaseRepository<Payment>? _payments;
+        private IBaseRepository<PaymentEvent>? _paymentEvents;
         private IBaseRepository<ApplicationUser>? _users;
         private IBaseRepository<Subscriber>? _subscribers;
 
@@ -170,6 +172,18 @@ namespace UmarahBooking.Data.Repositories
             {
                 _payments ??= new BaseRepository<Payment>(_context);
                 return _payments;
+            }
+        }
+
+        /// <summary>
+        /// Gets the PaymentEvents repository
+        /// </summary>
+        public IBaseRepository<PaymentEvent> PaymentEvents
+        {
+            get
+            {
+                _paymentEvents ??= new BaseRepository<PaymentEvent>(_context);
+                return _paymentEvents;
             }
         }
 
@@ -318,3 +332,4 @@ namespace UmarahBooking.Data.Repositories
         #endregion
     }
 }
+

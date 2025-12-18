@@ -1,4 +1,4 @@
-﻿using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -56,6 +56,11 @@ namespace UmarahBooking.Core.DTO
 
         public bool IsMainTraveler { get; set; }
         public DateTime? CreatedAt { get; set; }
+
+        /// <summary>
+        /// URL/Path to the traveler's photo for visa document
+        /// </summary>
+        public string? PhotoUrl { get; set; }
     }
 }
 

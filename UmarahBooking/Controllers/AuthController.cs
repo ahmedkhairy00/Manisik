@@ -1,5 +1,5 @@
 using AutoMapper;
-using Manisik.Models;
+using UmarahBooking.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -374,3 +374,4 @@ namespace UmarahBooking.Controllers
         }
     }
 }
+

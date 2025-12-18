@@ -29,6 +29,8 @@ namespace UmarahBooking.Core.DTO
         public int? NumberOfNights { get; set; }
         public decimal? PricePerNight { get; set; }
         public decimal? TotalPrice { get; set; }
+
+        public int? BookingId { get; set; }
     }
 
 }

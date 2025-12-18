@@ -1,4 +1,4 @@
-﻿using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,3 +31,4 @@ namespace UmarahBooking.Core.DTO
 
    
 }
+

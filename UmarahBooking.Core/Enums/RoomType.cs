@@ -1,6 +1,6 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
-namespace Manisik.Enums
+namespace UmarahBooking.Core.Enums
 {
     public enum RoomType
     {
@@ -8,6 +8,10 @@ namespace Manisik.Enums
         Single,
         [EnumMember(Value = "Double")]
         Double,
+        [EnumMember(Value = "Triple")]
+        Triple,
+        [EnumMember(Value = "Quadruple")]
+        Quadruple,
         [EnumMember(Value = "Suite")]
         Suite,
         [EnumMember(Value = "Family")]
@@ -15,3 +19,4 @@ namespace Manisik.Enums
         
     }
 }
+

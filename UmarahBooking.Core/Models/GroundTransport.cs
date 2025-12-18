@@ -1,9 +1,9 @@
-﻿using Manisik.Enums;
+using UmarahBooking.Core.Enums;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Manisik.Models
+namespace UmarahBooking.Core.Models
 {
     public class GroundTransport
     {
@@ -44,3 +44,4 @@ namespace Manisik.Models
         public ICollection<BookingGroundTransport> BookingGroundTransport { get; set; } = new List<BookingGroundTransport>();
     }
 }
+

@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using Manisik.Models;
+using AutoMapper;
+using UmarahBooking.Core.Models;
+using UmarahBooking.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -126,14 +127,30 @@ namespace UmarahBooking.Controllers
         {
             try
             {
-                // Search for transports matching the route
-                var transports = await _unitOfWork.InternationalTransports.FindAllBySearch(
-                    t => t.DepartureAirport.ToString() == departureAirport &&
-                    t.ArrivalAirport.ToString() == arrivalAirport &&
-                    t.IsActive
-                    );
+                // Normalize input and perform a string-based search over active transports.
+                // Using string comparison (enum.ToString()) is more robust here because
+                // existing DB values may be stored as strings and enum-to-string translation
+                // behavior can vary between environments. This is intentionally in-memory
+                // for reliability in small datasets; can be optimized later if necessary.
+                var parsedDeparture = Enum.TryParse<DepartureAirport>(departureAirport, true, out var depEnum);
+                var parsedArrival = Enum.TryParse<ArrivalAirport>(arrivalAirport, true, out var arrEnum);
 
-                if (!transports.Any())
+                var allActive = await _unitOfWork.InternationalTransports.FindAllBySearch(t => t.IsActive);
+                _logger.LogInformation("Loaded {Count} active transports for route search", allActive?.Count() ?? 0);
+                var samples = allActive?.Select(t => $"{t.InternationalTransportId}:{t.DepartureAirport}->{t.ArrivalAirport}").Take(20);
+                if (samples != null && samples.Any())
+                {
+                    _logger.LogInformation("Sample active transports: {Samples}", string.Join(", ", samples));
+                }
+
+                IEnumerable<InternationalTransport> transports = (allActive ?? Enumerable.Empty<InternationalTransport>())
+                    .Where(t => string.Equals(t.DepartureAirport.ToString(), departureAirport, StringComparison.OrdinalIgnoreCase)
+                             && string.Equals(t.ArrivalAirport.ToString(), arrivalAirport, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                _logger.LogInformation("String-based route search returned {Count} transports", transports?.Count() ?? 0);
+
+                if (transports == null || !transports.Any())
                 {
                     _logger.LogInformation(
                         "No transports found from {Departure} to {Arrival}",
@@ -182,15 +199,20 @@ namespace UmarahBooking.Controllers
                 }
 
                 // Search transports within date range
-                //var transports = await _unitOfWork.InternationalTransports.FindAllBySearch(
-                //    t => t.DepartureDate.Date == startDate.Date &&
-                //         t.ReturnDate.Value.Date == returnDate.Date &&
-                //         t.IsActive);
+                // We match transports where DepartureDate falls on the startDate AND
+                // either ReturnDate (for round trips) OR ArrivalDate (for one-way stored as ArrivalDate)
+                // falls on the returnDate. This makes the endpoint work for existing data
+                // that uses ArrivalDate for the outbound arrival time.
                 var transports = await _unitOfWork.InternationalTransports.FindAllBySearch(
-                t => t.DepartureDate >= startDate.Date && t.DepartureDate < startDate.Date.AddDays(1) &&
-                     t.ReturnDate.HasValue &&
-                     t.ReturnDate.Value >= returnDate.Date && t.ReturnDate.Value < returnDate.Date.AddDays(1) &&
-                     t.IsActive);
+                    t => t.IsActive &&
+                         t.DepartureDate >= startDate.Date && t.DepartureDate < startDate.Date.AddDays(1) &&
+                         (
+                             (t.ReturnDate.HasValue && t.ReturnDate.Value >= returnDate.Date && t.ReturnDate.Value < returnDate.Date.AddDays(1))
+                             || (t.ArrivalDate >= returnDate.Date && t.ArrivalDate < returnDate.Date.AddDays(1))
+                         )
+                );
+
+                _logger.LogInformation("Date-range search for {Start} -> {Return} returned {Count} transports", startDate.ToString("yyyy-MM-dd"), returnDate.ToString("yyyy-MM-dd"), transports?.Count() ?? 0);
 
                 if (!transports.Any())
                 {
@@ -230,7 +252,7 @@ namespace UmarahBooking.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> AdvancedSearch(
             [FromQuery] string? carrierName = null,
-            [FromQuery] Manisik.Enums.InternationalTransportType? transportType = null,
+            [FromQuery] UmarahBooking.Core.Enums.InternationalTransportType? transportType = null,
             [FromQuery] decimal? minPrice = null,
             [FromQuery] decimal? maxPrice = null,
             [FromQuery] int take = 10,
@@ -356,6 +378,10 @@ namespace UmarahBooking.Controllers
                 var transport = _mapper.Map<InternationalTransport>(transportDto);
                 transport.IsActive = true;
 
+                // Calculate Duration
+                var duration = transport.ArrivalDate - transport.DepartureDate;
+                transport.Duration = $"{(int)duration.TotalHours}h {duration.Minutes}m";
+
                 // Save to database
                 await _unitOfWork.InternationalTransports.AddAsync(transport);
                 await _unitOfWork.SaveChanges();
@@ -430,6 +456,10 @@ namespace UmarahBooking.Controllers
 
                 // Map updates to existing entity
                 _mapper.Map(transportDto, existingTransport);
+
+                // Calculate Duration automatically
+                var duration = existingTransport.ArrivalDate - existingTransport.DepartureDate;
+                existingTransport.Duration = $"{(int)duration.TotalHours}h {duration.Minutes}m";
 
                 // Update in database
                 await _unitOfWork.InternationalTransports.UpdateAsync(existingTransport);

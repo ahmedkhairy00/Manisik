@@ -1,4 +1,4 @@
-﻿using Manisik.Models;
+using UmarahBooking.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -15,7 +15,7 @@ namespace UmarahBooking.Core.Interfaces
 
         // ========== REPOSITORY PROPERTIES ==========
 
-        // ✅ Add this property
+        // ? Add this property
         DbContext Context { get; }
 
         /// <summary>
@@ -69,6 +69,11 @@ namespace UmarahBooking.Core.Interfaces
         IBaseRepository<Payment> Payments { get; }
 
         /// <summary>
+        /// Repository for PaymentEvent entity operations
+        /// </summary>
+        IBaseRepository<PaymentEvent> PaymentEvents { get; }
+
+        /// <summary>
         /// Repository for ApplicationUser entity operations
         /// </summary>
         IBaseRepository<ApplicationUser> Users { get; }
@@ -102,3 +107,4 @@ namespace UmarahBooking.Core.Interfaces
         Task RollbackTransaction();
     }
 }
+

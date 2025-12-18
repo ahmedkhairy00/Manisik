@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using Manisik.Enums;
-using Manisik.Models;
+using AutoMapper;
+using UmarahBooking.Core.Enums;
+using UmarahBooking.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using UmarahBooking.Core.DTO;
@@ -29,8 +29,9 @@ namespace UmarahBooking.Core.Services
 
             var room = await GetRoomAsync(dto.HotelId, dto.RoomId);
 
-            await EnsureUserCanBookInCityAsync(userId, room.HotelId);
-            await EnsureNoDateConflictAsync(userId, dto.CheckInDate, dto.CheckOutDate);
+            // Scoped Validation: Pass bookingId if it exists to allow same city/dates in DIFFERENT bookings
+            await EnsureUserCanBookInCityAsync(userId, room.HotelId, dto.BookingId);
+            await EnsureNoDateConflictAsync(userId, dto.CheckInDate, dto.CheckOutDate, dto.BookingId);
 
             int remainingRooms = await CheckRoomAvailabilityAsync(dto, room);
             if (dto.NumberOfRooms > remainingRooms)
@@ -43,10 +44,34 @@ namespace UmarahBooking.Core.Services
             await _unitOfWork.BeginTransaction();
             try
             {
-                var booking = await _unitOfWork.Bookings
-                    .GetAllAsQuerable()
-                    .Where(b => b.UserId == userId && b.BookingStatus == BookingStatus.Pending)
-                    .FirstOrDefaultAsync();
+                Booking? booking = null;
+
+                // 1. If BookingId provided, try to find THAT specific pending booking
+                if (dto.BookingId.HasValue)
+                {
+                    booking = await _unitOfWork.Bookings.GetByIdAsync(dto.BookingId.Value);
+
+                    // Validate ownership and status
+                    if (booking == null || booking.UserId != userId)
+                        throw new InvalidOperationException("Booking not found or access denied");
+                    
+                    if (booking.BookingStatus != BookingStatus.Pending)
+                         throw new InvalidOperationException("Cannot add items to a non-pending booking");
+                }
+                else
+                {
+                    // 2. Fallback (Legacy/Safety): Check if user has ANY pending booking if no ID provided
+                    // Ideally frontend should always provide ID for specific drafts, but this handles "implicit" first draft
+                    /*
+                       NOTE: To support MULTIPLE drafts, we should ideally require BookingId or force create new if null.
+                       However, for backward compat: If null, check for latest pending. If none, create new.
+                    */
+                     booking = await _unitOfWork.Bookings
+                        .GetAllAsQuerable()
+                        .Where(b => b.UserId == userId && b.BookingStatus == BookingStatus.Pending)
+                        .OrderByDescending(b => b.CreatedAt) // Get latest
+                        .FirstOrDefaultAsync();
+                }
 
                 if (booking == null)
                 {
@@ -144,27 +169,39 @@ namespace UmarahBooking.Core.Services
             return room;
         }
 
-      private async Task EnsureUserCanBookInCityAsync(int userId, int hotelId)
+      private async Task EnsureUserCanBookInCityAsync(int userId, int hotelId, int? bookingId)
 {
-    // 1️⃣ Validate requested hotel exists
+    // 1?? Validate requested hotel exists
     var hotel = await _unitOfWork.Hotels.GetByIdAsync(hotelId);
     if (hotel == null)
         throw new InvalidOperationException("Hotel not found");
 
     var requestedCity = hotel.HotelCity;
 
-    // 2️⃣ Get user's current pending booking (the only booking allowed while incomplete)
-    var pendingBooking = await _unitOfWork.Bookings
-        .GetAllAsQuerable()
-        .Where(b => b.UserId == userId &&
-                    b.BookingStatus == BookingStatus.Pending)
-        .FirstOrDefaultAsync();
+    Booking? pendingBooking = null;
+
+    if (bookingId.HasValue)
+    {
+         pendingBooking = await _unitOfWork.Bookings.GetByIdAsync(bookingId.Value);
+         if (pendingBooking == null || pendingBooking.UserId != userId || pendingBooking.BookingStatus != BookingStatus.Pending)
+             return; // Invalid booking context, treat as new/no-conflict (or basic not found)
+    }
+    else
+    {
+        // Fallback: Get user's latest pending booking
+        pendingBooking = await _unitOfWork.Bookings
+            .GetAllAsQuerable()
+            .Where(b => b.UserId == userId &&
+                        b.BookingStatus == BookingStatus.Pending)
+            .OrderByDescending(b => b.CreatedAt)
+            .FirstOrDefaultAsync();
+    }
 
     // If no pending booking exists, user can add this hotel freely
     if (pendingBooking == null)
         return;
 
-    // 3️⃣ Check if SAME pending booking already has a hotel from this city
+    // 3?? Check if SAME pending booking already has a hotel from this city
     var existingCityHotel = await _unitOfWork.BookingHotels
         .GetAllAsQuerable()
         .Include(bh => bh.Hotel)
@@ -172,7 +209,7 @@ namespace UmarahBooking.Core.Services
                      bh.Hotel.HotelCity == requestedCity)
         .FirstOrDefaultAsync();
 
-    // 4️⃣ If found → user is trying to add another hotel from same city → BLOCK IT
+    // 4?? If found ? user is trying to add another hotel from same city ? BLOCK IT
     if (existingCityHotel != null)
     {
         throw new InvalidOperationException(
@@ -191,11 +228,16 @@ namespace UmarahBooking.Core.Services
         /// <param name="newCheckOut">New booking check-out date</param>
         /// <param name="excludeBookingId">Optional: Booking ID to exclude from conflict check (for updates)</param>
         /// <exception cref="InvalidOperationException">Thrown when date conflict is detected</exception>
+        /// <summary>
+        /// Ensures the new booking dates don't conflict with user's existing active bookings.
+        /// REFACTOR: Now primarily checks for conflicts within the SAME booking (e.g. adding 2 Makkah hotels).
+        /// Overlap across DIFFERENT bookings is ALLOWED.
+        /// </summary>
         private async Task EnsureNoDateConflictAsync(
             int userId,
             DateTime newCheckIn,
             DateTime newCheckOut,
-            int? excludeBookingId = null)
+            int? currentBookingId = null)
         {
             // Validate date range first
             if (newCheckIn >= newCheckOut)
@@ -203,42 +245,34 @@ namespace UmarahBooking.Core.Services
                 throw new InvalidOperationException("Check-in date must be before check-out date");
             }
 
-            // Fetch all active bookings for the user (exclude cancelled/refunded)
-            var activeBookings = await _unitOfWork.BookingHotels
+            // If we don't have a booking ID, we can't check internal consistency, return.
+            // (Or we could check against "latest pending", but let's stick to explicit ID if possible)
+            if (!currentBookingId.HasValue) 
+                return;
+
+            // Check for date overlap ONLY within the SAME pending booking
+            // (e.g. preventing user from adding Hotel A (1-5) and Hotel B (3-7) in same trip if they are somehow allowed 2 hotels)
+            // But wait, the rule is "One Makkah, One Madinah". They can overlap if they are in different cities? 
+            // Usually Umrah/Hajj involves sequential stays.
+            // Let's assume sequential: You can't be in Makkah and Madinah at the same time? 
+            // User requirement: "Users CANNOT book overlapping dates within the SAME pending booking"
+            
+            var sameBookingHotels = await _unitOfWork.BookingHotels
                 .GetAllAsQuerable()
-                .Include(bh => bh.Booking)
-                .Include(bh => bh.Hotel)
-                .Where(bh => bh.Booking != null
-                             && bh.Booking.UserId == userId
-                             && bh.Booking.BookingStatus != BookingStatus.Cancelled
-                             && bh.Booking.BookingStatus != BookingStatus.Refunded)
+                .Where(bh => bh.BookingId == currentBookingId.Value)
                 .ToListAsync();
 
-            // Filter out the booking being updated (if any)
-            if (excludeBookingId.HasValue)
-            {
-                activeBookings = activeBookings
-                    .Where(bh => bh.BookingId != excludeBookingId.Value)
-                    .ToList();
-            }
-
-            // Check for date overlap using standard interval overlap logic
-            // Two intervals [A_start, A_end] and [B_start, B_end] overlap if:
-            // A_start < B_end AND A_end > B_start
-            var conflictingBooking = activeBookings
+            var conflictingHotel = sameBookingHotels
                 .FirstOrDefault(bh => bh.CheckInDate < newCheckOut && bh.CheckOutDate > newCheckIn);
 
-            if (conflictingBooking != null)
+             if (conflictingHotel != null)
             {
-                var hotelName = conflictingBooking.Hotel?.Name ?? "Unknown Hotel";
-                var city = conflictingBooking.Hotel?.HotelCity.ToString() ?? "Unknown City";
-                var conflictCheckIn = conflictingBooking.CheckInDate.ToString("yyyy-MM-dd");
-                var conflictCheckOut = conflictingBooking.CheckOutDate.ToString("yyyy-MM-dd");
-
+                // If it's the SAME city, it's already caught by EnsureUserCanBookInCityAsync (1 hotel per city).
+                // If it's DIFFERENT city (e.g. Makkah vs Madinah), they MUST NOT overlap for a logical trip flow.
+                
                 throw new InvalidOperationException(
-                    $"Your new booking dates conflict with an existing reservation. " +
-                    $"Existing: {hotelName} ({city}) from {conflictCheckIn} to {conflictCheckOut}. " +
-                    $"Please choose different dates."
+                    $"Date conflict within this booking! You already have a hotel reserved from {conflictingHotel.CheckInDate:yyyy-MM-dd} to {conflictingHotel.CheckOutDate:yyyy-MM-dd}. " +
+                    "Please choose non-overlapping dates for your Makkah and Madinah stays."
                 );
             }
         }
@@ -320,3 +354,4 @@ namespace UmarahBooking.Core.Services
 
     }
 }
+

@@ -1,5 +1,5 @@
-﻿    using AutoMapper;
-using Manisik.Models;
+    using AutoMapper;
+using UmarahBooking.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -120,15 +120,40 @@ namespace UmarahBooking.Controllers
         {
             try
             {
-                // Search for transports by type
-                var transports = await _unitOfWork.GroundTransports.FindAllBySearch(
-                    t => t.InternalTransportType.ToString() == transportType && t.IsActive);
+                // Parse transport type string to enum for proper SQL translation
+                if (!Enum.TryParse<UmarahBooking.Core.Enums.InternalTransportType>(transportType, ignoreCase: true, out var parsedType))
+                {
+                    return BadRequest(ApiResponse<IEnumerable<GroundTransportDto>>.ErrorResponse(
+                        $"Invalid transport type: {transportType}"));
+                }
 
+                // Search for transports by type using enum comparison (SQL translatable)
+                var transports = await _unitOfWork.GroundTransports.FindAllBySearch(
+                    t => t.InternalTransportType == parsedType && t.IsActive);
+
+                // If no results were returned from the enum-based query, try a safe fallback.
+                // Some deployments may store enum values as strings or have slight name differences;
+                // perform an in-memory string comparison as a fallback to improve UX.
                 if (!transports.Any())
                 {
-                    _logger.LogInformation("No ground transports found of type {TransportType}", transportType);
-                    return NotFound(ApiResponse<IEnumerable<GroundTransportDto>>.ErrorResponse(
-                        $"No ground transports available of type {transportType}"));
+                    _logger.LogInformation("Enum query returned no results for type {TransportType}, attempting string fallback", transportType);
+                    var allActive = await _unitOfWork.GroundTransports.FindAllBySearch(t => t.IsActive);
+                    var fallback = allActive.Where(t =>
+                        string.Equals(t.InternalTransportType.ToString(), transportType, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+
+                    if (!fallback.Any())
+                    {
+                        _logger.LogInformation("No ground transports found of type {TransportType} after fallback", transportType);
+                        return Ok(ApiResponse<IEnumerable<GroundTransportDto>>.SuccessResponse(
+                            Enumerable.Empty<GroundTransportDto>(),
+                            $"No ground transports available of type {transportType}"));
+                    }
+
+                    var fallbackDtos = _mapper.Map<IEnumerable<GroundTransportDto>>(fallback);
+                    return Ok(ApiResponse<IEnumerable<GroundTransportDto>>.SuccessResponse(
+                        fallbackDtos,
+                        $"{fallback.Count()} ground transports found (fallback string match)"));
                 }
 
                 var transportDtos = _mapper.Map<IEnumerable<GroundTransportDto>>(transports);
@@ -214,7 +239,7 @@ namespace UmarahBooking.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> AdvancedSearch(
             [FromQuery] string? serviceName = null,
-            [FromQuery] Manisik.Enums.InternalTransportType? transportType = null,
+            [FromQuery] UmarahBooking.Core.Enums.InternalTransportType? transportType = null,
             [FromQuery] decimal? minPrice = null,
             [FromQuery] decimal? maxPrice = null,
             [FromQuery] int? minCapacity = null,

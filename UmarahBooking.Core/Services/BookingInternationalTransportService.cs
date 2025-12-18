@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using Manisik.Enums;
-using Manisik.Models;
+using AutoMapper;
+using UmarahBooking.Core.Enums;
+using UmarahBooking.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using UmarahBooking.Core.DTO;
 using UmarahBooking.Core.Interfaces;
@@ -44,7 +44,7 @@ namespace UmarahBooking.Core.Services
             decimal totalPrice = CalculateTotalPrice(dto.NumberOfSeats, internationalTransport.Price);
 
             // Get or create pending booking
-            // ✅ Use Context directly with tracking
+            // ? Use Context directly with tracking
             var booking = await _unitOfWork.Context.Set<Booking>()
                 .Where(b => b.UserId == userId && b.BookingStatus == BookingStatus.Pending)
                 .FirstOrDefaultAsync();
@@ -59,7 +59,7 @@ namespace UmarahBooking.Core.Services
                 };
                 await _unitOfWork.Bookings.AddAsync(booking);
 
-                // 👇 ADD THIS: Save the booking first to generate its ID
+                // ?? ADD THIS: Save the booking first to generate its ID
                 await _unitOfWork.SaveChanges();
             }
 
@@ -182,3 +182,4 @@ namespace UmarahBooking.Core.Services
         }
     }
 }
+
